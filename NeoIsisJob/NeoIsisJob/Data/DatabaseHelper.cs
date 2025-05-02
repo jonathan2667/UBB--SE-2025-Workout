@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using NeoIsisJob.Data.Interfaces;
 
 namespace NeoIsisJob.Data
@@ -12,7 +13,9 @@ namespace NeoIsisJob.Data
 
         public DatabaseHelper()
         {
+            // connectionString = @"Data Source=localhost\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;";
             connectionString = @"Server=localhost;Database=Workout;Integrated Security=True;TrustServerCertificate=True;";
+
             try
             {
                 this.sqlConnection = new SqlConnection(this.connectionString);
