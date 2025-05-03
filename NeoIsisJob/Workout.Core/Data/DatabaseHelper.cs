@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using Workout.Core.Data.Interfaces;
 
 namespace Workout.Core.Data
 {
-    internal class DatabaseHelper
+    internal class DatabaseHelper : IDatabaseHelper
     {
         private readonly string connectionString;
         private SqlConnection sqlConnection;
