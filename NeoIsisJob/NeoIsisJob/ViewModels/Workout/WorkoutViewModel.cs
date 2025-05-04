@@ -5,10 +5,13 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
-using NeoIsisJob.Models;
-using NeoIsisJob.Services;
-using NeoIsisJob.Services.Interfaces;
+// using NeoIsisJob.Models;
+// using NeoIsisJob.Services;
+// using NeoIsisJob.Services.Interfaces;
 using NeoIsisJob.Commands;
+using Workout.Core.Models;
+using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
@@ -107,7 +110,7 @@ namespace NeoIsisJob.ViewModels.Workout
         public WorkoutModel SelectedWorkout
         {
             get => SelectedWorkoutViewModel.SelectedWorkout;
-            set => SelectedWorkoutViewModel.SelectedWorkout = value;
+            // set => SelectedWorkoutViewModel.SelectedWorkout = value;
         }
 
         private bool isEditPopupOpen;
@@ -121,29 +124,29 @@ namespace NeoIsisJob.ViewModels.Workout
             }
         }
 
-        private void LoadWorkouts()
+        private async void LoadWorkouts()
         {
             Workouts.Clear();
 
-            foreach (var workout in this.workoutService.GetAllWorkouts())
+            foreach (var workout in await this.workoutService.GetAllWorkoutsAsync())
             {
                 Workouts.Add(workout);
             }
         }
 
-        private void LoadWorkoutTypes()
+        private async void LoadWorkoutTypes()
         {
             WorkoutTypes.Clear();
-            foreach (var workoutType in this.workoutTypeService.GetAllWorkoutTypes())
+            foreach (var workoutType in await this.workoutTypeService.GetAllWorkoutTypesAsync())
             {
                 WorkoutTypes.Add(workoutType);
             }
         }
 
-        private void ApplyWorkoutFilter()
+        private async void ApplyWorkoutFilter()
         {
             Workouts.Clear();
-            IList<WorkoutModel> allWorkouts = this.workoutService.GetAllWorkouts();
+            IList<WorkoutModel> allWorkouts = await this.workoutService.GetAllWorkoutsAsync();
 
             if (SelectedWorkoutType != null)
             {
@@ -173,23 +176,23 @@ namespace NeoIsisJob.ViewModels.Workout
             }
         }
 
-        public void DeleteWorkout(int workoutId)
+        public async void DeleteWorkout(int workoutId)
         {
             // Delete the selected workout and its complete workouts
-            this.completeWorkoutService.DeleteCompleteWorkoutsByWorkoutId(workoutId);
-            this.workoutService.DeleteWorkout(workoutId);
+            await this.completeWorkoutService.DeleteCompleteWorkoutsByWorkoutIdAsync(workoutId);
+            await this.workoutService.DeleteWorkoutAsync(workoutId);
 
             // Loading workouts again
             LoadWorkouts();
         }
 
-        public void UpdateWorkout(string newName)
+        public async void UpdateWorkout(string newName)
         {
             // Update the selected workout's name
             if (SelectedWorkout != null && !string.IsNullOrWhiteSpace(newName))
             {
                 SelectedWorkout.Name = newName;
-                workoutService.UpdateWorkout(SelectedWorkout);
+                await workoutService.UpdateWorkoutAsync(SelectedWorkout);
                 LoadWorkouts();
                 IsEditPopupOpen = false;
             }

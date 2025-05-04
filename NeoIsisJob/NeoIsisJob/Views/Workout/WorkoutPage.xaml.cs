@@ -14,9 +14,10 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using NeoIsisJob.ViewModels.Workout;
-using NeoIsisJob.Models;
+// using NeoIsisJob.Models;
 using NeoIsisJob.Views.Workout;
 using Microsoft.Extensions.DependencyInjection;
+using Workout.Core.Models;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -64,12 +65,16 @@ namespace NeoIsisJob.Views
             this.Frame.Navigate(typeof(RankingPage));
         }
 
-        public void GoToSelectedWorkoutPage_Click(object sender, ItemClickEventArgs e)
+        public async void GoToSelectedWorkoutPage_Click(object sender, ItemClickEventArgs e)
         {
             if (e.ClickedItem is WorkoutModel selectedWorkout)
             {
                 SelectedWorkoutViewModel selectedWorkoutViewModel = App.Services.GetService<SelectedWorkoutViewModel>();
-                selectedWorkoutViewModel.SelectedWorkout = selectedWorkout;
+                // selectedWorkoutViewModel.SelectedWorkout = selectedWorkout;
+                if (DataContext is WorkoutViewModel viewModel)
+                {
+                    await viewModel.SelectedWorkoutViewModel.SetSelectedWorkoutAsync(selectedWorkout);
+                }
                 this.Frame.Navigate(typeof(SelectedWorkoutPage));
             }
         }
@@ -141,13 +146,14 @@ namespace NeoIsisJob.Views
             }
         }
 
-        private void EditWorkoutButton_Click(object sender, RoutedEventArgs e)
+        private async void EditWorkoutButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.DataContext is WorkoutModel workout)
             {
                 if (DataContext is WorkoutViewModel viewModel)
                 {
-                    viewModel.SelectedWorkout = workout;
+                    // viewModel.SelectedWorkout = workout;
+                    await viewModel.SelectedWorkoutViewModel.SetSelectedWorkoutAsync(workout);
                     WorkoutNameTextBox.Text = workout.Name;
                     EditWorkoutPopup.IsOpen = true;
                 }
