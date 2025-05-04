@@ -18,11 +18,15 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using NeoIsisJob.ViewModels.Workout;
-using NeoIsisJob.Repositories;
-using NeoIsisJob.Services;
+// using NeoIsisJob.Repositories;
+// using NeoIsisJob.Services;
 using NeoIsisJob.ViewModels.Rankings;
-using NeoIsisJob.Repositories.Interfaces;
-using NeoIsisJob.Services.Interfaces;
+using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Repositories;
+using Workout.Core.Services.Interfaces;
+using Workout.Core.Services;
+// using NeoIsisJob.Repositories.Interfaces;
+// using NeoIsisJob.Services.Interfaces;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

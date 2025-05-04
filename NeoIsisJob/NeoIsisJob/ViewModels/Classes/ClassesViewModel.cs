@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -7,8 +8,8 @@ using System.Linq;
 using System;
 using System.Security.Claims;
 using System.Diagnostics;
-using NeoIsisJob.Models;
-using NeoIsisJob.Services;
+// using NeoIsisJob.Models;
+// using NeoIsisJob.Services;
 using NeoIsisJob.Repositories;
 using NeoIsisJob.ViewModels.Classes;
 using NeoIsisJob.Commands;
@@ -16,6 +17,9 @@ using NeoIsisJob.ViewModels.Workout;
 using NeoIsisJob.Data;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
+
+using Workout.Core.Models;
+using Workout.Core.Services;
 
 namespace NeoIsisJob.ViewModels.Classes
 {
@@ -48,8 +52,8 @@ namespace NeoIsisJob.ViewModels.Classes
             ConfirmRegistrationCommand = new RelayCommand(ConfirmRegistration);
             CloseRegisterPopupCommand = new RelayCommand(CloseRegisterPopup);
             OpenRegisterPopupCommand = new RelayCommand<ClassModel>(OpenRegisterPopup);
-            LoadClasses();
-            LoadClassTypes();
+            _ = LoadClasses();
+            _ = LoadClassTypes();
         }
 
         public ObservableCollection<ClassModel> Classes
@@ -119,14 +123,13 @@ namespace NeoIsisJob.ViewModels.Classes
             SelectedClass = classModel;
             IsRegisterPopupOpen = true;
         }
-        private void LoadClasses()
+        private async Task LoadClasses()
         {
             Classes.Clear();
 
-            var trainersDict = personalTrainerService.GetAllPersonalTrainers()
-                              .ToDictionary(personalTrainer => personalTrainer.Id);
+            var trainersDict = (await personalTrainerService.GetAllPersonalTrainersAsync()).ToDictionary(personalTrainer => personalTrainer.Id);
 
-            foreach (var classItem in classService.GetAllClasses())
+            foreach (var classItem in await classService.GetAllClassesAsync())
             {
                 // Assign Personal Trainer to Class
                 if (trainersDict.TryGetValue(classItem.PersonalTrainerId, out var trainer))
@@ -136,12 +139,13 @@ namespace NeoIsisJob.ViewModels.Classes
 
                 Classes.Add(classItem);
             }
+            OnPropertyChanged(nameof(HasClasses));
         }
 
-        private void LoadClassTypes()
+        private async Task LoadClassTypes()
         {
             ClassTypes.Clear();
-            foreach (var classType in this.classTypeService.GetAllClassTypes())
+            foreach (var classType in await this.classTypeService.GetAllClassTypesAsync())
             {
                 ClassTypes.Add(classType);
             }
@@ -157,7 +161,7 @@ namespace NeoIsisJob.ViewModels.Classes
             }
         }
 
-        private void ConfirmRegistration()
+        private async void ConfirmRegistration()
         {
             if (SelectedClass == null)
             {
@@ -181,7 +185,7 @@ namespace NeoIsisJob.ViewModels.Classes
                     EnrollmentDate = SelectedDate.Date
                 };
 
-                userClassService.AddUserClass(userClass);
+                await userClassService.AddUserClassAsync(userClass);
                 DateError = string.Empty; // Clear error if successful
                 Debug.WriteLine($"Successfully registered for class {SelectedClass.Name}");
                 IsRegisterPopupOpen = false;

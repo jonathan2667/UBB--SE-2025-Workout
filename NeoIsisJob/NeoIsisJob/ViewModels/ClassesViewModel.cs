@@ -1,5 +1,8 @@
 using System;
-using NeoIsisJob.Services.Interfaces;
+using System.Threading.Tasks;
+
+// using NeoIsisJob.Services.Interfaces;
+using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.ViewModels
 {
@@ -12,9 +15,9 @@ namespace NeoIsisJob.ViewModels
             this.classService = classService;
         }
 
-        public string ConfirmRegistration(int userId, int classId, DateTime date)
+        public async Task<string> ConfirmRegistration(int userId, int classId, DateTime date)
         {
-            return classService.ConfirmRegistration(userId, classId, date);
+            return await classService.ConfirmRegistrationAsync(userId, classId, date);
         }
     }
 }

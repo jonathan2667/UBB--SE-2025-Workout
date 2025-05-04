@@ -6,11 +6,16 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using NeoIsisJob.Data;
-using NeoIsisJob.Models;
+// using NeoIsisJob.Data;
+// using NeoIsisJob.Models;
 using NeoIsisJob.ViewModels.Calendar;
-using NeoIsisJob.Services;
-using NeoIsisJob.Services.Interfaces;
+// using NeoIsisJob.Services;
+// using NeoIsisJob.Services.Interfaces;
+using Workout.Core.Models;
+using Workout.Core.Data;
+using Workout.Core.Repositories;
+using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.Views
 {
@@ -145,8 +150,8 @@ namespace NeoIsisJob.Views
 
                 if (day.HasWorkout || day.HasClass)
                 {
-                    var userWorkout = calendarService.GetUserWorkout(ViewModel.UserId, day.Date);
-                    string userClass = day.HasClass ? calendarService.GetUserClass(ViewModel.UserId, day.Date) : null;
+                    var userWorkout = await calendarService.GetUserWorkoutAsync(ViewModel.UserId, day.Date);
+                    string userClass = day.HasClass ? await calendarService.GetUserClassAsync(ViewModel.UserId, day.Date) : null;
 
                     if (userWorkout != null || userClass != null)
                     {
@@ -207,8 +212,8 @@ namespace NeoIsisJob.Views
 
                 if (day.HasWorkout || day.HasClass)
                 {
-                    var userWorkout = calendarService.GetUserWorkout(ViewModel.UserId, day.Date);
-                    string userClass = day.HasClass ? calendarService.GetUserClass(ViewModel.UserId, day.Date) : null;
+                    var userWorkout = await calendarService.GetUserWorkoutAsync(ViewModel.UserId, day.Date);
+                    string userClass = day.HasClass ? await calendarService.GetUserClassAsync(ViewModel.UserId, day.Date) : null;
 
                     if (userWorkout != null || userClass != null)
                     {
@@ -234,14 +239,14 @@ namespace NeoIsisJob.Views
                             SecondaryButtonText = day.HasWorkout && day.Date >= DateTime.Now.Date ? "Remove Workout" : null
                         };
 
-                        dialog.PrimaryButtonClick += (s, args) =>
+                        dialog.PrimaryButtonClick += async (s, args) =>
                         {
                             if (day.HasWorkout && day.Date >= DateTime.Now.Date)
                             {
                                 args.Cancel = true; // Keep dialog open
 
                                 // Fetch workout list
-                                List<WorkoutModel> workouts = calendarService.GetWorkouts();
+                                List<WorkoutModel> workouts = await calendarService.GetWorkoutsAsync();
                                 System.Diagnostics.Debug.WriteLine("Workout List:");
                                 if (workouts.Count > 0)
                                 {
@@ -265,15 +270,15 @@ namespace NeoIsisJob.Views
                                         Margin = new Thickness(0, 5, 0, 0),
                                         Tag = workout.Id // Store workout ID in Tag
                                     };
-                                    workoutButton.Click += (btnSender, btnArgs) =>
+                                    workoutButton.Click += async (btnSender, btnArgs) =>
                                     {
                                         if (btnSender is Button clickedButton && clickedButton.Tag is int workoutId)
                                         {
                                             // Remove existing workout first
-                                            var existingWorkout = calendarService.GetUserWorkout(ViewModel.UserId, day.Date);
+                                            var existingWorkout = await calendarService.GetUserWorkoutAsync(ViewModel.UserId, day.Date);
                                             if (existingWorkout != null)
                                             {
-                                                calendarService.DeleteUserWorkout(ViewModel.UserId, existingWorkout.WorkoutId, day.Date);
+                                                await calendarService.DeleteUserWorkoutAsync(ViewModel.UserId, existingWorkout.WorkoutId, day.Date);
                                             }
 
                                             // Add new workout
@@ -317,7 +322,7 @@ namespace NeoIsisJob.Views
                             if (day.HasWorkout && day.Date >= DateTime.Now.Date)
                             {
                                 args.Cancel = true; // Keep dialog open
-                                calendarService.RemoveWorkout(ViewModel.UserId, day);
+                                await calendarService.RemoveWorkoutAsync(ViewModel.UserId, day);
                                 ViewModel.UpdateCalendar(); // Force calendar update
                                 dialog.Hide(); // Close the dialog
                             }
@@ -358,16 +363,16 @@ namespace NeoIsisJob.Views
                 string message = string.Empty;
                 ContentDialog dialog;
 
-            dialog = new ContentDialog
-            {
-                Title = $"Day {day.DayNumber}",
-                Content = "No workout scheduled for this day.",
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot,
-                PrimaryButtonText = day.Date >= DateTime.Now.Date ? "Add Workout" : null
-            };
+                dialog = new ContentDialog
+                {
+                    Title = $"Day {day.DayNumber}",
+                    Content = "No workout scheduled for this day.",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot,
+                    PrimaryButtonText = day.Date >= DateTime.Now.Date ? "Add Workout" : null
+                };
 
-                dialog.PrimaryButtonClick += (s, args) =>
+                dialog.PrimaryButtonClick += async (s, args) =>
                 {
                     if (day.Date >= DateTime.Now.Date)
                     {
@@ -375,7 +380,7 @@ namespace NeoIsisJob.Views
                         args.Cancel = true; // Key fix: Keeps dialog open
 
                         // Fetch workout list
-                        List<WorkoutModel> workouts = calendarService.GetWorkouts(); // Ensure this method exists
+                        List<WorkoutModel> workouts = await calendarService.GetWorkoutsAsync(); // Ensure this method exists
                         System.Diagnostics.Debug.WriteLine("Workout List:");
                         if (workouts.Count > 0)
                         {
@@ -399,16 +404,16 @@ namespace NeoIsisJob.Views
                                 Margin = new Thickness(0, 5, 0, 0),
                                 Tag = workout.Id // Store workout ID in Tag
                             };
-                            button.Click += (btnSender, btnArgs) =>
+                            button.Click += async (btnSender, btnArgs) =>
                             {
                                 if (btnSender is Button clickedButton && clickedButton.Tag is int workoutId)
                                 {
                                     // Check if workout already exists for this date
-                                    var existingWorkout = calendarService.GetUserWorkout(ViewModel.UserId, day.Date);
+                                    var existingWorkout = await calendarService.GetUserWorkoutAsync(ViewModel.UserId, day.Date);
                                     if (existingWorkout != null)
                                     {
                                         // If workout exists, update it instead of adding a new one
-                                        calendarService.DeleteUserWorkout(ViewModel.UserId, existingWorkout.WorkoutId, day.Date);
+                                        await calendarService.DeleteUserWorkoutAsync(ViewModel.UserId, existingWorkout.WorkoutId, day.Date);
                                     }
 
                                     // Add new workout
@@ -417,7 +422,7 @@ namespace NeoIsisJob.Views
                                         workoutId: workoutId,
                                         date: day.Date,
                                         completed: false);
-                                    calendarService.AddUserWorkout(newWorkout);
+                                    await calendarService.AddUserWorkoutAsync(newWorkout);
                                     ViewModel.UpdateCalendar(); // Force calendar update
                                     dialog.Content = $"Workout '{clickedButton.Content}' added successfully.";
                                     dialog.Hide(); // Close the dialog

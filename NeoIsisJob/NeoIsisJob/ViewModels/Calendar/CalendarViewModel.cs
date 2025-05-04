@@ -6,11 +6,16 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Controls;
-using NeoIsisJob.Models;
-using NeoIsisJob.Data;
-using NeoIsisJob.Repositories;
-using NeoIsisJob.Services;
-using NeoIsisJob.Services.Interfaces;
+// using NeoIsisJob.Models;
+// using NeoIsisJob.Data;
+// using NeoIsisJob.Repositories;
+// using NeoIsisJob.Services;
+// using NeoIsisJob.Services.Interfaces;
+using Workout.Core.Models;
+using Workout.Core.Data;
+using Workout.Core.Repositories;
+using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.ViewModels.Calendar
 {
@@ -78,11 +83,11 @@ namespace NeoIsisJob.ViewModels.Calendar
         public ICommand PreviousMonthCommand { get; }
         public ICommand NextMonthCommand { get; }
 
-        public void UpdateCalendar()
+        public async void UpdateCalendar()
         {
             YearText = currentDate.Year.ToString();
             MonthText = currentDate.ToString("MMMM");
-            CalendarDays = calendarService.GetCalendarDays(UserId, currentDate);
+            CalendarDays = await calendarService.GetCalendarDaysAsync(UserId, currentDate);
         }
 
         private void PreviousMonth()
@@ -97,22 +102,22 @@ namespace NeoIsisJob.ViewModels.Calendar
             UpdateCalendar();
         }
 
-        public void AddUserWorkout(UserWorkoutModel userWorkout)
+        public async void AddUserWorkout(UserWorkoutModel userWorkout)
         {
-            calendarService.AddUserWorkout(userWorkout);
+            await calendarService.AddUserWorkoutAsync(userWorkout);
 
             UpdateCalendar();
         }
 
-        public void UpdateUserWorkout(UserWorkoutModel userWorkout)
+        public async void UpdateUserWorkout(UserWorkoutModel userWorkout)
         {
-            calendarService.UpdateUserWorkout(userWorkout);
+            await calendarService.UpdateUserWorkoutAsync(userWorkout);
             UpdateCalendar();
         }
 
-        public void DeleteUserWorkout(int workoutId, DateTime date)
+        public async void DeleteUserWorkout(int workoutId, DateTime date)
         {
-            calendarService.DeleteUserWorkout(UserId, workoutId, date);
+            await calendarService.DeleteUserWorkoutAsync(UserId, workoutId, date);
             UpdateCalendar();
         }
 

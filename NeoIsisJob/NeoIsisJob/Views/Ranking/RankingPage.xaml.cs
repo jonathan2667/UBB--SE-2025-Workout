@@ -15,9 +15,11 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI;
 using NeoIsisJob.ViewModels.Rankings;
-using NeoIsisJob;
+using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using NeoIsisJob.Models;
+// using NeoIsisJob.Models;
+using Workout.Core.Models;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -94,9 +96,9 @@ namespace NeoIsisJob.Views
             LoadRankingsForMuscleGroupPanel(5, "Back");
         }
 
-        private void LoadRankingsForMuscleGroupPanel(int muscleGroupId, string muscleGroupName)
+        private async void LoadRankingsForMuscleGroupPanel(int muscleGroupId, string muscleGroupName)
         {
-            var ranking = this.rankingsViewModel.GetRankingByMGID(muscleGroupId);
+            var ranking = await this.rankingsViewModel.GetRankingByMGID(muscleGroupId);
             if (ranking != null)
             {
                 var rankingPanel = FindName("RankingPanel") as StackPanel;
@@ -118,10 +120,10 @@ namespace NeoIsisJob.Views
             LoadMuscleGroupColor(5, "Back");
         }
 
-        private void LoadMuscleGroupColor(int muscleGroupId, string muscleGroupName)
+        private async void LoadMuscleGroupColor(int muscleGroupId, string muscleGroupName)
         {
             var svg = FindName(muscleGroupName) as Microsoft.UI.Xaml.Shapes.Path;
-            var ranking = this.rankingsViewModel.GetRankingByMGID(muscleGroupId);
+            var ranking = await this.rankingsViewModel.GetRankingByMGID(muscleGroupId);
             if (svg != null && ranking != null)
             {
                 svg.Fill = this.rankingsViewModel.GetRankColor(ranking.Rank);
@@ -151,11 +153,20 @@ namespace NeoIsisJob.Views
             Image rankImage = new Image { Source = new BitmapImage(new Uri(this.BaseUri, rankDef.ImagePath)), Width = 150, Height = 150 };
             TextBlock muscleGroupName = new TextBlock
             {
-                Text = muscleGroup, FontSize = 25, Foreground = new SolidColorBrush(rankDef.Color), Margin = new Thickness(20, 60, 0, 10)
+                Text = muscleGroup, FontSize = 25, Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(
+                                                                                                            rankDef.Color.A,
+                                                                                                            rankDef.Color.R,
+                                                                                                            rankDef.Color.G,
+                                                                                                            rankDef.Color.B)),
+                                                                                                            Margin = new Thickness(20, 60, 0, 10)
             };
             ProgressBar progressBar = new ProgressBar
             {
-                Value = rank, Minimum = rankDef.MinPoints, Maximum = rankDef.MaxPoints, Foreground = new SolidColorBrush(rankDef.Color)
+                Value = rank, Minimum = rankDef.MinPoints, Maximum = rankDef.MaxPoints, Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(
+    rankDef.Color.A,
+    rankDef.Color.R,
+    rankDef.Color.G,
+    rankDef.Color.B))
             };
             TextBlock nextRankBlock = new TextBlock
             {
@@ -177,10 +188,34 @@ namespace NeoIsisJob.Views
             StackPanel stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
 
             Image rankImage = new Image { Source = new BitmapImage(new Uri(this.BaseUri, rankDef.ImagePath)), Width = 50, Height = 50 };
-            TextBlock rankText = new TextBlock { Text = rankDef.Name, Foreground = new SolidColorBrush(rankDef.Color), Width = 150, Margin = new Thickness(10, 15, 0, 0) };
-            TextBlock minText = new TextBlock { Text = rankDef.MinPoints.ToString(), Foreground = new SolidColorBrush(rankDef.Color), TextAlignment = TextAlignment.Center, Width = 50, Margin = new Thickness(25, 15, 0, 0) };
+            TextBlock rankText = new TextBlock
+            {
+                Text = rankDef.Name, Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(
+    rankDef.Color.A,
+    rankDef.Color.R,
+    rankDef.Color.G,
+    rankDef.Color.B)),
+                Width = 150, Margin = new Thickness(10, 15, 0, 0)
+            };
+            TextBlock minText = new TextBlock
+            {
+                Text = rankDef.MinPoints.ToString(), Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(
+    rankDef.Color.A,
+    rankDef.Color.R,
+    rankDef.Color.G,
+    rankDef.Color.B)),
+            TextAlignment = TextAlignment.Center, Width = 50, Margin = new Thickness(25, 15, 0, 0)
+            };
             TextBlock dashText = new TextBlock { Text = "-", Width = 10, Margin = new Thickness(15, 15, 0, 0) };
-            TextBlock maxText = new TextBlock { Text = rankDef.MaxPoints.ToString(), Foreground = new SolidColorBrush(rankDef.Color), TextAlignment = TextAlignment.Center, Width = 50, Margin = new Thickness(15, 15, 0, 0) };
+            TextBlock maxText = new TextBlock
+            {
+                Text = rankDef.MaxPoints.ToString(), Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(
+    rankDef.Color.A,
+    rankDef.Color.R,
+    rankDef.Color.G,
+    rankDef.Color.B)),
+                TextAlignment = TextAlignment.Center, Width = 50, Margin = new Thickness(15, 15, 0, 0)
+            };
 
             stackPanel.Children.Add(rankImage);
             stackPanel.Children.Add(rankText);

@@ -7,9 +7,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using NeoIsisJob.Models;
-using NeoIsisJob.Services;
-using NeoIsisJob.Services.Interfaces;
+// using NeoIsisJob.Models;
+// using NeoIsisJob.Services;
+// using NeoIsisJob.Services.Interfaces;
+using Workout.Core.Models;
+using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
@@ -25,24 +28,23 @@ namespace NeoIsisJob.ViewModels.Workout
         public WorkoutModel SelectedWorkout
         {
             get => selectedWorkout;
-            set
-            {
-                selectedWorkout = value;
-                // signal that the property has changed
-                Debug.WriteLine($"SelectedWorkout set to: {selectedWorkout?.Name}"); // Debug message
-                OnPropertyChanged();
+        }
 
-                if (selectedWorkout != null)
-                {
-                    // update the collection
-                    IList<CompleteWorkoutModel> completeWorkouts = FilledCompleteWorkoutsWithExercies(
-                        this.completeWorkoutService.GetCompleteWorkoutsByWorkoutId(this.selectedWorkout.Id));
-                    CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(completeWorkouts);
-                }
-                else
-                {
-                    CompleteWorkouts.Clear();
-                }
+        public async Task SetSelectedWorkoutAsync(WorkoutModel workout)
+        {
+            selectedWorkout = workout;
+            Debug.WriteLine($"SelectedWorkout set to: {selectedWorkout?.Name}");
+            OnPropertyChanged(nameof(SelectedWorkout));
+
+            if (selectedWorkout != null)
+            {
+                var completeWorkoutsRaw = await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(selectedWorkout.Id);
+                var completeWorkoutsFilled = await FilledCompleteWorkoutsWithExercies(completeWorkoutsRaw);
+                CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(completeWorkoutsFilled);
+            }
+            else
+            {
+                CompleteWorkouts.Clear();
             }
         }
 
@@ -76,11 +78,11 @@ namespace NeoIsisJob.ViewModels.Workout
             this.completeWorkouts = new ObservableCollection<CompleteWorkoutModel>();
         }
 
-        public IList<CompleteWorkoutModel> FilledCompleteWorkoutsWithExercies(IList<CompleteWorkoutModel> complWorkouts)
+        public async Task<IList<CompleteWorkoutModel>> FilledCompleteWorkoutsWithExercies(IList<CompleteWorkoutModel> complWorkouts)
         {
             foreach (CompleteWorkoutModel complWorkout in complWorkouts)
             {
-                complWorkout.Exercise = this.exerciseService.GetExerciseById(complWorkout.ExerciseId);
+                complWorkout.Exercise = await this.exerciseService.GetExerciseByIdAsync(complWorkout.ExerciseId);
             }
 
             return complWorkouts;
@@ -95,7 +97,7 @@ namespace NeoIsisJob.ViewModels.Workout
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void UpdateWorkoutName(string newName)
+        public async void UpdateWorkoutName(string newName)
         {
             try
             {
@@ -105,13 +107,15 @@ namespace NeoIsisJob.ViewModels.Workout
                 }
 
                 selectedWorkout.Name = newName;
-                this.workoutService.UpdateWorkout(selectedWorkout);
+                await this.workoutService.UpdateWorkoutAsync(selectedWorkout);
 
                 // Notify the UI about the change
                 OnPropertyChanged(nameof(SelectedWorkout));
 
                 // Reload the CompleteWorkouts collection if necessary
-                IList<CompleteWorkoutModel> complWorkouts = FilledCompleteWorkoutsWithExercies(this.completeWorkoutService.GetCompleteWorkoutsByWorkoutId(this.selectedWorkout.Id));
+                // IList<CompleteWorkoutModel> complWorkouts = FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.Id));
+                IList<CompleteWorkoutModel> complWorkouts = await FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.Id));
+
                 CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(complWorkouts);
             }
             catch (Exception ex)
