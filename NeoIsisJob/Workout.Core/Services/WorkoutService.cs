@@ -76,12 +76,16 @@ namespace Workout.Core.Services
 
         public async Task UpdateWorkoutAsync(WorkoutModel workout)
         {
+
             if (workout == null)
-                throw new ArgumentNullException(nameof(workout));
-            //if (workout.Id <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(workout.Id), "workout.Id must be positive.");
+            {
+                throw new ArgumentNullException(nameof(workout), "Workout cannot be null.");
+            }
+
             if (string.IsNullOrWhiteSpace(workout.Name))
-                throw new ArgumentException("Workout name cannot be empty.", nameof(workout.Name));
+            {
+                throw new ArgumentException("Workout name cannot be empty or null.", nameof(workout.Name));
+            }
 
             try
             {

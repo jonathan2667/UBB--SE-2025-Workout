@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Repositories;
 using Workout.Core.Services.Interfaces;
 
 namespace Workout.Core.Services
@@ -17,7 +18,7 @@ namespace Workout.Core.Services
         public WorkoutTypeService(IWorkoutTypeRepository workoutTypeRepository = null)
         {
             _workoutTypeRepository = workoutTypeRepository
-                ?? throw new ArgumentNullException(nameof(workoutTypeRepository));
+                ?? new WorkoutTypeRepo();//throw new ArgumentNullException(nameof(workoutTypeRepository));
         }
 
         public async Task InsertWorkoutTypeAsync(string workoutTypeName)
@@ -28,8 +29,8 @@ namespace Workout.Core.Services
             try
             {
                 await _workoutTypeRepository
-                      .InsertWorkoutTypeAsync(workoutTypeName)
-                      .ConfigureAwait(false);
+                      .InsertWorkoutTypeAsync(workoutTypeName);
+                      //.ConfigureAwait(false);
             }
             catch (SqlException ex) when (ex.Number == 2627)
             {
@@ -43,29 +44,29 @@ namespace Workout.Core.Services
 
         public async Task DeleteWorkoutTypeAsync(int workoutTypeId)
         {
-            if (workoutTypeId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(workoutTypeId), "workoutTypeId must be positive.");
+            //if (workoutTypeId <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(workoutTypeId), "workoutTypeId must be positive.");
 
             await _workoutTypeRepository
-                  .DeleteWorkoutTypeAsync(workoutTypeId)
-                  .ConfigureAwait(false);
+                  .DeleteWorkoutTypeAsync(workoutTypeId);
+                  //.ConfigureAwait(false);
         }
 
         public async Task<WorkoutTypeModel> GetWorkoutTypeByIdAsync(int workoutTypeId)
         {
-            if (workoutTypeId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(workoutTypeId), "workoutTypeId must be positive.");
+            //if (workoutTypeId <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(workoutTypeId), "workoutTypeId must be positive.");
 
             return await _workoutTypeRepository
-                         .GetWorkoutTypeByIdAsync(workoutTypeId)
-                         .ConfigureAwait(false);
+                         .GetWorkoutTypeByIdAsync(workoutTypeId);
+                         //.ConfigureAwait(false);
         }
 
         public async Task<IList<WorkoutTypeModel>> GetAllWorkoutTypesAsync()
         {
             return await _workoutTypeRepository
-                         .GetAllWorkoutTypesAsync()
-                         .ConfigureAwait(false);
+                         .GetAllWorkoutTypesAsync();
+                         //.ConfigureAwait(false);
         }
     }
 }

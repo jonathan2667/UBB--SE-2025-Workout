@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Controls;
 using NeoIsisJob.Commands;
-using NeoIsisJob.Models;
-using NeoIsisJob.Services;
+// using NeoIsisJob.Models;
+// using NeoIsisJob.Services;
+using Workout.Core.Models;
+using Workout.Core.Services;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
@@ -153,41 +155,43 @@ namespace NeoIsisJob.ViewModels.Workout
             LoadExercises();
         }
 
-        public void LoadWorkoutTypes()
+        public async void LoadWorkoutTypes()
         {
             WorkoutTypes.Clear();
 
-            foreach (WorkoutTypeModel workoutType in this.workoutTypeService.GetAllWorkoutTypes())
+            foreach (WorkoutTypeModel workoutType in await this.workoutTypeService.GetAllWorkoutTypesAsync())
             {
                 this.WorkoutTypes.Add(workoutType);
             }
         }
 
-        public void LoadExercises()
+        public async void LoadExercises()
         {
             Exercises.Clear();
 
-            foreach (ExercisesModel exercise in this.exerciseService.GetAllExercises())
+            foreach (ExercisesModel exercise in await this.exerciseService.GetAllExercisesAsync())
             {
                 // add the corresponding MuscleGroup object to every one
-                exercise.MuscleGroup = this.muscleGroupService.GetMuscleGroupById(exercise.MuscleGroupId);
+                exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MuscleGroupId);
                 this.Exercises.Add(exercise);
             }
         }
 
         // function that will serve a command bound to the save button
-        public void CreateWorkoutAndCompleteWorkouts()
+        public async void CreateWorkoutAndCompleteWorkouts()
         {
             // save the workout and then save all entries in CompleteWorkouts
 
             // here add the workout
-            this.workoutService.InsertWorkout(SelectedWorkoutName, SelectedWorkoutType.Id);
-            int selectedWorkoutId = this.workoutService.GetWorkoutByName(SelectedWorkoutName).Id;
+            await this.workoutService.InsertWorkoutAsync(SelectedWorkoutName, SelectedWorkoutType.Id);
+            // int selectedWorkoutId = await this.workoutService.GetWorkoutByNameAsync(SelectedWorkoutName).Id;
+            var workout = await this.workoutService.GetWorkoutByNameAsync(SelectedWorkoutName);
+            int selectedWorkoutId = workout.Id;
 
             // here add all the entries in CompleteWorkouts
             foreach (ExercisesModel exercise in SelectedExercises)
             {
-                this.completeWorkoutService.InsertCompleteWorkout(selectedWorkoutId, exercise.Id, SelectedNumberOfSets, SelectedNumberOfRepsPerSet);
+                await this.completeWorkoutService.InsertCompleteWorkoutAsync(selectedWorkoutId, exercise.Id, SelectedNumberOfSets, SelectedNumberOfRepsPerSet);
             }
 
             // now go to back to the prev page

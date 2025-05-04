@@ -18,7 +18,7 @@ namespace Workout.Core.Services
 
         public CompleteWorkoutService(IDatabaseHelper databaseHelper)
         {
-            if (databaseHelper == null) throw new ArgumentNullException(nameof(databaseHelper));
+            //if (databaseHelper == null) throw new ArgumentNullException(nameof(databaseHelper));
             _completeWorkoutRepository = new CompleteWorkoutRepo(databaseHelper);
         }
 
@@ -36,8 +36,8 @@ namespace Workout.Core.Services
         public async Task<IList<CompleteWorkoutModel>> GetAllCompleteWorkoutsAsync()
         {
             return await _completeWorkoutRepository
-                         .GetAllCompleteWorkoutsAsync()
-                         .ConfigureAwait(false);
+                         .GetAllCompleteWorkoutsAsync();
+                         //.ConfigureAwait(false);
         }
 
         public async Task<IList<CompleteWorkoutModel>> GetCompleteWorkoutsByWorkoutIdAsync(int workoutId)
@@ -46,35 +46,35 @@ namespace Workout.Core.Services
                 throw new ArgumentOutOfRangeException(nameof(workoutId), "workoutId must be positive.");
 
             var all = await _completeWorkoutRepository
-                             .GetAllCompleteWorkoutsAsync()
-                             .ConfigureAwait(false);
+                             .GetAllCompleteWorkoutsAsync();
+                             //.ConfigureAwait(false);
             return all.Where(cw => cw.WorkoutId == workoutId).ToList();
         }
 
         public async Task DeleteCompleteWorkoutsByWorkoutIdAsync(int workoutId)
         {
-            if (workoutId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(workoutId), "workoutId must be positive.");
+            //if (workoutId <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(workoutId), "workoutId must be positive.");
 
             await _completeWorkoutRepository
-                  .DeleteCompleteWorkoutsByWorkoutIdAsync(workoutId)
-                  .ConfigureAwait(false);
+                  .DeleteCompleteWorkoutsByWorkoutIdAsync(workoutId);
+                  //.ConfigureAwait(false);
         }
 
         public async Task InsertCompleteWorkoutAsync(int workoutId, int exerciseId, int sets, int repetitionsPerSet)
         {
-            if (workoutId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(workoutId), "workoutId must be positive.");
-            if (exerciseId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(exerciseId), "exerciseId must be positive.");
-            if (sets <= 0)
-                throw new ArgumentOutOfRangeException(nameof(sets), "sets must be positive.");
-            if (repetitionsPerSet <= 0)
-                throw new ArgumentOutOfRangeException(nameof(repetitionsPerSet), "repetitionsPerSet must be positive.");
+            //if (workoutId <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(workoutId), "workoutId must be positive.");
+            //if (exerciseId <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(exerciseId), "exerciseId must be positive.");
+            //if (sets <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(sets), "sets must be positive.");
+            //if (repetitionsPerSet <= 0)
+            //throw new ArgumentOutOfRangeException(nameof(repetitionsPerSet), "repetitionsPerSet must be positive.");
 
             await _completeWorkoutRepository
-                  .InsertCompleteWorkoutAsync(workoutId, exerciseId, sets, repetitionsPerSet)
-                  .ConfigureAwait(false);
+                  .InsertCompleteWorkoutAsync(workoutId, exerciseId, sets, repetitionsPerSet);
+                  //.ConfigureAwait(false);
         }
     }
 }

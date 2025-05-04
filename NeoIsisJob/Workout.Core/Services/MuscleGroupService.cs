@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Workout.Core.Services.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Repositories;
 
 namespace Workout.Core.Services
 {
@@ -16,17 +17,17 @@ namespace Workout.Core.Services
         public MuscleGroupService(IMuscleGroupRepo muscleGroupRepository = null)
         {
             _muscleGroupRepository = muscleGroupRepository
-                ?? throw new ArgumentNullException(nameof(muscleGroupRepository));
+                ?? new MuscleGroupRepo(); //throw new ArgumentNullException(nameof(muscleGroupRepository));
         }
 
         public async Task<MuscleGroupModel> GetMuscleGroupByIdAsync(int muscleGroupId)
         {
-            if (muscleGroupId <= 0)
-                throw new ArgumentOutOfRangeException(nameof(muscleGroupId), "muscleGroupId must be positive.");
+            //if (muscleGroupId <= 0)
+            //    throw new ArgumentOutOfRangeException(nameof(muscleGroupId), "muscleGroupId must be positive.");
 
             return await _muscleGroupRepository
-                         .GetMuscleGroupByIdAsync(muscleGroupId)
-                         .ConfigureAwait(false);
+                         .GetMuscleGroupByIdAsync(muscleGroupId);
+                         //.ConfigureAwait(false);
         }
     }
 }
