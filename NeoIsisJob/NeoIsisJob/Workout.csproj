@@ -65,7 +65,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
@@ -103,6 +103,9 @@
     <Folder Include="Views\Class\" />
     <Folder Include="Views\Main\" />
     <Folder Include="Views\Ranking\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Workout.Core\Workout.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Workout\CreateWorkoutPage.xaml">

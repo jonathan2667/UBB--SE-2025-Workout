@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace Workout.Core.Models
 {
-    internal class CalendarDay
+    public class CalendarDay
     {
         public int DayNumber { get; set; }
         public bool IsCurrentDay { get; set; }

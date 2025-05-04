@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace Workout.Core.Data.Interfaces
 {
-    internal interface IDatabaseHelper
+    public interface IDatabaseHelper
     {
-        DataTable ExecuteReader(string commandText, SqlParameter[] parameters);
-        int ExecuteNonQuery(string commandText, SqlParameter[] parameters);
+        Task<DataTable> ExecuteReaderAsync(string commandText, SqlParameter[] parameters);
+        Task<int> ExecuteNonQueryAsync(string commandText, SqlParameter[] parameters);
+        Task<T?> ExecuteScalarAsync<T>(string storedProcedure, SqlParameter[]? sqlParameters = null);
         SqlConnection GetConnection();
         void OpenConnection();
         void CloseConnection();
-        T? ExecuteScalar<T>(string storedProcedure, SqlParameter[]? sqlParameters = null);
     }
 }

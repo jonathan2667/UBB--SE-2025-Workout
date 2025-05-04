@@ -11,7 +11,7 @@ using Workout.Core.Data.Interfaces;
 
 namespace Workout.Core.Repositories
 {
-    internal class ClassTypeRepo
+    public class ClassTypeRepo
     {
         private readonly DatabaseHelper databaseHelper;
         public ClassTypeRepo()

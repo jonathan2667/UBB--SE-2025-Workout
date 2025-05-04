@@ -1,15 +1,12 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Workout.Core.Models;
 
 namespace Workout.Core.Repositories.Interfaces
 {
-    internal interface IRankingsRepository
+    public interface IRankingsRepository
     {
-        RankingModel GetRankingByFullID(int userId, int muscleGroupId);
-        IList<RankingModel> GetAllRankingsByUserID(int userId);
+        Task<RankingModel?> GetRankingByFullIDAsync(int userId, int muscleGroupId);
+        Task<IList<RankingModel>> GetAllRankingsByUserIDAsync(int userId);
     }
 }

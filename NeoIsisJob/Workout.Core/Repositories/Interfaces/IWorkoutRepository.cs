@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Models;
 
 namespace Workout.Core.Repositories.Interfaces
 {
-    internal interface IWorkoutRepository
+    public interface IWorkoutRepository
     {
-        WorkoutModel GetWorkoutById(int workoutId);
-        WorkoutModel GetWorkoutByName(string workoutName);
-        void InsertWorkout(string workoutName, int workoutTypeId);
-        void DeleteWorkout(int workoutId);
-        void UpdateWorkout(WorkoutModel workout);
-        IList<WorkoutModel> GetAllWorkouts();
+        Task<WorkoutModel> GetWorkoutByIdAsync(int workoutId);
+        Task<WorkoutModel> GetWorkoutByNameAsync(string workoutName);
+        Task InsertWorkoutAsync(string workoutName, int workoutTypeId);
+        Task DeleteWorkoutAsync(int workoutId);
+        Task UpdateWorkoutAsync(WorkoutModel workout);
+        Task<IList<WorkoutModel>> GetAllWorkoutsAsync();
     }
 }

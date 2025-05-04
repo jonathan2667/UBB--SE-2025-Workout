@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
-using Workout.Core.Data.Interfaces;
+using System.Threading.Tasks;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
-using System.Data.SqlTypes;
+using Workout.Core.Data.Interfaces;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
-    internal class ClassRepository : IClassRepository
+    public class ClassRepository : IClassRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -27,104 +23,96 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public ClassModel GetClassModelById(int classId)
+        public async Task<ClassModel> GetClassModelByIdAsync(int classId)
         {
             string query = "SELECT CID, Name, Description, CTID, PTID FROM Classes WHERE CID = @cid";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@cid", classId)
-            };
 
-            try
+            using (SqlConnection connection = databaseHelper.GetConnection())
             {
-                var dataTable = databaseHelper.ExecuteReader(query, parameters);
-
-                if (dataTable.Rows.Count > 0)
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    var row = dataTable.Rows[0];
-                    return new ClassModel
+                    command.Parameters.AddWithValue("@cid", classId);
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        Id = Convert.ToInt32(row["CID"]),
-                        Name = Convert.ToString(row["Name"]) ?? string.Empty,
-                        Description = Convert.ToString(row["Description"]) ?? string.Empty,
-                        ClassTypeId = Convert.ToInt32(row["CTID"]),
-                        PersonalTrainerId = Convert.ToInt32(row["PTID"])
-                    };
+                        if (await reader.ReadAsync())
+                        {
+                            return new ClassModel
+                            {
+                                Id = (int)reader["CID"],
+                                Name = reader["Name"].ToString() ?? string.Empty,
+                                Description = reader["Description"].ToString() ?? string.Empty,
+                                ClassTypeId = (int)reader["CTID"],
+                                PersonalTrainerId = (int)reader["PTID"]
+                            };
+                        }
+                    }
                 }
+            }
 
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while fetching class by ID: " + ex.Message);
-            }
+            return null;
         }
 
-        public List<ClassModel> GetAllClassModel()
+        public async Task<List<ClassModel>> GetAllClassModelAsync()
         {
             List<ClassModel> classList = new List<ClassModel>();
             string query = "SELECT CID, Name, Description, CTID, PTID FROM Classes";
 
-            try
+            using (SqlConnection connection = databaseHelper.GetConnection())
             {
-                var dataTable = databaseHelper.ExecuteReader(query, null);
-
-                foreach (DataRow row in dataTable.Rows)
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    classList.Add(new ClassModel
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        Id = Convert.ToInt32(row["CID"]),
-                        Name = Convert.ToString(row["Name"]) ?? string.Empty,
-                        Description = Convert.ToString(row["Description"]) ?? string.Empty,
-                        ClassTypeId = Convert.ToInt32(row["CTID"]),
-                        PersonalTrainerId = Convert.ToInt32(row["PTID"])
-                    });
+                        while (await reader.ReadAsync())
+                        {
+                            classList.Add(new ClassModel
+                            {
+                                Id = (int)reader["CID"],
+                                Name = reader["Name"].ToString() ?? string.Empty,
+                                Description = reader["Description"].ToString() ?? string.Empty,
+                                ClassTypeId = (int)reader["CTID"],
+                                PersonalTrainerId = (int)reader["PTID"]
+                            });
+                        }
+                    }
                 }
+            }
 
-                return classList;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while fetching classes: " + ex.Message);
-            }
+            return classList;
         }
 
-        public void AddClassModel(ClassModel classModel)
+        public async Task AddClassModelAsync(ClassModel classModel)
         {
             string query = "INSERT INTO Classes (Name, Description, CTID, PTID) VALUES (@name, @description, @ctid, @ptid)";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@name", classModel.Name),
-                new SqlParameter("@description", classModel.Description),
-                new SqlParameter("@ctid", classModel.ClassTypeId),
-                new SqlParameter("@ptid", classModel.PersonalTrainerId)
-            };
 
-            try
+            using (SqlConnection connection = databaseHelper.GetConnection())
             {
-                databaseHelper.ExecuteNonQuery(query, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while adding class: " + ex.Message);
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@name", classModel.Name);
+                    command.Parameters.AddWithValue("@description", classModel.Description);
+                    command.Parameters.AddWithValue("@ctid", classModel.ClassTypeId);
+                    command.Parameters.AddWithValue("@ptid", classModel.PersonalTrainerId);
+                    await command.ExecuteNonQueryAsync();
+                }
             }
         }
 
-        public void DeleteClassModel(int classId)
+        public async Task DeleteClassModelAsync(int classId)
         {
             string query = "DELETE FROM Classes WHERE CID = @cid";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@cid", classId)
-            };
 
-            try
+            using (SqlConnection connection = databaseHelper.GetConnection())
             {
-                databaseHelper.ExecuteNonQuery(query, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while deleting class: " + ex.Message);
+                await connection.OpenAsync();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@cid", classId);
+                    await command.ExecuteNonQueryAsync();
+                }
             }
         }
     }

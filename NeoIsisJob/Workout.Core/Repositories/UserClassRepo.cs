@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
-    internal class UserClassRepo : IUserClassRepo
+    public class UserClassRepo : IUserClassRepo
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -26,7 +25,7 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public UserClassModel GetUserClassModelById(int userId, int classId, DateTime enrollmentDate)
+        public async Task<UserClassModel?> GetUserClassModelByIdAsync(int userId, int classId, DateTime enrollmentDate)
         {
             string query = "SELECT UID, CID, Date FROM UserClasses WHERE UID = @UID AND CID = @CID AND Date = @Date";
 
@@ -37,7 +36,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", enrollmentDate)
             };
 
-            DataTable result = databaseHelper.ExecuteReader(query, parameters);
+            DataTable result = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
             if (result.Rows.Count > 0)
             {
@@ -48,14 +47,14 @@ namespace Workout.Core.Repositories
                     Convert.ToDateTime(row["Date"]));
             }
 
-            return new UserClassModel();
+            return null; // returning null if no results are found
         }
 
-        public List<UserClassModel> GetAllUserClassModel()
+        public async Task<List<UserClassModel>> GetAllUserClassModelAsync()
         {
             string query = "SELECT UID, CID, Date FROM UserClasses";
 
-            DataTable result = databaseHelper.ExecuteReader(query, null);
+            DataTable result = await databaseHelper.ExecuteReaderAsync(query, null);
             List<UserClassModel> userClasses = new List<UserClassModel>();
 
             foreach (DataRow row in result.Rows)
@@ -69,7 +68,7 @@ namespace Workout.Core.Repositories
             return userClasses;
         }
 
-        public void AddUserClassModel(UserClassModel userClass)
+        public async Task AddUserClassModelAsync(UserClassModel userClass)
         {
             string query = "INSERT INTO UserClasses (UID, CID, Date) VALUES (@UID, @CID, @Date)";
 
@@ -80,10 +79,10 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", userClass.EnrollmentDate)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
 
-        public void DeleteUserClassModel(int userId, int classId, DateTime enrollmentDate)
+        public async Task DeleteUserClassModelAsync(int userId, int classId, DateTime enrollmentDate)
         {
             string query = "DELETE FROM UserClasses WHERE UID = @UID AND CID = @CID AND Date = @Date";
 
@@ -94,10 +93,10 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", enrollmentDate)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
 
-        public List<UserClassModel> GetUserClassModelByDate(DateTime date)
+        public async Task<List<UserClassModel>> GetUserClassModelByDateAsync(DateTime date)
         {
             string query = "SELECT UID, CID, Date FROM UserClasses WHERE Date = @Date";
 
@@ -106,7 +105,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", date)
             };
 
-            DataTable result = databaseHelper.ExecuteReader(query, parameters);
+            DataTable result = await databaseHelper.ExecuteReaderAsync(query, parameters);
             List<UserClassModel> userClasses = new List<UserClassModel>();
 
             foreach (DataRow row in result.Rows)

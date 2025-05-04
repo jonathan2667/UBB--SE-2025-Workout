@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Workout.Core.Models
 {
-    internal class PersonalTrainerModel
+    public class PersonalTrainerModel
     {
         private int id;
         private string firstName;
@@ -21,6 +21,8 @@ namespace Workout.Core.Models
         public PersonalTrainerModel()
         {
         }
+
+        public string Name => $"{FirstName} {LastName}";
 
         public PersonalTrainerModel(int id, string firstName, string lastName, DateTime workStartDateTime)
         {

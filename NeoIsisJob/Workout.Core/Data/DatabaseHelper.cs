@@ -1,72 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Workout.Core.Data.Interfaces;
 
 namespace Workout.Core.Data
 {
-    internal class DatabaseHelper : IDatabaseHelper
+    public class DatabaseHelper : IDatabaseHelper
     {
         private readonly string connectionString;
         private SqlConnection sqlConnection;
 
         public DatabaseHelper()
         {
-            // connectionString = @"Data Source=localhost\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;";
             connectionString = @"Server=localhost;Database=Workout;Integrated Security=True;TrustServerCertificate=True;";
-
-            try
-            {
-                this.sqlConnection = new SqlConnection(this.connectionString);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception($"Error initializing SQL connection: {this.connectionString}", exception);
-            }
+            sqlConnection = new SqlConnection(connectionString);
         }
 
-        public SqlConnection GetConnection()
-        {
-            return new SqlConnection(connectionString);
-        }
+        public SqlConnection GetConnection() => new SqlConnection(connectionString);
 
         public void OpenConnection()
         {
-            if (this.sqlConnection.State != ConnectionState.Open)
+            if (sqlConnection.State != ConnectionState.Open)
             {
-                this.sqlConnection.Open();
+                sqlConnection.Open();
             }
         }
 
         public void CloseConnection()
         {
-            if (this.sqlConnection.State != ConnectionState.Closed)
+            if (sqlConnection.State != ConnectionState.Closed)
             {
-                this.sqlConnection.Close();
+                sqlConnection.Close();
             }
         }
 
-        // Explicitly implement the interface methods
-        public DataTable ExecuteReader(string commandText, SqlParameter[] parameters)
+        public async Task<DataTable> ExecuteReaderAsync(string commandText, SqlParameter[] parameters)
         {
             try
             {
                 OpenConnection();
-                using (SqlCommand command = new SqlCommand(commandText, sqlConnection))
+                using (var command = new SqlCommand(commandText, sqlConnection))
                 {
                     command.CommandType = CommandType.Text;
                     if (parameters != null)
-                    {
                         command.Parameters.AddRange(parameters);
-                    }
 
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
-                        DataTable dataTable = new DataTable();
+                        var dataTable = new DataTable();
                         dataTable.Load(reader);
                         return dataTable;
                     }
@@ -74,7 +56,7 @@ namespace Workout.Core.Data
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error - ExecuteReader: {ex.Message}");
+                throw new Exception($"Error - ExecuteReaderAsync: {ex.Message}", ex);
             }
             finally
             {
@@ -82,25 +64,23 @@ namespace Workout.Core.Data
             }
         }
 
-        public int ExecuteNonQuery(string commandText, SqlParameter[] parameters)
+        public async Task<int> ExecuteNonQueryAsync(string commandText, SqlParameter[] parameters)
         {
             try
             {
                 OpenConnection();
-                using (SqlCommand command = new SqlCommand(commandText, sqlConnection))
+                using (var command = new SqlCommand(commandText, sqlConnection))
                 {
                     command.CommandType = CommandType.Text;
                     if (parameters != null)
-                    {
                         command.Parameters.AddRange(parameters);
-                    }
 
-                    return command.ExecuteNonQuery();
+                    return await command.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error - ExecuteNonQuery: {ex.Message}");
+                throw new Exception($"Error - ExecuteNonQueryAsync: {ex.Message}", ex);
             }
             finally
             {
@@ -108,21 +88,18 @@ namespace Workout.Core.Data
             }
         }
 
-        // Keep this if needed by other parts of the app
-        public T? ExecuteScalar<T>(string storedProcedure, SqlParameter[]? sqlParameters = null)
+        public async Task<T?> ExecuteScalarAsync<T>(string storedProcedure, SqlParameter[]? sqlParameters = null)
         {
             try
             {
                 OpenConnection();
-                using (SqlCommand command = new SqlCommand(storedProcedure, sqlConnection))
+                using (var command = new SqlCommand(storedProcedure, sqlConnection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     if (sqlParameters != null)
-                    {
                         command.Parameters.AddRange(sqlParameters);
-                    }
 
-                    var result = command.ExecuteScalar();
+                    var result = await command.ExecuteScalarAsync();
                     return (result == null || result == DBNull.Value)
                         ? default
                         : (T)Convert.ChangeType(result, typeof(T));
@@ -130,7 +107,7 @@ namespace Workout.Core.Data
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error - ExecuteScalar: {ex.Message}");
+                throw new Exception($"Error - ExecuteScalarAsync: {ex.Message}", ex);
             }
             finally
             {

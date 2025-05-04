@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
-using System.Data.SqlTypes;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
-    internal class PersonalTrainerRepo : IPersonalTrainerRepo
+    public class PersonalTrainerRepo : IPersonalTrainerRepo
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -27,7 +25,7 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public PersonalTrainerModel? GetPersonalTrainerModelById(int personalTrainerId)
+        public async Task<PersonalTrainerModel?> GetPersonalTrainerModelByIdAsync(int personalTrainerId)
         {
             string query = "SELECT PTID, LastName, FirstName, WorksSince FROM PersonalTrainers WHERE PTID = @ptid";
             SqlParameter[] parameters = new SqlParameter[]
@@ -37,7 +35,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, parameters);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
                 if (dataTable.Rows.Count > 0)
                 {
@@ -59,14 +57,14 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public List<PersonalTrainerModel> GetAllPersonalTrainerModel()
+        public async Task<List<PersonalTrainerModel>> GetAllPersonalTrainerModelAsync()
         {
             List<PersonalTrainerModel> trainers = new List<PersonalTrainerModel>();
             string query = "SELECT PTID, LastName, FirstName, WorksSince FROM PersonalTrainers";
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, null);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, null);
 
                 foreach (DataRow row in dataTable.Rows)
                 {
@@ -87,7 +85,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void AddPersonalTrainerModel(PersonalTrainerModel personalTrainer)
+        public async Task AddPersonalTrainerModelAsync(PersonalTrainerModel personalTrainer)
         {
             string query = "INSERT INTO PersonalTrainers (LastName, FirstName, WorksSince) VALUES (@lastName, @firstName, @worksSince)";
             SqlParameter[] parameters = new SqlParameter[]
@@ -99,7 +97,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                databaseHelper.ExecuteNonQuery(query, parameters);
+                await databaseHelper.ExecuteNonQueryAsync(query, parameters);
             }
             catch (Exception ex)
             {
@@ -107,7 +105,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void DeletePersonalTrainerModel(int personalTrainerId)
+        public async Task DeletePersonalTrainerModelAsync(int personalTrainerId)
         {
             string query = "DELETE FROM PersonalTrainers WHERE PTID = @ptid";
             SqlParameter[] parameters = new SqlParameter[]
@@ -117,7 +115,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                databaseHelper.ExecuteNonQuery(query, parameters);
+                await databaseHelper.ExecuteNonQueryAsync(query, parameters);
             }
             catch (Exception ex)
             {

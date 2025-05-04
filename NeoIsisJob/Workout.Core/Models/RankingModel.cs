@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Workout.Core.Models
 {
-    internal class RankingModel
+    public class RankingModel
     {
         private int userId;
         private int muscleGroupId;

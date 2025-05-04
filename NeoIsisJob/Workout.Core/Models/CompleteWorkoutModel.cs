@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Workout.Core.Models
 {
-    internal class CompleteWorkoutModel
+    public class CompleteWorkoutModel
     {
         private int workoutId;
         private int exerciseId;

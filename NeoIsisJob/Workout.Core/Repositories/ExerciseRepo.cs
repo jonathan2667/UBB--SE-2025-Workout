@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Data;
+
 
 namespace Workout.Core.Repositories
 {
-    internal class ExerciseRepo : IExerciseRepository
+    public class ExerciseRepo : IExerciseRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -26,14 +26,14 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public IList<ExercisesModel> GetAllExercises()
+        public async Task<IList<ExercisesModel>> GetAllExercisesAsync()
         {
             IList<ExercisesModel> exercises = new List<ExercisesModel>();
             string query = "SELECT * FROM Exercises";
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, null);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, null);
 
                 foreach (DataRow row in dataTable.Rows)
                 {
@@ -53,7 +53,7 @@ namespace Workout.Core.Repositories
             return exercises;
         }
 
-        public ExercisesModel? GetExerciseById(int exerciseId)
+        public async Task<ExercisesModel?> GetExerciseByIdAsync(int exerciseId)
         {
             ExercisesModel? exercise = null;
             string query = "SELECT * FROM Exercises WHERE EID=@eid";
@@ -65,7 +65,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, parameters);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
                 if (dataTable.Rows.Count > 0)
                 {
@@ -85,7 +85,5 @@ namespace Workout.Core.Repositories
 
             return exercise;
         }
-
-        // TODO -> implement the rest of CRUD if needed
     }
 }

@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
 
-
 namespace Workout.Core.Repositories
 {
-    internal class UserWorkoutRepo : IUserWorkoutRepository
+    public class UserWorkoutRepo : IUserWorkoutRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -21,7 +19,7 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public List<UserWorkoutModel> GetUserWorkoutModelByDate(DateTime date)
+        public async Task<List<UserWorkoutModel>> GetUserWorkoutModelByDateAsync(DateTime date)
         {
             string query = "SELECT UID, WID, Date, Completed FROM UserWorkouts WHERE Date = @Date";
             SqlParameter[] parameters =
@@ -29,7 +27,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", date)
             };
 
-            DataTable table = databaseHelper.ExecuteReader(query, parameters);
+            DataTable table = await databaseHelper.ExecuteReaderAsync(query, parameters);
             var userWorkouts = new List<UserWorkoutModel>();
 
             foreach (DataRow row in table.Rows)
@@ -44,7 +42,7 @@ namespace Workout.Core.Repositories
             return userWorkouts;
         }
 
-        public UserWorkoutModel GetUserWorkoutModel(int userId, int workoutId, DateTime date)
+        public async Task<UserWorkoutModel?> GetUserWorkoutModelAsync(int userId, int workoutId, DateTime date)
         {
             string query = "SELECT UID, WID, Date, Completed FROM UserWorkouts WHERE UID = @UID AND WID = @WID AND Date = @Date";
             SqlParameter[] parameters =
@@ -54,7 +52,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", date)
             };
 
-            DataTable table = databaseHelper.ExecuteReader(query, parameters);
+            DataTable table = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
             if (table.Rows.Count == 0)
             {
@@ -70,7 +68,7 @@ namespace Workout.Core.Repositories
                 Convert.ToBoolean(row["Completed"]));
         }
 
-        public void AddUserWorkout(UserWorkoutModel userWorkout)
+        public async Task AddUserWorkoutAsync(UserWorkoutModel userWorkout)
         {
             string query = "INSERT INTO UserWorkouts (UID, WID, Date, Completed) VALUES (@UID, @WID, @Date, @Completed)";
             SqlParameter[] parameters =
@@ -81,10 +79,10 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Completed", userWorkout.Completed)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
 
-        public void UpdateUserWorkout(UserWorkoutModel userWorkout)
+        public async Task UpdateUserWorkoutAsync(UserWorkoutModel userWorkout)
         {
             string query = "UPDATE UserWorkouts SET Completed = @Completed WHERE UID = @UID AND WID = @WID AND Date = @Date";
             SqlParameter[] parameters =
@@ -95,10 +93,10 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", userWorkout.Date)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
 
-        public void DeleteUserWorkout(int userId, int workoutId, DateTime date)
+        public async Task DeleteUserWorkoutAsync(int userId, int workoutId, DateTime date)
         {
             string query = "DELETE FROM UserWorkouts WHERE UID = @UID AND WID = @WID AND Date = @Date";
             SqlParameter[] parameters =
@@ -108,7 +106,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Date", date)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
     }
 }

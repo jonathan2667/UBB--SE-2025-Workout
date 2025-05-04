@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Data;
@@ -12,7 +10,7 @@ using Workout.Core.Data.Interfaces;
 
 namespace Workout.Core.Repositories
 {
-    internal class WorkoutRepo : IWorkoutRepository
+    public class WorkoutRepo : IWorkoutRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -20,12 +18,13 @@ namespace Workout.Core.Repositories
         {
             databaseHelper = new DatabaseHelper();
         }
+
         public WorkoutRepo(IDatabaseHelper databaseHelper)
         {
             this.databaseHelper = databaseHelper;
         }
 
-        public WorkoutModel GetWorkoutById(int workoutId)
+        public async Task<WorkoutModel> GetWorkoutByIdAsync(int workoutId)
         {
             string query = "SELECT * FROM Workouts WHERE WID = @wid";
             SqlParameter[] parameters =
@@ -33,7 +32,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@wid", workoutId)
             };
 
-            DataTable table = databaseHelper.ExecuteReader(query, parameters);
+            DataTable table = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
             if (table.Rows.Count > 0)
             {
@@ -47,7 +46,7 @@ namespace Workout.Core.Repositories
             return new WorkoutModel(); // return empty object if not found
         }
 
-        public WorkoutModel GetWorkoutByName(string workoutName)
+        public async Task<WorkoutModel> GetWorkoutByNameAsync(string workoutName)
         {
             string query = "SELECT * FROM Workouts WHERE Name = @name";
             SqlParameter[] parameters =
@@ -55,7 +54,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@name", workoutName)
             };
 
-            DataTable table = databaseHelper.ExecuteReader(query, parameters);
+            DataTable table = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
             if (table.Rows.Count > 0)
             {
@@ -69,7 +68,7 @@ namespace Workout.Core.Repositories
             return new WorkoutModel();
         }
 
-        public void InsertWorkout(string workoutName, int workoutTypeId)
+        public async Task InsertWorkoutAsync(string workoutName, int workoutTypeId)
         {
             string query = "INSERT INTO Workouts (Name, WTID) VALUES (@name, @wtid)";
             SqlParameter[] parameters =
@@ -78,10 +77,10 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@wtid", workoutTypeId)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
 
-        public void DeleteWorkout(int workoutId)
+        public async Task DeleteWorkoutAsync(int workoutId)
         {
             string query = "DELETE FROM Workouts WHERE WID = @wid";
             SqlParameter[] parameters =
@@ -89,10 +88,10 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@wid", workoutId)
             };
 
-            databaseHelper.ExecuteNonQuery(query, parameters);
+            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
         }
 
-        public void UpdateWorkout(WorkoutModel workout)
+        public async Task UpdateWorkoutAsync(WorkoutModel workout)
         {
             if (workout == null)
             {
@@ -107,7 +106,7 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Id", workout.Id)
             };
 
-            int duplicateCount = databaseHelper.ExecuteScalar<int>(checkQuery, checkParams);
+            int duplicateCount = await databaseHelper.ExecuteScalarAsync<int>(checkQuery, checkParams);
             if (duplicateCount > 0)
             {
                 throw new Exception("A workout with this name already exists.");
@@ -121,18 +120,18 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@Id", workout.Id)
             };
 
-            int rowsAffected = databaseHelper.ExecuteNonQuery(updateQuery, updateParams);
+            int rowsAffected = await databaseHelper.ExecuteNonQueryAsync(updateQuery, updateParams);
             if (rowsAffected == 0)
             {
                 throw new Exception("No workout was updated. Ensure the workout ID exists.");
             }
         }
 
-        public IList<WorkoutModel> GetAllWorkouts()
+        public async Task<IList<WorkoutModel>> GetAllWorkoutsAsync()
         {
             string query = "SELECT * FROM Workouts";
 
-            DataTable table = databaseHelper.ExecuteReader(query, null);
+            DataTable table = await databaseHelper.ExecuteReaderAsync(query, null);
             var workouts = new List<WorkoutModel>();
 
             foreach (DataRow row in table.Rows)

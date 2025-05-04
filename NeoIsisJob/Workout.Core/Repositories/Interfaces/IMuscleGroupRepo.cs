@@ -7,8 +7,9 @@ using Workout.Core.Models;
 
 namespace Workout.Core.Repositories.Interfaces
 {
-    internal interface IMuscleGroupRepo
+    public interface IMuscleGroupRepo
     {
-        MuscleGroupModel GetMuscleGroupById(int muscleGroupId);
+        Task<MuscleGroupModel?> GetMuscleGroupByIdAsync(int muscleGroupId);
+        Task<List<MuscleGroupModel>> GetAllMuscleGroupsAsync();
     }
 }

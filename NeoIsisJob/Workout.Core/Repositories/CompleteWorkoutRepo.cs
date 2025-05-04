@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
-using System.Data.SqlTypes;
+using Workout.Core.Data;
+
 
 namespace Workout.Core.Repositories
 {
-    internal class CompleteWorkoutRepo : ICompleteWorkoutRepository
+    public class CompleteWorkoutRepo : ICompleteWorkoutRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -20,14 +19,14 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public IList<CompleteWorkoutModel> GetAllCompleteWorkouts()
+        public async Task<IList<CompleteWorkoutModel>> GetAllCompleteWorkoutsAsync()
         {
             IList<CompleteWorkoutModel> completeWorkouts = new List<CompleteWorkoutModel>();
             string query = "SELECT * FROM CompleteWorkouts";
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, null);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, null);
                 foreach (System.Data.DataRow row in dataTable.Rows)
                 {
                     completeWorkouts.Add(new CompleteWorkoutModel(
@@ -45,7 +44,7 @@ namespace Workout.Core.Repositories
             return completeWorkouts;
         }
 
-        public void DeleteCompleteWorkoutsByWorkoutId(int workoutId)
+        public async Task DeleteCompleteWorkoutsByWorkoutIdAsync(int workoutId)
         {
             string deleteCommand = "DELETE FROM CompleteWorkouts WHERE WID=@wid";
             SqlParameter[] parameters = new SqlParameter[]
@@ -55,7 +54,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                databaseHelper.ExecuteNonQuery(deleteCommand, parameters);
+                await databaseHelper.ExecuteNonQueryAsync(deleteCommand, parameters);
             }
             catch (Exception ex)
             {
@@ -63,7 +62,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void InsertCompleteWorkout(int workoutId, int exerciseId, int sets, int repetitionsPerSet)
+        public async Task InsertCompleteWorkoutAsync(int workoutId, int exerciseId, int sets, int repetitionsPerSet)
         {
             string insertCommand = "INSERT INTO CompleteWorkouts(WID, EID, [Sets], RepsPerSet) VALUES (@wid, @eid, @sets, @repsPerSet)";
             SqlParameter[] parameters = new SqlParameter[]
@@ -76,7 +75,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                databaseHelper.ExecuteNonQuery(insertCommand, parameters);
+                await databaseHelper.ExecuteNonQueryAsync(insertCommand, parameters);
             }
             catch (Exception ex)
             {

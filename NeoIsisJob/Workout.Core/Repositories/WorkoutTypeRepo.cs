@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
+using System.Threading.Tasks;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Data;
 using Workout.Core.Data.Interfaces;
-using System.Data.SqlTypes;
 
 namespace Workout.Core.Repositories
 {
-    internal class WorkoutTypeRepo : IWorkoutTypeRepository
+    public class WorkoutTypeRepo : IWorkoutTypeRepository
     {
         private readonly DatabaseHelper databaseHelper;
 
@@ -21,12 +18,11 @@ namespace Workout.Core.Repositories
             this.databaseHelper = new DatabaseHelper();
         }
 
-        public WorkoutTypeModel GetWorkoutTypeById(int workoutTypeId)
+        public async Task<WorkoutTypeModel> GetWorkoutTypeByIdAsync(int workoutTypeId)
         {
             using (SqlConnection connection = this.databaseHelper.GetConnection())
             {
-                // open the connection
-                connection.Open();
+                await connection.OpenAsync();
 
                 // create the query
                 string query = "SELECT * FROM WorkoutTypes WHERE WTID=@wtid";
@@ -34,10 +30,10 @@ namespace Workout.Core.Repositories
                 // create the command now
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@wtid", workoutTypeId);
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 // now check if the type exists -> if yes return it
-                if (reader.Read())
+                if (await reader.ReadAsync())
                 {
                     return new WorkoutTypeModel(Convert.ToInt32(reader["WTID"]), Convert.ToString(reader["Name"]));
                 }
@@ -47,13 +43,11 @@ namespace Workout.Core.Repositories
             return new WorkoutTypeModel();
         }
 
-        public void InsertWorkoutType(string workoutTypeName)
+        public async Task InsertWorkoutTypeAsync(string workoutTypeName)
         {
-            // use the setup connection
             using (SqlConnection connection = this.databaseHelper.GetConnection())
             {
-                // open the connection
-                connection.Open();
+                await connection.OpenAsync();
 
                 // insert statement to insert the workout type
                 string insertStatement = "INSERT INTO WorkoutTypes([Name]) VALUES (@name)";
@@ -62,17 +56,15 @@ namespace Workout.Core.Repositories
                 SqlCommand command = new SqlCommand(insertStatement, connection);
                 command.Parameters.AddWithValue("@name", workoutTypeName);
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
         }
 
-        public void DeleteWorkoutType(int workoutTypeId)
+        public async Task DeleteWorkoutTypeAsync(int workoutTypeId)
         {
-            // use the setup connection
             using (SqlConnection connection = this.databaseHelper.GetConnection())
             {
-                // open the connection
-                connection.Open();
+                await connection.OpenAsync();
 
                 // delete statement
                 string deleteStatement = "DELETE FROM WorkoutTypes WHERE WTID=@wtid";
@@ -81,28 +73,27 @@ namespace Workout.Core.Repositories
                 SqlCommand command = new SqlCommand(deleteStatement, connection);
                 command.Parameters.AddWithValue("@wtid", workoutTypeId);
 
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
         }
 
-        public IList<WorkoutTypeModel> GetAllWorkoutTypes()
+        public async Task<IList<WorkoutTypeModel>> GetAllWorkoutTypesAsync()
         {
             List<WorkoutTypeModel> workoutTypes = new List<WorkoutTypeModel>();
 
             using (SqlConnection connection = this.databaseHelper.GetConnection())
             {
-                // open the connection
-                connection.Open();
+                await connection.OpenAsync();
 
                 // create the query
                 string query = "SELECT * FROM WorkoutTypes";
 
                 // create the command now
                 SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 // now check if the type exists -> if yes return it
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     // Ensure data is not null before accessing it
                     string name = reader["Name"] != DBNull.Value ? reader["Name"].ToString() : "Unknown";
@@ -113,10 +104,7 @@ namespace Workout.Core.Repositories
                 }
             }
 
-            // if no entry -> return empty list annyways
             return workoutTypes;
         }
-
-        // eventually edit if it is needed
     }
 }

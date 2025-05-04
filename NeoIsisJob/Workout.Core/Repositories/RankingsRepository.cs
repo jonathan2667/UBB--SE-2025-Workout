@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
-    internal class RankingsRepository : IRankingsRepository
+    public class RankingsRepository : IRankingsRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -26,7 +25,7 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public RankingModel GetRankingByFullID(int userId, int muscleGroupId)
+        public async Task<RankingModel?> GetRankingByFullIDAsync(int userId, int muscleGroupId)
         {
             string query = "SELECT * FROM Rankings WHERE UID = @UID AND MGID = @MGID";
 
@@ -36,21 +35,28 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@MGID", muscleGroupId)
             };
 
-            DataTable dt = databaseHelper.ExecuteReader(query, parameters);
-
-            if (dt.Rows.Count > 0)
+            try
             {
-                var row = dt.Rows[0];
-                return new RankingModel(
-                    Convert.ToInt32(row["UID"]),
-                    Convert.ToInt32(row["MGID"]),
-                    Convert.ToInt32(row["Rank"]));
-            }
+                DataTable dt = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
-            return null;
+                if (dt.Rows.Count > 0)
+                {
+                    var row = dt.Rows[0];
+                    return new RankingModel(
+                        Convert.ToInt32(row["UID"]),
+                        Convert.ToInt32(row["MGID"]),
+                        Convert.ToInt32(row["Rank"]));
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while fetching ranking by full ID: " + ex.Message);
+            }
         }
 
-        public IList<RankingModel> GetAllRankingsByUserID(int userId)
+        public async Task<IList<RankingModel>> GetAllRankingsByUserIDAsync(int userId)
         {
             string query = "SELECT * FROM Rankings WHERE UID = @UID";
 
@@ -59,18 +65,25 @@ namespace Workout.Core.Repositories
                 new SqlParameter("@UID", userId)
             };
 
-            DataTable dt = databaseHelper.ExecuteReader(query, parameters);
-            IList<RankingModel> rankings = new List<RankingModel>();
-
-            foreach (DataRow row in dt.Rows)
+            try
             {
-                rankings.Add(new RankingModel(
-                    Convert.ToInt32(row["UID"]),
-                    Convert.ToInt32(row["MGID"]),
-                    Convert.ToInt32(row["Rank"])));
-            }
+                DataTable dt = await databaseHelper.ExecuteReaderAsync(query, parameters);
+                IList<RankingModel> rankings = new List<RankingModel>();
 
-            return rankings;
+                foreach (DataRow row in dt.Rows)
+                {
+                    rankings.Add(new RankingModel(
+                        Convert.ToInt32(row["UID"]),
+                        Convert.ToInt32(row["MGID"]),
+                        Convert.ToInt32(row["Rank"])));
+                }
+
+                return rankings;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while fetching rankings by user ID: " + ex.Message);
+            }
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Models;
 
 namespace Workout.Core.Repositories.Interfaces
 {
-    internal interface IUserClassRepo
+    public interface IUserClassRepo
     {
-        UserClassModel GetUserClassModelById(int userId, int classId, DateTime enrollmentDate);
-        List<UserClassModel> GetAllUserClassModel();
-        void AddUserClassModel(UserClassModel userClass);
-        void DeleteUserClassModel(int userId, int classId, DateTime enrollmentDate);
-        List<UserClassModel> GetUserClassModelByDate(DateTime date);
+        Task<UserClassModel?> GetUserClassModelByIdAsync(int userId, int classId, DateTime enrollmentDate);
+        Task<List<UserClassModel>> GetAllUserClassModelAsync();
+        Task AddUserClassModelAsync(UserClassModel userClass);
+        Task DeleteUserClassModelAsync(int userId, int classId, DateTime enrollmentDate);
+        Task<List<UserClassModel>> GetUserClassModelByDateAsync(DateTime date);
     }
 }

@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Workout.Core.Models
 {
-    internal class RankDefinition
+    public class RankDefinition
     {
         public string Name { get; set; }
         public int MinPoints { get; set; }

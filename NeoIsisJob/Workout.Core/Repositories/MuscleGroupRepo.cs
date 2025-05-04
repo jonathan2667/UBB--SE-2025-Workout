@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
-    internal class MuscleGroupRepo : IMuscleGroupRepo
+    public class MuscleGroupRepo : IMuscleGroupRepo
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -26,7 +25,7 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public MuscleGroupModel? GetMuscleGroupById(int muscleGroupId)
+        public async Task<MuscleGroupModel?> GetMuscleGroupByIdAsync(int muscleGroupId)
         {
             string query = "SELECT MGID, Name FROM MuscleGroups WHERE MGID = @mgid";
             SqlParameter[] parameters = new SqlParameter[]
@@ -36,7 +35,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, parameters);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
                 if (dataTable.Rows.Count > 0)
                 {
@@ -56,14 +55,14 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public List<MuscleGroupModel> GetAllMuscleGroups()
+        public async Task<List<MuscleGroupModel>> GetAllMuscleGroupsAsync()
         {
             List<MuscleGroupModel> groups = new List<MuscleGroupModel>();
             string query = "SELECT MGID, Name FROM MuscleGroups";
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, null);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, null);
 
                 foreach (DataRow row in dataTable.Rows)
                 {
@@ -79,42 +78,6 @@ namespace Workout.Core.Repositories
             catch (Exception ex)
             {
                 throw new Exception("Error while fetching muscle groups: " + ex.Message);
-            }
-        }
-
-        public void AddMuscleGroup(MuscleGroupModel muscleGroup)
-        {
-            string query = "INSERT INTO MuscleGroups (Name) VALUES (@name)";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@name", muscleGroup.Name)
-            };
-
-            try
-            {
-                databaseHelper.ExecuteNonQuery(query, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while adding muscle group: " + ex.Message);
-            }
-        }
-
-        public void DeleteMuscleGroup(int muscleGroupId)
-        {
-            string query = "DELETE FROM MuscleGroups WHERE MGID = @mgid";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@mgid", muscleGroupId)
-            };
-
-            try
-            {
-                databaseHelper.ExecuteNonQuery(query, parameters);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while deleting muscle group: " + ex.Message);
             }
         }
     }

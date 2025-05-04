@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Workout.Core.Models
 {
-    internal class ClassTypeModel
+    public class ClassTypeModel
     {
         private int id;
         private string name;

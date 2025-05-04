@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Input;
-using NeoIsisJob.Models;
-using NeoIsisJob.Services;
+// using NeoIsisJob.Models;
+// using NeoIsisJob.Services;
+using Workout.Core.Models;
+using Workout.Core.Services;
 
 namespace NeoIsisJob.ViewModels.Classes
 {

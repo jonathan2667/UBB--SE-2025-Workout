@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Workout.Core.Data;
-using Workout.Core.Models;
 using Workout.Core.Data.Interfaces;
+using Workout.Core.Models;
 using Workout.Core.Repositories.Interfaces;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
-    internal class ClassTypeRepository : IClassTypeRepository
+    public class ClassTypeRepository : IClassTypeRepository
     {
         private readonly IDatabaseHelper databaseHelper;
 
@@ -26,7 +25,7 @@ namespace Workout.Core.Repositories
             this.databaseHelper = databaseHelper;
         }
 
-        public ClassTypeModel? GetClassTypeModelById(int classTypeId)
+        public async Task<ClassTypeModel?> GetClassTypeModelByIdAsync(int classTypeId)
         {
             string query = "SELECT CTID, Name FROM ClassTypes WHERE CTID = @ctid";
             SqlParameter[] parameters = new SqlParameter[]
@@ -36,7 +35,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, parameters);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, parameters);
 
                 if (dataTable.Rows.Count > 0)
                 {
@@ -56,14 +55,14 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public List<ClassTypeModel> GetAllClassTypeModel()
+        public async Task<List<ClassTypeModel>> GetAllClassTypeModelAsync()
         {
             List<ClassTypeModel> classTypes = new List<ClassTypeModel>();
             string query = "SELECT CTID, Name FROM ClassTypes";
 
             try
             {
-                var dataTable = databaseHelper.ExecuteReader(query, null);
+                var dataTable = await databaseHelper.ExecuteReaderAsync(query, null);
 
                 foreach (DataRow row in dataTable.Rows)
                 {
@@ -82,7 +81,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void AddClassTypeModel(ClassTypeModel classType)
+        public async Task AddClassTypeModelAsync(ClassTypeModel classType)
         {
             string query = "INSERT INTO ClassTypes (Name) VALUES (@name)";
             SqlParameter[] parameters = new SqlParameter[]
@@ -92,7 +91,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                databaseHelper.ExecuteNonQuery(query, parameters);
+                await databaseHelper.ExecuteNonQueryAsync(query, parameters);
             }
             catch (Exception ex)
             {
@@ -100,7 +99,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void DeleteClassTypeModel(int classTypeId)
+        public async Task DeleteClassTypeModelAsync(int classTypeId)
         {
             string query = "DELETE FROM ClassTypes WHERE CTID = @ctid";
             SqlParameter[] parameters = new SqlParameter[]
@@ -110,7 +109,7 @@ namespace Workout.Core.Repositories
 
             try
             {
-                databaseHelper.ExecuteNonQuery(query, parameters);
+                await databaseHelper.ExecuteNonQueryAsync(query, parameters);
             }
             catch (Exception ex)
             {

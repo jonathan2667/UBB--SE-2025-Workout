@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Workout.Core.Models
 {
-    internal class MuscleGroupModel
+    public class MuscleGroupModel
     {
         private int id;
         private string name;
