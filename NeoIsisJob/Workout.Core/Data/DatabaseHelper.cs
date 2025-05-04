@@ -13,7 +13,7 @@ namespace Workout.Core.Data
 
         public DatabaseHelper()
         {
-            connectionString = @"Server=localhost;Database=Workout;Integrated Security=True;TrustServerCertificate=True;";
+            connectionString = @"Server=localhost;Database=Workout;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
             sqlConnection = new SqlConnection(connectionString);
         }
 
@@ -35,34 +35,56 @@ namespace Workout.Core.Data
             }
         }
 
+        //public async Task<DataTable> ExecuteReaderAsync(string commandText, SqlParameter[] parameters)
+        //{
+        //    try
+        //    {
+        //        OpenConnection();
+        //        using (var command = new SqlCommand(commandText, sqlConnection))
+        //        {
+        //            command.CommandType = CommandType.Text;
+        //            if (parameters != null)
+        //                command.Parameters.AddRange(parameters);
+
+        //            using (var reader = await command.ExecuteReaderAsync())
+        //            {
+        //                var dataTable = new DataTable();
+        //                dataTable.Load(reader);
+        //                return dataTable;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception($"Error - ExecuteReaderAsync: {ex.Message}", ex);
+        //    }
+        //    finally
+        //    {
+        //        CloseConnection();
+        //    }
+        //}
         public async Task<DataTable> ExecuteReaderAsync(string commandText, SqlParameter[] parameters)
         {
-            try
-            {
-                OpenConnection();
-                using (var command = new SqlCommand(commandText, sqlConnection))
-                {
-                    command.CommandType = CommandType.Text;
-                    if (parameters != null)
-                        command.Parameters.AddRange(parameters);
+            // Create and open a brand‐new connection for this call
+            await using var conn = new SqlConnection(this.connectionString);
+            await conn.OpenAsync();
 
-                    using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        var dataTable = new DataTable();
-                        dataTable.Load(reader);
-                        return dataTable;
-                    }
-                }
-            }
-            catch (Exception ex)
+            // Build the command on that connection
+            await using var cmd = new SqlCommand(commandText, conn)
             {
-                throw new Exception($"Error - ExecuteReaderAsync: {ex.Message}", ex);
-            }
-            finally
-            {
-                CloseConnection();
-            }
+                CommandType = CommandType.Text
+            };
+            if (parameters is not null)
+                cmd.Parameters.AddRange(parameters);
+
+            // Execute and load into a DataTable
+            await using var reader = await cmd.ExecuteReaderAsync();
+            var dataTable = new DataTable();
+            dataTable.Load(reader);
+
+            return dataTable;
         }
+
 
         public async Task<int> ExecuteNonQueryAsync(string commandText, SqlParameter[] parameters)
         {
