@@ -12,7 +12,8 @@
 //    class UserClassMock : UserClassRepo
 //    {
 //        private readonly List<UserClassModel> userClasses;
-//        public UserClassMock() {
+//        public UserClassMock()
+//        {
 
 //            userClasses = new List<UserClassModel>
 //            {

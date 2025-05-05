@@ -34,7 +34,7 @@ namespace NeoIsisJob.Proxy
                 _baseUrl += "/";
             }
 
-            _httpClient.BaseAddress = new Uri(_baseUrl + "api/");
+            _httpClient.BaseAddress = new Uri(_baseUrl);
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
