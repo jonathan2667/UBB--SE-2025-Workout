@@ -1,30 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("Rankings")]
     public class RankingModel
     {
-        private int userId;
-        private int muscleGroupId;
-        private int rank;
+        [Column("UID")]
+        public int UID { get; set; }
+        
+        [Column("MGID")]
+        public int MGID { get; set; }
+        
+        [Range(0, 10000)]
+        [Column("Rank")]
+        public int Rank { get; set; }
 
-        public int UserId { get => userId; set => userId = value; }
-        public int MuscleGroupId { get => muscleGroupId; set => muscleGroupId = value; }
-        public int Rank { get => rank; set => rank = value; }
-
-        private RankingModel()
+        public RankingModel()
         {
         }
 
         public RankingModel(int userId, int muscleGroupId, int rank)
         {
-            UserId = userId;
-            MuscleGroupId = muscleGroupId;
+            UID = userId;
+            MGID = muscleGroupId;
             Rank = rank;
         }
+        
+        // Navigation properties
+        [ForeignKey("UID")]
+        public virtual UserModel User { get; set; }
+        
+        [ForeignKey("MGID")]
+        public virtual MuscleGroupModel MuscleGroup { get; set; }
     }
 }

@@ -1,34 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("UserWorkouts")]
     public class UserWorkoutModel
     {
-        private int userId;
-        private int workoutId;
-        private DateTime date;
-        private bool completed;
+        [Column("UID")]
+        public int UID { get; set; }
 
-        public int UserId { get => userId; set => userId = value; }
-        public int WorkoutId { get => workoutId; set => workoutId = value; }
-        public DateTime Date { get => date; set => date = value; }
-        public bool Completed { get => completed; set => completed = value; }
-        public int UserWorkoutId { get; set; }
+        [Column("WID")]
+        public int WID { get; set; }
 
-        private UserWorkoutModel()
+        [Column("Date")]
+        public DateTime Date { get; set; }
+
+        [Required]
+        public bool Completed { get; set; }
+
+        public UserWorkoutModel()
         {
         }
 
         public UserWorkoutModel(int userId, int workoutId, DateTime date, bool completed)
         {
-            UserId = userId;
-            WorkoutId = workoutId;
+            UID = userId;
+            WID = workoutId;
             Date = date;
             Completed = completed;
         }
+
+        // Navigation properties
+        [ForeignKey("UID")]
+        public virtual UserModel User { get; set; }
+
+        [ForeignKey("WID")]
+        public virtual WorkoutModel Workout { get; set; }
     }
 }

@@ -1,38 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("CompleteWorkouts")]
     public class CompleteWorkoutModel
     {
-        private int workoutId;
-        private int exerciseId;
-        private int sets;
-        private int repetitionsPerSet;
+        [Column("WID")]
+        public int WID { get; set; }
 
-        private ExercisesModel exercise;
+        [Column("EID")]
+        public int EID { get; set; }
 
-        public int WorkoutId { get => workoutId; set => workoutId = value; }
-        public int ExerciseId { get => exerciseId; set => exerciseId = value; }
-        public int Sets { get => sets; set => sets = value; }
-        public int RepetitionsPerSet { get => repetitionsPerSet; set => repetitionsPerSet = value; }
+        public int Sets { get; set; }
 
-        // property for tracking the complete excercise
-        public ExercisesModel Exercise { get => exercise; set => exercise = value; }
+        [Column("RepsPerSet")]
+        public int RepsPerSet { get; set; }
 
-        private CompleteWorkoutModel()
+        public CompleteWorkoutModel()
         {
         }
 
         public CompleteWorkoutModel(int workoutId, int exerciseId, int sets, int repetitionsPerSet)
         {
-            WorkoutId = workoutId;
-            ExerciseId = exerciseId;
+            WID = workoutId;
+            EID = exerciseId;
             Sets = sets;
-            RepetitionsPerSet = repetitionsPerSet;
+            RepsPerSet = repetitionsPerSet;
         }
+
+        // Navigation properties
+        [ForeignKey("WID")]
+        public virtual WorkoutModel Workout { get; set; }
+
+        [ForeignKey("EID")]
+        public virtual ExercisesModel Exercise { get; set; }
     }
 }

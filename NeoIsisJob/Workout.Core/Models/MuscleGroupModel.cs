@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("MuscleGroups")]
     public class MuscleGroupModel
     {
-        private int id;
-        private string name;
+        [Key]
+        [Column("MGID")]
+        public int MGID { get; set; }
 
-        public int Id { get => id; set => id = value; }
-        public string Name { get => name; set => name = value; }
+        [Required]
+        [MaxLength(256)]
+        public string Name { get; set; }
 
         public MuscleGroupModel()
         {
@@ -20,7 +22,7 @@ namespace Workout.Core.Models
 
         public MuscleGroupModel(int id, string name)
         {
-            Id = id;
+            MGID = id;
             Name = name;
         }
     }

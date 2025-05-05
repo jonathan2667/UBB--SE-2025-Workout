@@ -1,30 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("UserClasses")]
     public class UserClassModel
     {
-        private int userId;
-        private int classId;
-        private DateTime enrollmentDate;
-
-        public int UserId { get => userId; set => userId = value; }
-        public int ClassId { get => classId; set => classId = value; }
-        public DateTime EnrollmentDate { get => enrollmentDate; set => enrollmentDate = value; }
+        [Column("UID")]
+        public int UID { get; set; }
+        
+        [Column("CID")]
+        public int CID { get; set; }
+        
+        [Column("Date")]
+        public DateTime Date { get; set; }
 
         public UserClassModel()
         {
         }
 
-        public UserClassModel(int userId, int classId, DateTime enrollmentDate)
+        public UserClassModel(int userId, int classId, DateTime date)
         {
-            UserId = userId;
-            ClassId = classId;
-            EnrollmentDate = enrollmentDate;
+            UID = userId;
+            CID = classId;
+            Date = date;
         }
+        
+        // Navigation properties
+        [ForeignKey("UID")]
+        public virtual UserModel User { get; set; }
+        
+        [ForeignKey("CID")]
+        public virtual ClassModel Class { get; set; }
     }
 }
