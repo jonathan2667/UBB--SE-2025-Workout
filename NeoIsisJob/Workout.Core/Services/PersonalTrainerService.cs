@@ -12,7 +12,7 @@ namespace Workout.Core.Services
     {
         private readonly IPersonalTrainerRepo personalTrainerRepository;
 
-        public PersonalTrainerService(IPersonalTrainerRepo personalTrainerRepositor)
+        public PersonalTrainerService(IPersonalTrainerRepo personalTrainerRepository)
         {
             this.personalTrainerRepository = personalTrainerRepository ?? throw new ArgumentNullException(nameof(personalTrainerRepository));
         }

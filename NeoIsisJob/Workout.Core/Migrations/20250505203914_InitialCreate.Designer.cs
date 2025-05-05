@@ -12,7 +12,7 @@ using Workout.Core.Data;
 namespace Workout.Core.Migrations
 {
     [DbContext(typeof(WorkoutDbContext))]
-    [Migration("20250505200643_InitialCreate")]
+    [Migration("20250505203914_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
