@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 // using NeoIsisJob.Services;
 using Workout.Core.Models;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
+using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels
 {
@@ -29,7 +30,7 @@ namespace NeoIsisJob.ViewModels
                 BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
             };
 
-            this.userService = RestService.For<IUserServiceProxy>(httpClient);
+            this.userService = RestService.For<UserServiceProxy>(httpClient);
             // Users = new ObservableCollection<UserModel>(this.userService.GetAllUsers());
             // SelectedUser = null; // Initialize SelectedUser to null
             _ = InitializeAsync();

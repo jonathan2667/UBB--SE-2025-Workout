@@ -9,13 +9,11 @@ using NeoIsisJob.Commands;
 using NeoIsisJob.Helpers;
 using NeoIsisJob.Proxy;
 using Refit;
-
-
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
 using Workout.Core.Models;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Workout
 {

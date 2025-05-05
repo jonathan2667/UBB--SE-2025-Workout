@@ -6,7 +6,7 @@ using System.Diagnostics;
 // using NeoIsisJob.Services;
 using Workout.Core.Models;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Classes
 {
