@@ -11,7 +11,7 @@ using System.Diagnostics;
 using NeoIsisJob.Commands;
 using Workout.Core.Models;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Workout
 {

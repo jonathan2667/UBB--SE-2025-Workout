@@ -21,10 +21,10 @@ using NeoIsisJob.ViewModels.Workout;
 // using NeoIsisJob.Repositories;
 // using NeoIsisJob.Services;
 using NeoIsisJob.ViewModels.Rankings;
-using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Repositories;
-using Workout.Core.Services.Interfaces;
 using Workout.Core.Services;
+using Workout.Core.IRepositories;
+using Workout.Core.IServices;
 // using NeoIsisJob.Repositories.Interfaces;
 // using NeoIsisJob.Services.Interfaces;
 

@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Workout.Core.IServices;
+
 
 // using NeoIsisJob.Services.Interfaces;
-using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.ViewModels
 {

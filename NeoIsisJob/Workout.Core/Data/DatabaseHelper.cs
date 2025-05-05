@@ -15,6 +15,7 @@ namespace Workout.Core.Data
         {
             //connectionString = @"Data Source=localhost\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;";
             connectionString = @"Server=localhost;Database=Workout;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
+            //connectionString = @"Data Source=DESKTOP-DCVLDLM\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;TrustServerCertificate=True";
             sqlConnection = new SqlConnection(connectionString);
         }
 

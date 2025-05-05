@@ -15,7 +15,7 @@ using Workout.Core.Models;
 using Workout.Core.Data;
 using Workout.Core.Repositories;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Calendar
 {
