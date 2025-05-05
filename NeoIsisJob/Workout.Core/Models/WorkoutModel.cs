@@ -1,33 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("Workouts")]
     public class WorkoutModel
     {
-        private int id;
-        private string name;
-        private int workoutTypeId;
-        private string description;
+        [Key]
+        [Column("WID")]
+        public int WID { get; set; }
 
-        public int Id { get => id; set => id = value; }
-        public string Name { get => name; set => name = value; }
-        public int WorkoutTypeId { get => workoutTypeId; set => workoutTypeId = value; }
-        public string Description { get => description; set => description = value; }
+        [Required]
+        [MaxLength(256)]
+        public string Name { get; set; }
+
+        [Column("WTID")]
+        public int WTID { get; set; }
+
+        public string Description { get; set; }
 
         public WorkoutModel()
         {
+            CompleteWorkouts = new List<CompleteWorkoutModel>();
+            UserWorkouts = new List<UserWorkoutModel>();
         }
 
         public WorkoutModel(int id, string name, int workoutTypeId, string description = null)
         {
-            Id = id;
+            WID = id;
             Name = name;
-            WorkoutTypeId = workoutTypeId;
+            WTID = workoutTypeId;
             Description = description;
+            CompleteWorkouts = new List<CompleteWorkoutModel>();
+            UserWorkouts = new List<UserWorkoutModel>();
         }
+
+        // Navigation properties
+        [ForeignKey("WTID")]
+        public virtual WorkoutTypeModel WorkoutType { get; set; }
+        public virtual ICollection<CompleteWorkoutModel> CompleteWorkouts { get; set; }
+        public virtual ICollection<UserWorkoutModel> UserWorkouts { get; set; }
     }
 }

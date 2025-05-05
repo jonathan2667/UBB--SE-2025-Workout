@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI;
 using NeoIsisJob.ViewModels.Rankings;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 using Microsoft.Extensions.DependencyInjection;
 // using NeoIsisJob.Models;
 using Workout.Core.Models;

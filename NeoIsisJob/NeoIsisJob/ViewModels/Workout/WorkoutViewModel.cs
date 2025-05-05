@@ -10,6 +10,7 @@ using System.Linq;
 using NeoIsisJob.Commands;
 using Workout.Core.Models;
 using Workout.Core.Services;
+using Workout.Core.IServices;
 using Workout.Core.Services.Interfaces;
 using System.Net.Http;
 using System;
@@ -166,7 +167,7 @@ namespace NeoIsisJob.ViewModels.Workout
 
             if (SelectedWorkoutType != null)
             {
-                foreach (WorkoutModel workout in allWorkouts.Where(w => w.WorkoutTypeId == SelectedWorkoutType.Id))
+                foreach (WorkoutModel workout in allWorkouts.Where(w => w.WTID == SelectedWorkoutType.WTID))
                 {
                     Workouts.Add(workout);
                 }

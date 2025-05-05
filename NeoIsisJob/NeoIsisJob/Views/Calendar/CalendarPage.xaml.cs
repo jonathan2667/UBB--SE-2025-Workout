@@ -15,7 +15,7 @@ using Workout.Core.Models;
 using Workout.Core.Data;
 using Workout.Core.Repositories;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.Views
 {
@@ -142,7 +142,7 @@ namespace NeoIsisJob.Views
         private async void DayButton_Click_Past(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("DayButton_Click_Past triggered");
-            if (sender is Button button && button.Tag is CalendarDay day)
+            if (sender is Button button && button.Tag is CalendarDayModel day)
             {
                 System.Diagnostics.Debug.WriteLine($"Clicked day: {day.DayNumber}, HasWorkout: {day.HasWorkout}");
 
@@ -155,7 +155,7 @@ namespace NeoIsisJob.Views
 
                     if (userWorkout != null || userClass != null)
                     {
-                        string workoutName = userWorkout != null ? await GetWorkoutName(userWorkout.WorkoutId) : null;
+                        string workoutName = userWorkout != null ? await GetWorkoutName(userWorkout.WID) : null;
                         string message = $"Date: {day.Date:yyyy-MM-dd}\n";
 
                         if (userWorkout != null)
@@ -205,7 +205,7 @@ namespace NeoIsisJob.Views
         private async void DayButton_Click_Future(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("DayButton_Click_Future triggered");
-            if (sender is Button button && button.Tag is CalendarDay day)
+            if (sender is Button button && button.Tag is CalendarDayModel day)
             {
                 System.Diagnostics.Debug.WriteLine($"Clicked day: {day.DayNumber}, HasWorkout: {day.HasWorkout}");
                 ContentDialog dialog;
@@ -217,7 +217,7 @@ namespace NeoIsisJob.Views
 
                     if (userWorkout != null || userClass != null)
                     {
-                        string workoutName = userWorkout != null ? await GetWorkoutName(userWorkout.WorkoutId) : null;
+                        string workoutName = userWorkout != null ? await GetWorkoutName(userWorkout.WID) : null;
                         string message = $"Date: {day.Date:yyyy-MM-dd}\n";
 
                         if (userWorkout != null)
@@ -252,7 +252,7 @@ namespace NeoIsisJob.Views
                                 {
                                     foreach (var workout in workouts)
                                     {
-                                        System.Diagnostics.Debug.WriteLine($"ID: {workout.Id}, Name: {workout.Name}");
+                                        System.Diagnostics.Debug.WriteLine($"ID: {workout.WID}, Name: {workout.Name}");
                                     }
                                 }
                                 else
@@ -268,7 +268,7 @@ namespace NeoIsisJob.Views
                                     {
                                         Content = workout.Name,
                                         Margin = new Thickness(0, 5, 0, 0),
-                                        Tag = workout.Id // Store workout ID in Tag
+                                        Tag = workout.WID // Store workout ID in Tag
                                     };
                                     workoutButton.Click += async (btnSender, btnArgs) =>
                                     {
@@ -278,7 +278,7 @@ namespace NeoIsisJob.Views
                                             var existingWorkout = await calendarService.GetUserWorkoutAsync(ViewModel.UserId, day.Date);
                                             if (existingWorkout != null)
                                             {
-                                                await calendarService.DeleteUserWorkoutAsync(ViewModel.UserId, existingWorkout.WorkoutId, day.Date);
+                                                await calendarService.DeleteUserWorkoutAsync(ViewModel.UserId, existingWorkout.WID, day.Date);
                                             }
 
                                             // Add new workout
@@ -357,7 +357,7 @@ namespace NeoIsisJob.Views
         private async void DayButton_Click_NoWorkout(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("DayButton_Click_Future triggered");
-            if (sender is Button button && button.Tag is CalendarDay day)
+            if (sender is Button button && button.Tag is CalendarDayModel day)
             {
                 System.Diagnostics.Debug.WriteLine($"Clicked day: {day.DayNumber}, HasWorkout: {day.HasWorkout}");
                 string message = string.Empty;
@@ -386,7 +386,7 @@ namespace NeoIsisJob.Views
                         {
                             foreach (var workout in workouts)
                             {
-                                System.Diagnostics.Debug.WriteLine($"ID: {workout.Id}, Name: {workout.Name}");
+                                System.Diagnostics.Debug.WriteLine($"ID: {workout.WID}, Name: {workout.Name}");
                             }
                         }
                         else
@@ -402,7 +402,7 @@ namespace NeoIsisJob.Views
                             {
                                 Content = workout.Name,
                                 Margin = new Thickness(0, 5, 0, 0),
-                                Tag = workout.Id // Store workout ID in Tag
+                                Tag = workout.WID // Store workout ID in Tag
                             };
                             button.Click += async (btnSender, btnArgs) =>
                             {
@@ -413,7 +413,7 @@ namespace NeoIsisJob.Views
                                     if (existingWorkout != null)
                                     {
                                         // If workout exists, update it instead of adding a new one
-                                        await calendarService.DeleteUserWorkoutAsync(ViewModel.UserId, existingWorkout.WorkoutId, day.Date);
+                                        await calendarService.DeleteUserWorkoutAsync(ViewModel.UserId, existingWorkout.WID, day.Date);
                                     }
 
                                     // Add new workout

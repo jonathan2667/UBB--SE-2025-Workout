@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("ClassTypes")]
     public class ClassTypeModel
     {
-        private int id;
-        private string name;
-        public int Id { get => id; set => id = value; }
-        public string Name { get => name; set => name = value; }
+        [Key]
+        [Column("CTID")]
+        public int CTID { get; set; }
+        
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; }
 
         public ClassTypeModel()
         {
@@ -19,7 +22,7 @@ namespace Workout.Core.Models
 
         public ClassTypeModel(int id, string name)
         {
-            Id = id;
+            CTID = id;
             Name = name;
         }
     }

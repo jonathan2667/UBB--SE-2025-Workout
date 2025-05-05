@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using Workout.Core.Models;
 
 
-namespace Workout.Core.Services.Interfaces
+namespace Workout.Core.IServices
 {
     public interface ICalendarService
     {
-        Task<List<CalendarDay>> GetCalendarDaysForMonthAsync(int userId, DateTime date);
+        Task<List<CalendarDayModel>> GetCalendarDaysForMonthAsync(int userId, DateTime date);
 
-        Task<ObservableCollection<CalendarDay>> GetCalendarDaysAsync(int userId, DateTime currentDate);
+        Task<ObservableCollection<CalendarDayModel>> GetCalendarDaysAsync(int userId, DateTime currentDate);
 
         Task AddUserWorkoutAsync(UserWorkoutModel userWorkout);
 
@@ -26,22 +26,22 @@ namespace Workout.Core.Services.Interfaces
         /// <summary>
         /// Removes a workout for the specified day (if one exists).
         /// </summary>
-        Task RemoveWorkoutAsync(int userId, CalendarDay day);
+        Task RemoveWorkoutAsync(int userId, CalendarDayModel day);
 
         /// <summary>
         /// Changes (replaces) a workout for the specified day.
         /// </summary>
-        Task ChangeWorkoutAsync(int userId, CalendarDay day);
+        Task ChangeWorkoutAsync(int userId, CalendarDayModel day);
 
         /// <summary>
         /// Pure in-memory count; no need for async.
         /// </summary>
-        string GetWorkoutDaysCountText(ObservableCollection<CalendarDay> calendarDays);
+        string GetWorkoutDaysCountText(ObservableCollection<CalendarDayModel> calendarDays);
 
         /// <summary>
         /// Pure in-memory count; no need for async.
         /// </summary>
-        string GetDaysCountText(ObservableCollection<CalendarDay> calendarDays);
+        string GetDaysCountText(ObservableCollection<CalendarDayModel> calendarDays);
 
         Task<string> GetUserClassAsync(int userId, DateTime date);
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace Workout.Core.Services
 {
@@ -29,19 +29,19 @@ namespace Workout.Core.Services
             var workouts = await _userWorkoutRepository
                                 .GetUserWorkoutModelByDateAsync(date)
                                 .ConfigureAwait(false);
-            return workouts.FirstOrDefault(w => w.UserId == userId);
+            return workouts.FirstOrDefault(w => w.UID == userId);
         }
 
         public async Task AddUserWorkoutAsync(UserWorkoutModel userWorkout)
         {
             if (userWorkout == null)
                 throw new ArgumentNullException(nameof(userWorkout));
-            if (userWorkout.UserId <= 0)
+            if (userWorkout.UID <= 0)
                 throw new ArgumentException("UserId must be positive.", nameof(userWorkout));
             if (userWorkout.Date == default)
                 throw new ArgumentException("Date must be specified.", nameof(userWorkout));
 
-            var existing = await GetUserWorkoutForDateAsync(userWorkout.UserId, userWorkout.Date)
+            var existing = await GetUserWorkoutForDateAsync(userWorkout.UID, userWorkout.Date)
                                 .ConfigureAwait(false);
             if (existing != null)
             {

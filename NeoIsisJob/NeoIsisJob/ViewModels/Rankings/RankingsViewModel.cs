@@ -11,6 +11,7 @@ using NeoIsisJob.Helpers;
 using System.Net.Http;
 using System;
 using Refit;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Rankings
 {

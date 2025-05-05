@@ -10,11 +10,7 @@ using System.Windows.Input;
 using Workout.Core.Models;
 using Workout.Core.Data;
 using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
-using Refit;
-using NeoIsisJob.Proxy;
-using System.Net.Http;
-using NeoIsisJob.Helpers;
+using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Calendar
 {
@@ -23,7 +19,7 @@ namespace NeoIsisJob.ViewModels.Calendar
         private DateTime currentDate;
         private string yearText;
         private string monthText;
-        private ObservableCollection<CalendarDay> calendarDays;
+        private ObservableCollection<CalendarDayModel> calendarDays;
 
         private readonly ICalendarService calendarService;
 
@@ -44,7 +40,7 @@ namespace NeoIsisJob.ViewModels.Calendar
 
             this.calendarService = RestService.For<ICalendarServiceProxy>(httpClient);
             databaseHelper = new DatabaseHelper();
-            CalendarDays = new ObservableCollection<CalendarDay>();
+            CalendarDays = new ObservableCollection<CalendarDayModel>();
             PreviousMonthCommand = new RelayCommand(PreviousMonth);
             NextMonthCommand = new RelayCommand(NextMonth);
             UpdateCalendar();
@@ -70,7 +66,7 @@ namespace NeoIsisJob.ViewModels.Calendar
             }
         }
 
-        public ObservableCollection<CalendarDay> CalendarDays
+        public ObservableCollection<CalendarDayModel> CalendarDays
         {
             get => calendarDays;
             set

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.Repositories;
-using Workout.Core.Repositories.Interfaces;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace Workout.Core.Services
 {
@@ -18,7 +18,7 @@ namespace Workout.Core.Services
         public RankingsService(IRankingsRepository rankingsRepository)
         {
             _rankingsRepository = rankingsRepository
-                ?? new RankingsRepository();//throw new ArgumentNullException(nameof(rankingsRepository));
+                ?? throw new ArgumentNullException(nameof(rankingsRepository));
         }
 
         public async Task<IList<RankingModel>> GetAllRankingsByUserIDAsync(int userId)

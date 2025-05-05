@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Repositories;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
+using Workout.Core.IRepositories;
 
 namespace Workout.Core.Services
 {
@@ -18,7 +18,7 @@ namespace Workout.Core.Services
         public WorkoutTypeService(IWorkoutTypeRepository workoutTypeRepository = null)
         {
             _workoutTypeRepository = workoutTypeRepository
-                ?? new WorkoutTypeRepo();//throw new ArgumentNullException(nameof(workoutTypeRepository));
+                ?? throw new ArgumentNullException(nameof(workoutTypeRepository));
         }
 
         public async Task InsertWorkoutTypeAsync(string workoutTypeName)

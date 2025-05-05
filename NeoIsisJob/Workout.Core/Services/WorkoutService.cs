@@ -4,10 +4,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.Repositories;
-using Workout.Core.Repositories.Interfaces;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace Workout.Core.Services
 {
@@ -18,7 +18,7 @@ namespace Workout.Core.Services
         public WorkoutService(IWorkoutRepository workoutRepository = null)
         {
             _workoutRepository = workoutRepository
-                ?? new WorkoutRepo();//throw new ArgumentNullException(nameof(workoutRepository));
+                ?? throw new ArgumentNullException(nameof(workoutRepository));
         }
 
         public async Task<WorkoutModel> GetWorkoutAsync(int workoutId)

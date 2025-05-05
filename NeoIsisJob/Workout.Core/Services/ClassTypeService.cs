@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.Repositories;
-using Workout.Core.Repositories.Interfaces;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace Workout.Core.Services
 {
@@ -12,10 +12,10 @@ namespace Workout.Core.Services
     {
         private readonly IClassTypeRepository classTypeRepository;
 
-        public ClassTypeService()
-        {
-            this.classTypeRepository = new ClassTypeRepository();
-        }
+        //public ClassTypeService()
+        //{
+        //    this.classTypeRepository = new ClassTypeRepository();
+        //}
 
         public ClassTypeService(IClassTypeRepository classTypeRepository)
         {

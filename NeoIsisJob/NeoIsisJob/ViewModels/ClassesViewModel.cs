@@ -4,10 +4,8 @@ using Refit;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-
+using Workout.Core.IServices;
 // using NeoIsisJob.Services.Interfaces;
-using Workout.Core.Services.Interfaces;
-
 namespace NeoIsisJob.ViewModels
 {
     public class ClassesViewModel

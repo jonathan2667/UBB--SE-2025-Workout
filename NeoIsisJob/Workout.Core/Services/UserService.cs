@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
+using Workout.Core.IRepositories;
 
 namespace Workout.Core.Services
 {

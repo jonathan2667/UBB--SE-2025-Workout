@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Workout.Core.Models;
 
-namespace Workout.Core.Repositories.Interfaces
+namespace Workout.Core.IRepositories
 {
     public interface IPersonalTrainerRepo
     {

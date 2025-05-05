@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Repositories;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
+using Workout.Core.IRepositories;
 
 namespace Workout.Core.Services
 {
@@ -14,10 +14,9 @@ namespace Workout.Core.Services
     {
         private readonly IExerciseRepository _exerciseRepository;
 
-        public ExerciseService(IExerciseRepository exerciseRepository = null)
+        public ExerciseService(IExerciseRepository exerciseRepository)
         {
-            _exerciseRepository = exerciseRepository
-                ?? new ExerciseRepo(); //throw new ArgumentNullException(nameof(exerciseRepository));
+            _exerciseRepository = exerciseRepository ?? throw new ArgumentNullException(nameof(exerciseRepository));
         }
 
         public async Task<ExercisesModel> GetExerciseByIdAsync(int exerciseId)

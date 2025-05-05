@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using Workout.Core.Data.Interfaces; // <-- Make sure this is correct
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Workout.Core.Models;
 using Workout.Core.Data;
 
@@ -9,96 +10,44 @@ namespace Workout.Core.Repositories
 {
     public class ClassRepo
     {
-        private readonly IDatabaseHelper databaseHelper;
+        private readonly WorkoutDbContext _context;
 
-        public ClassRepo()
+        public ClassRepo(WorkoutDbContext context)
         {
-            this.databaseHelper = new DatabaseHelper(); // still works
+            _context = context;
         }
 
-        public ClassRepo(IDatabaseHelper databaseHelper)
+        public async Task<ClassModel> GetClassModelByIdAsync(int classId)
         {
-            this.databaseHelper = databaseHelper; // DI-friendly constructor
+            var classModel = await _context.Classes
+                .Include(c => c.PersonalTrainer)
+                .Include(c => c.ClassType)
+                .FirstOrDefaultAsync(c => c.CID == classId);
+                
+            return classModel ?? new ClassModel();
         }
 
-        public ClassModel GetClassModelById(int classId)
+        public async Task<List<ClassModel>> GetAllClassModelAsync()
         {
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
+            return await _context.Classes
+                .Include(c => c.PersonalTrainer)
+                .Include(c => c.ClassType)
+                .ToListAsync();
+        }
+
+        public async Task AddClassModelAsync(ClassModel classModel)
+        {
+            _context.Classes.Add(classModel);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteClassModelAsync(int classId)
+        {
+            var classModel = await _context.Classes.FindAsync(classId);
+            if (classModel != null)
             {
-                connection.Open();
-                string query = "SELECT CID, Name, Description, CTID, PTID FROM Classes WHERE Cid = @cid";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@cid", classId);
-
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    return new ClassModel
-                    {
-                        Id = (int)reader["CID"],
-                        Name = reader["Name"].ToString() ?? string.Empty,
-                        Description = reader["Description"].ToString() ?? string.Empty,
-                        ClassTypeId = (int)reader["CTID"],
-                        PersonalTrainerId = (int)reader["PTID"]
-                    };
-                }
-
-                return new ClassModel();
-            }
-        }
-
-        public List<ClassModel> GetAllClassModel()
-        {
-            List<ClassModel> classes = new List<ClassModel>();
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
-            {
-                connection.Open();
-                string query = "SELECT CID, Name, Description, CTID, PTID FROM Classes";
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    classes.Add(new ClassModel
-                    {
-                        Id = (int)reader["CID"],
-                        Name = reader["Name"].ToString() ?? string.Empty,
-                        Description = reader["Description"].ToString() ?? string.Empty,
-                        ClassTypeId = (int)reader["CTID"],
-                        PersonalTrainerId = (int)reader["PTID"]
-                    });
-                }
-
-                return classes;
-            }
-        }
-
-        public void AddClassModel(ClassModel classModel)
-        {
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
-            {
-                connection.Open();
-                string query = "INSERT INTO Classes (Name, Description, CTID, PTID) VALUES (@name, @description, @ctid, @ptid)";
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("@name", classModel.Name);
-                command.Parameters.AddWithValue("@description", classModel.Description);
-                command.Parameters.AddWithValue("@ctid", classModel.ClassTypeId);
-                command.Parameters.AddWithValue("@ptid", classModel.PersonalTrainerId);
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public void DeleteClassModel(int classId)
-        {
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
-            {
-                connection.Open();
-                string query = "DELETE FROM Class WHERE Cid = @cid";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@cid", classId);
-                command.ExecuteNonQuery();
+                _context.Classes.Remove(classModel);
+                await _context.SaveChangesAsync();
             }
         }
     }

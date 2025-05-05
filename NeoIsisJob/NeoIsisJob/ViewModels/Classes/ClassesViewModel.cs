@@ -129,12 +129,12 @@ namespace NeoIsisJob.ViewModels.Classes
         {
             Classes.Clear();
 
-            var trainersDict = (await personalTrainerService.GetAllPersonalTrainersAsync()).ToDictionary(personalTrainer => personalTrainer.Id);
+            var trainersDict = (await personalTrainerService.GetAllPersonalTrainersAsync()).ToDictionary(personalTrainer => personalTrainer.PTID);
 
             foreach (var classItem in await classService.GetAllClassesAsync())
             {
                 // Assign Personal Trainer to Class
-                if (trainersDict.TryGetValue(classItem.PersonalTrainerId, out var trainer))
+                if (trainersDict.TryGetValue(classItem.PTID, out var trainer))
                 {
                     classItem.PersonalTrainer = trainer;
                 }
@@ -182,9 +182,9 @@ namespace NeoIsisJob.ViewModels.Classes
                 int currentUserId = GetCurrentUserId();
                 var userClass = new UserClassModel
                 {
-                    UserId = currentUserId,
-                    ClassId = SelectedClass.Id,
-                    EnrollmentDate = SelectedDate.Date
+                    UID = currentUserId,
+                    CID = SelectedClass.CID,
+                    Date = SelectedDate.Date
                 };
 
                 await userClassService.AddUserClassAsync(userClass);

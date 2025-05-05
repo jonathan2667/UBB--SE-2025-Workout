@@ -1,80 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Core.Data.Interfaces;
 using Workout.Core.Data;
-using Workout.Core.Repositories.Interfaces;
 
 namespace Workout.Core.Repositories
 {
     public class UserRepo : IUserRepo
     {
-        private readonly IDatabaseHelper databaseHelper;
+        private readonly WorkoutDbContext _context;
 
-        public UserRepo()
+        public UserRepo(WorkoutDbContext context)
         {
-            databaseHelper = new DatabaseHelper();
-        }
-
-        public UserRepo(IDatabaseHelper databaseHelper)
-        {
-            this.databaseHelper = databaseHelper;
+            _context = context;
         }
 
         public async Task<UserModel?> GetUserByIdAsync(int userId)
         {
-            string query = "SELECT UID FROM Users WHERE UID = @Id";
-            var parameters = new[]
-            {
-                new SqlParameter("@Id", SqlDbType.Int) { Value = userId }
-            };
-
-            DataTable result = await databaseHelper.ExecuteReaderAsync(query, parameters);
-
-            if (result.Rows.Count > 0)
-            {
-                return new UserModel(Convert.ToInt32(result.Rows[0]["UID"]));
-            }
-
-            return null; // returning null if no result is found
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.ID == userId);
         }
 
         public async Task<int> InsertUserAsync()
         {
-            string query = "INSERT INTO Users DEFAULT VALUES; SELECT SCOPE_IDENTITY();";
-
-            return await databaseHelper.ExecuteScalarAsync<int>(query);
+            var user = new UserModel();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user.ID;
         }
 
         public async Task<bool> DeleteUserByIdAsync(int userId)
         {
-            string query = "DELETE FROM Users WHERE UID = @Id";
-            var parameters = new[]
-            {
-                new SqlParameter("@Id", SqlDbType.Int) { Value = userId }
-            };
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return false;
 
-            int rowsAffected = await databaseHelper.ExecuteNonQueryAsync(query, parameters);
+            _context.Users.Remove(user);
+            int rowsAffected = await _context.SaveChangesAsync();
             return rowsAffected > 0;
         }
 
         public async Task<List<UserModel>> GetAllUsersAsync()
         {
-            string query = "SELECT UID FROM Users";
-            DataTable result = await databaseHelper.ExecuteReaderAsync(query, null);
-
-            var users = new List<UserModel>();
-
-            foreach (DataRow row in result.Rows)
-            {
-                users.Add(new UserModel(Convert.ToInt32(row["UID"])));
-            }
-
-            return users;
+            return await _context.Users.ToListAsync();
         }
     }
 }

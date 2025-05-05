@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Workout.Core.Repositories;
 using Workout.Core.Models;
+using Workout.Core.IRepositories;
 
 namespace Workout.Core.Services
 {
     public class PersonalTrainerService
     {
-        private readonly PersonalTrainerRepo personalTrainerRepository;
+        private readonly IPersonalTrainerRepo personalTrainerRepository;
 
-        public PersonalTrainerService()
+        public PersonalTrainerService(IPersonalTrainerRepo personalTrainerRepositor)
         {
-            this.personalTrainerRepository = new PersonalTrainerRepo();
+            this.personalTrainerRepository = personalTrainerRepository ?? throw new ArgumentNullException(nameof(personalTrainerRepository));
         }
 
         public async Task<List<PersonalTrainerModel>> GetAllPersonalTrainersAsync()
