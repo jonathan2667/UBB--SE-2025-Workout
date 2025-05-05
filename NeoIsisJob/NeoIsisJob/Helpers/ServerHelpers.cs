@@ -2,6 +2,6 @@
 {
     internal static class ServerHelpers
     {
-        public const string SERVER_BASE_URL = "https://localhost:5001";
+        public const string SERVER_BASE_URL = "http://localhost:5001";
     }
 }
