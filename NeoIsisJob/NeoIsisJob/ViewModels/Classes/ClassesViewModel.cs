@@ -22,10 +22,10 @@ namespace NeoIsisJob.ViewModels.Classes
 {
     public class ClassesViewModel : INotifyPropertyChanged
     {
-        private readonly IClassService classService;
-        private readonly IClassTypeService classTypeService;
-        private readonly IPersonalTrainerService personalTrainerService;
-        private readonly IUserClassService userClassService;
+        private readonly ClassServiceProxy classService;
+        private readonly ClassTypeServiceProxy classTypeService;
+        private readonly PersonalTrainerServiceProxy personalTrainerService;
+        private readonly UserClassServiceProxy userClassService;
         private ObservableCollection<ClassModel> classes;
         private ObservableCollection<ClassTypeModel> classTypes;
         private ObservableCollection<PersonalTrainerModel> personalTrainers;
@@ -38,15 +38,11 @@ namespace NeoIsisJob.ViewModels.Classes
         public ICommand ConfirmRegistrationCommand { get; }
         public ClassesViewModel()
         {
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
-            };
-
-            this.classService = RestService.For<IClassServiceProxy>(httpClient);
-            this.classTypeService = RestService.For<IClassTypeServiceProxy>(httpClient);
-            this.personalTrainerService = RestService.For<IPersonalTrainerServiceProxy>(httpClient);
-            this.userClassService = RestService.For<IUserClassServiceProxy>(httpClient);
+            this.classService = new ClassServiceProxy();
+            this.classTypeService = new ClassTypeServiceProxy();
+            this.personalTrainerService = new PersonalTrainerServiceProxy();
+            this.userClassService = new UserClassServiceProxy();
+            
             Classes = new ObservableCollection<ClassModel>();
             ClassTypes = new ObservableCollection<ClassTypeModel>();
             PersonalTrainers = new ObservableCollection<PersonalTrainerModel>();

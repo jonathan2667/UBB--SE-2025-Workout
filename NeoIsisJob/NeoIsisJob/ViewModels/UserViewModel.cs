@@ -1,36 +1,24 @@
 ﻿using NeoIsisJob.Helpers;
 using NeoIsisJob.Proxy;
-using Refit;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Services;
 using Workout.Core.Models;
-using Workout.Core.Services;
-using Workout.Core.IServices;
-using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels
 {
     public class UserViewModel
     {
-        private readonly IUserService userService;
+        private readonly UserServiceProxy userService;
 
         public ObservableCollection<UserModel> Users { get; set; }
         public UserModel? SelectedUser { get; set; } // Make SelectedUser nullable
 
-        public UserViewModel(IUserService userService)
+        public UserViewModel()
         {
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
-            };
-
-            this.userService = RestService.For<UserServiceProxy>(httpClient);
+            this.userService = new UserServiceProxy();
             // Users = new ObservableCollection<UserModel>(this.userService.GetAllUsers());
             // SelectedUser = null; // Initialize SelectedUser to null
             _ = InitializeAsync();

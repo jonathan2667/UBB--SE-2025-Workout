@@ -53,8 +53,8 @@ namespace NeoIsisJob.Proxy
 
             // Find the next rank definition based on current points
             var nextRank = rankDefinitions
-                .OrderBy(r => r.RequiredPoints)
-                .FirstOrDefault(r => r.RequiredPoints > currentPoints);
+                .OrderBy(r => r.MinPoints)
+                .FirstOrDefault(r => r.MinPoints > currentPoints);
 
             if (nextRank == null)
             {
@@ -62,7 +62,7 @@ namespace NeoIsisJob.Proxy
                 return 0;
             }
 
-            return nextRank.RequiredPoints - currentPoints;
+            return nextRank.MinPoints - currentPoints;
         }
     }
 } 

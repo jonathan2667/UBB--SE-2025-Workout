@@ -7,15 +7,22 @@ using System.Diagnostics;
 using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Core.IServices;
+using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels.Classes
 {
     public class SelectedClassViewModel : INotifyPropertyChanged
     {
-        private readonly IClassService classService;
-        private readonly IUserClassService userClassService;
+        private readonly ClassServiceProxy classService;
+        private readonly UserClassServiceProxy userClassService;
         private ClassModel selectedClass;
         private ObservableCollection<UserClassModel> userClasses;
+
+        public SelectedClassViewModel()
+        {
+            this.classService = new ClassServiceProxy();
+            this.userClassService = new UserClassServiceProxy();
+        }
 
         public ClassModel SelectedClass
         {

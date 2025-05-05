@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media;
 // using Windows.UI;
 using Workout.Core.Models;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Helpers;
 using System.Net.Http;
@@ -17,18 +17,13 @@ namespace NeoIsisJob.ViewModels.Rankings
 {
     public class RankingsViewModel
     {
-        private readonly IRankingsService rankingsService;
+        private readonly RankingsServiceProxy rankingsService;
         private readonly int userId = 1; // !!!!!!!!!!!!!!! HARDCODED USER VALUE !!!!!!! CHANGE THIS FOR PROD !!!!!!!!
         private readonly List<RankDefinition> rankDefinitions;
 
-        public RankingsViewModel(IRankingsService rankingsService)
+        public RankingsViewModel()
         {
-
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
-            };
-            this.rankingsService = RestService.For<IRankingsServiceProxy>(httpClient);
+            this.rankingsService = new RankingsServiceProxy();
             this.rankDefinitions = InitializeRankDefinitions();
         }
 

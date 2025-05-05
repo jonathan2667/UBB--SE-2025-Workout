@@ -9,24 +9,20 @@ using System.Linq;
 // using NeoIsisJob.Services.Interfaces;
 using NeoIsisJob.Commands;
 using Workout.Core.Models;
-using Workout.Core.Services;
-using Workout.Core.IServices;
-using Workout.Core.Services.Interfaces;
 using System.Net.Http;
 using System;
 using NeoIsisJob.Helpers;
 using NeoIsisJob.Proxy;
-using Refit;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
     public class WorkoutViewModel : INotifyPropertyChanged
     {
-        // Use interfaces instead of concrete implementations
-        private readonly IWorkoutService workoutService;
-        private readonly IWorkoutTypeService workoutTypeService;
-        private readonly ICompleteWorkoutService completeWorkoutService;
-        private readonly IExerciseService exerciseService;
+        // Use concrete proxy implementations
+        private readonly WorkoutServiceProxy workoutService;
+        private readonly WorkoutTypeServiceProxy workoutTypeService;
+        private readonly CompleteWorkoutServiceProxy completeWorkoutService;
+        private readonly ExerciseServiceProxy exerciseService;
         private ObservableCollection<WorkoutModel> workouts;
         private ObservableCollection<WorkoutTypeModel> workoutTypes;
         private WorkoutTypeModel selectedWorkoutType;
@@ -39,47 +35,19 @@ namespace NeoIsisJob.ViewModels.Workout
         public ICommand UpdateWorkoutCommand { get; }
         public ICommand CloseEditPopupCommand { get; }
 
-        // Default constructor for backward compatibility
+        // Default constructor
         public WorkoutViewModel()
         {
-
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
-            };
-
-            this.workoutTypeService = RestService.For<IWorkoutTypeServiceProxy>(httpClient);
-            this.exerciseService = RestService.For<IExerciseServiceProxy>(httpClient);
-            this.workoutService = RestService.For<IWorkoutServiceProxy>(httpClient);
-            this.completeWorkoutService = RestService.For<ICompleteWorkoutServiceProxy>(httpClient);
-        }
-
-        // Constructor with dependency injection
-        public WorkoutViewModel(
-            IWorkoutService workoutService,
-            IWorkoutTypeService workoutTypeService,
-            ICompleteWorkoutService completeWorkoutService,
-            IExerciseService exerciseService)
-        {
-
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
-            };
-
-            this.workoutTypeService = RestService.For<IWorkoutTypeServiceProxy>(httpClient);
-            this.exerciseService = RestService.For<IExerciseServiceProxy>(httpClient);
-            this.workoutService = RestService.For<IWorkoutServiceProxy>(httpClient);
-            this.completeWorkoutService = RestService.For<ICompleteWorkoutServiceProxy>(httpClient);
+            this.workoutTypeService = new WorkoutTypeServiceProxy();
+            this.exerciseService = new ExerciseServiceProxy();
+            this.workoutService = new WorkoutServiceProxy();
+            this.completeWorkoutService = new CompleteWorkoutServiceProxy();
 
             Workouts = new ObservableCollection<WorkoutModel>();
             WorkoutTypes = new ObservableCollection<WorkoutTypeModel>();
 
             // Initialize SelectedWorkoutViewModel with dependencies
-            SelectedWorkoutViewModel = new SelectedWorkoutViewModel(
-                workoutService,
-                exerciseService,
-                completeWorkoutService);
+            SelectedWorkoutViewModel = new SelectedWorkoutViewModel();
 
             // Initialize commands
             DeleteWorkoutCommand = new RelayCommand<int>(DeleteWorkout);
@@ -127,7 +95,6 @@ namespace NeoIsisJob.ViewModels.Workout
         public WorkoutModel SelectedWorkout
         {
             get => SelectedWorkoutViewModel.SelectedWorkout;
-            // set => SelectedWorkoutViewModel.SelectedWorkout = value;
         }
 
         private bool isEditPopupOpen;
