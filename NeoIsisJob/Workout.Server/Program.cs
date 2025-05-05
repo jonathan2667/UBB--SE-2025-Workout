@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Workout.Core.IRepositories;
 using Workout.Core.Repositories;
-using Workout.Server.Data;
+using Workout.Core.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
