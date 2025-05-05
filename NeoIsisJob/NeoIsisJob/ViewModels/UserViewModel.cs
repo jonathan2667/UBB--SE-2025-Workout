@@ -45,7 +45,7 @@ namespace NeoIsisJob.ViewModels
         {
             if (await userService.RemoveUserAsync(userId))
             {
-                var userToRemove = Users.FirstOrDefault(user => user.Id == userId);
+                var userToRemove = Users.FirstOrDefault(user => user.ID == userId);
                 if (userToRemove != null)
                 {
                     Users.Remove(userToRemove);

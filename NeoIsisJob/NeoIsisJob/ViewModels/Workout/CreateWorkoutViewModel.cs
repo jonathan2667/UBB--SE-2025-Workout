@@ -172,7 +172,7 @@ namespace NeoIsisJob.ViewModels.Workout
             foreach (ExercisesModel exercise in await this.exerciseService.GetAllExercisesAsync())
             {
                 // add the corresponding MuscleGroup object to every one
-                exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MuscleGroupId);
+                exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MGID);
                 this.Exercises.Add(exercise);
             }
         }
@@ -183,15 +183,15 @@ namespace NeoIsisJob.ViewModels.Workout
             // save the workout and then save all entries in CompleteWorkouts
 
             // here add the workout
-            await this.workoutService.InsertWorkoutAsync(SelectedWorkoutName, SelectedWorkoutType.Id);
+            await this.workoutService.InsertWorkoutAsync(SelectedWorkoutName, SelectedWorkoutType.WTID);
             // int selectedWorkoutId = await this.workoutService.GetWorkoutByNameAsync(SelectedWorkoutName).Id;
             var workout = await this.workoutService.GetWorkoutByNameAsync(SelectedWorkoutName);
-            int selectedWorkoutId = workout.Id;
+            int selectedWorkoutId = workout.WID;
 
             // here add all the entries in CompleteWorkouts
             foreach (ExercisesModel exercise in SelectedExercises)
             {
-                await this.completeWorkoutService.InsertCompleteWorkoutAsync(selectedWorkoutId, exercise.Id, SelectedNumberOfSets, SelectedNumberOfRepsPerSet);
+                await this.completeWorkoutService.InsertCompleteWorkoutAsync(selectedWorkoutId, exercise.EID, SelectedNumberOfSets, SelectedNumberOfRepsPerSet);
             }
 
             // now go to back to the prev page

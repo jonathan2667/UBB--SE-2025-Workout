@@ -150,7 +150,7 @@ namespace NeoIsisJob.ViewModels.Workout
 
             if (SelectedWorkoutType != null)
             {
-                foreach (WorkoutModel workout in allWorkouts.Where(w => w.WorkoutTypeId == SelectedWorkoutType.Id))
+                foreach (WorkoutModel workout in allWorkouts.Where(w => w.WTID == SelectedWorkoutType.WTID))
                 {
                     Workouts.Add(workout);
                 }

@@ -38,7 +38,7 @@ namespace NeoIsisJob.ViewModels.Workout
 
             if (selectedWorkout != null)
             {
-                var completeWorkoutsRaw = await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(selectedWorkout.Id);
+                var completeWorkoutsRaw = await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(selectedWorkout.WID);
                 var completeWorkoutsFilled = await FilledCompleteWorkoutsWithExercies(completeWorkoutsRaw);
                 CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(completeWorkoutsFilled);
             }
@@ -82,7 +82,7 @@ namespace NeoIsisJob.ViewModels.Workout
         {
             foreach (CompleteWorkoutModel complWorkout in complWorkouts)
             {
-                complWorkout.Exercise = await this.exerciseService.GetExerciseByIdAsync(complWorkout.ExerciseId);
+                complWorkout.Exercise = await this.exerciseService.GetExerciseByIdAsync(complWorkout.EID);
             }
 
             return complWorkouts;
@@ -114,7 +114,7 @@ namespace NeoIsisJob.ViewModels.Workout
 
                 // Reload the CompleteWorkouts collection if necessary
                 // IList<CompleteWorkoutModel> complWorkouts = FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.Id));
-                IList<CompleteWorkoutModel> complWorkouts = await FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.Id));
+                IList<CompleteWorkoutModel> complWorkouts = await FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.WID));
 
                 CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(complWorkouts);
             }

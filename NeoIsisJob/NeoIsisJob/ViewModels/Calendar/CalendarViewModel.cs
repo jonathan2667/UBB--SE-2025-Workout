@@ -24,7 +24,7 @@ namespace NeoIsisJob.ViewModels.Calendar
         private DateTime currentDate;
         private string yearText;
         private string monthText;
-        private ObservableCollection<CalendarDay> calendarDays;
+        private ObservableCollection<CalendarDayModel> calendarDays;
 
         private readonly ICalendarService calendarService;
 
@@ -40,7 +40,7 @@ namespace NeoIsisJob.ViewModels.Calendar
 
             this.calendarService = calendarService ?? new CalendarService();
             databaseHelper = new DatabaseHelper();
-            CalendarDays = new ObservableCollection<CalendarDay>();
+            CalendarDays = new ObservableCollection<CalendarDayModel>();
             PreviousMonthCommand = new RelayCommand(PreviousMonth);
             NextMonthCommand = new RelayCommand(NextMonth);
             UpdateCalendar();
@@ -66,7 +66,7 @@ namespace NeoIsisJob.ViewModels.Calendar
             }
         }
 
-        public ObservableCollection<CalendarDay> CalendarDays
+        public ObservableCollection<CalendarDayModel> CalendarDays
         {
             get => calendarDays;
             set
