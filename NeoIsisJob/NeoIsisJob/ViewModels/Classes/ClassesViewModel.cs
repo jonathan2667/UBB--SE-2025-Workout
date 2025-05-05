@@ -3,32 +3,29 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Collections.Generic;
 using System.Linq;
 using System;
-using System.Security.Claims;
 using System.Diagnostics;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
-using NeoIsisJob.Repositories;
-using NeoIsisJob.ViewModels.Classes;
 using NeoIsisJob.Commands;
-using NeoIsisJob.ViewModels.Workout;
-using NeoIsisJob.Data;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml;
 
 using Workout.Core.Models;
 using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
+using NeoIsisJob.Helpers;
+using System.Net.Http;
+using Refit;
+using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels.Classes
 {
     public class ClassesViewModel : INotifyPropertyChanged
     {
-        private readonly ClassService classService;
-        private readonly ClassTypeService classTypeService;
-        private readonly PersonalTrainerService personalTrainerService;
-        private readonly UserClassService userClassService;
+        private readonly IClassService classService;
+        private readonly IClassTypeService classTypeService;
+        private readonly IPersonalTrainerService personalTrainerService;
+        private readonly IUserClassService userClassService;
         private ObservableCollection<ClassModel> classes;
         private ObservableCollection<ClassTypeModel> classTypes;
         private ObservableCollection<PersonalTrainerModel> personalTrainers;
@@ -41,10 +38,15 @@ namespace NeoIsisJob.ViewModels.Classes
         public ICommand ConfirmRegistrationCommand { get; }
         public ClassesViewModel()
         {
-            this.classService = new ClassService();
-            this.classTypeService = new ClassTypeService();
-            this.personalTrainerService = new PersonalTrainerService();
-            this.userClassService = new UserClassService();
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+
+            this.classService = RestService.For<IClassServiceProxy>(httpClient);
+            this.classTypeService = RestService.For<IClassTypeServiceProxy>(httpClient);
+            this.personalTrainerService = RestService.For<IPersonalTrainerServiceProxy>(httpClient);
+            this.userClassService = RestService.For<IUserClassServiceProxy>(httpClient);
             Classes = new ObservableCollection<ClassModel>();
             ClassTypes = new ObservableCollection<ClassTypeModel>();
             PersonalTrainers = new ObservableCollection<PersonalTrainerModel>();

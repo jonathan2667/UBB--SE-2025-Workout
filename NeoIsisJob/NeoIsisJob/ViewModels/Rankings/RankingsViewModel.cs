@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using NeoIsisJob.Commands;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
 // using Windows.UI;
 using Workout.Core.Models;
 using Workout.Core.Services.Interfaces;
+using NeoIsisJob.Proxy;
+using NeoIsisJob.Helpers;
+using System.Net.Http;
+using System;
+using Refit;
 
 namespace NeoIsisJob.ViewModels.Rankings
 {
@@ -23,7 +22,12 @@ namespace NeoIsisJob.ViewModels.Rankings
 
         public RankingsViewModel(IRankingsService rankingsService)
         {
-            this.rankingsService = rankingsService;
+
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+            this.rankingsService = RestService.For<IRankingsServiceProxy>(httpClient);
             this.rankDefinitions = InitializeRankDefinitions();
         }
 

@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Controls;
 using NeoIsisJob.Commands;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
+using Refit;
+
+
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
 using Workout.Core.Models;
 using Workout.Core.Services;
+using Workout.Core.Services.Interfaces;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
@@ -20,11 +23,11 @@ namespace NeoIsisJob.ViewModels.Workout
     {
         private readonly Frame frame;
 
-        private readonly WorkoutTypeService workoutTypeService;
-        private readonly ExerciseService exerciseService;
-        private readonly MuscleGroupService muscleGroupService;
-        private readonly WorkoutService workoutService;
-        private readonly CompleteWorkoutService completeWorkoutService;
+        private readonly IWorkoutTypeService workoutTypeService;
+        private readonly IExerciseService exerciseService;
+        private readonly IMuscleGroupService muscleGroupService;
+        private readonly IWorkoutService workoutService;
+        private readonly ICompleteWorkoutService completeWorkoutService;
         private ObservableCollection<WorkoutTypeModel> workoutTypes;
         private ObservableCollection<ExercisesModel> exercises;
 
@@ -137,12 +140,16 @@ namespace NeoIsisJob.ViewModels.Workout
         {
             // pass the frame to the viewModel
             this.frame = frame;
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
 
-            this.workoutTypeService = new WorkoutTypeService();
-            this.exerciseService = new ExerciseService();
-            this.muscleGroupService = new MuscleGroupService();
-            this.workoutService = new WorkoutService();
-            this.completeWorkoutService = new CompleteWorkoutService();
+            this.workoutTypeService = RestService.For<IWorkoutTypeServiceProxy>(httpClient);
+            this.exerciseService = RestService.For<IExerciseServiceProxy>(httpClient);
+            this.muscleGroupService = RestService.For<IMuscleGroupServiceProxy>(httpClient);
+            this.workoutService = RestService.For<IWorkoutServiceProxy>(httpClient);
+            this.completeWorkoutService = RestService.For<ICompleteWorkoutServiceProxy>(httpClient);
             this.WorkoutTypes = new ObservableCollection<WorkoutTypeModel>();
             this.Exercises = new ObservableCollection<ExercisesModel>();
             this.SelectedExercises = new ObservableCollection<ExercisesModel>();

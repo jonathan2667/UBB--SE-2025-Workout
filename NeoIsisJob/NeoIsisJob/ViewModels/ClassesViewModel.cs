@@ -1,4 +1,8 @@
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
+using Refit;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 // using NeoIsisJob.Services.Interfaces;
@@ -12,7 +16,13 @@ namespace NeoIsisJob.ViewModels
 
         public ClassesViewModel(IClassService classService)
         {
-            this.classService = classService;
+
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+
+            this.classService = RestService.For<IClassServiceProxy>(httpClient);
         }
 
         public async Task<string> ConfirmRegistration(int userId, int classId, DateTime date)

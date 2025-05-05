@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
 // using NeoIsisJob.Services.Interfaces;
@@ -12,6 +11,11 @@ using NeoIsisJob.Commands;
 using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Core.Services.Interfaces;
+using System.Net.Http;
+using System;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
+using Refit;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
@@ -35,12 +39,18 @@ namespace NeoIsisJob.ViewModels.Workout
         public ICommand CloseEditPopupCommand { get; }
 
         // Default constructor for backward compatibility
-        public WorkoutViewModel() : this(
-            new WorkoutService(),
-            new WorkoutTypeService(),
-            new CompleteWorkoutService(),
-            new ExerciseService())
+        public WorkoutViewModel()
         {
+
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+
+            this.workoutTypeService = RestService.For<IWorkoutTypeServiceProxy>(httpClient);
+            this.exerciseService = RestService.For<IExerciseServiceProxy>(httpClient);
+            this.workoutService = RestService.For<IWorkoutServiceProxy>(httpClient);
+            this.completeWorkoutService = RestService.For<ICompleteWorkoutServiceProxy>(httpClient);
         }
 
         // Constructor with dependency injection
@@ -50,10 +60,16 @@ namespace NeoIsisJob.ViewModels.Workout
             ICompleteWorkoutService completeWorkoutService,
             IExerciseService exerciseService)
         {
-            this.workoutService = workoutService;
-            this.workoutTypeService = workoutTypeService;
-            this.completeWorkoutService = completeWorkoutService;
-            this.exerciseService = exerciseService;
+
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+
+            this.workoutTypeService = RestService.For<IWorkoutTypeServiceProxy>(httpClient);
+            this.exerciseService = RestService.For<IExerciseServiceProxy>(httpClient);
+            this.workoutService = RestService.For<IWorkoutServiceProxy>(httpClient);
+            this.completeWorkoutService = RestService.For<ICompleteWorkoutServiceProxy>(httpClient);
 
             Workouts = new ObservableCollection<WorkoutModel>();
             WorkoutTypes = new ObservableCollection<WorkoutTypeModel>();

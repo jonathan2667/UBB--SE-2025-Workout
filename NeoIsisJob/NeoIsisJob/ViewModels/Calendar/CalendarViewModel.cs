@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Controls;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Data;
 // using NeoIsisJob.Repositories;
@@ -13,9 +9,12 @@ using Microsoft.UI.Xaml.Controls;
 // using NeoIsisJob.Services.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Data;
-using Workout.Core.Repositories;
 using Workout.Core.Services;
 using Workout.Core.Services.Interfaces;
+using Refit;
+using NeoIsisJob.Proxy;
+using System.Net.Http;
+using NeoIsisJob.Helpers;
 
 namespace NeoIsisJob.ViewModels.Calendar
 {
@@ -38,7 +37,12 @@ namespace NeoIsisJob.ViewModels.Calendar
             this.UserId = userId;
             currentDate = DateTime.Now;
 
-            this.calendarService = calendarService ?? new CalendarService();
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+
+            this.calendarService = RestService.For<ICalendarServiceProxy>(httpClient);
             databaseHelper = new DatabaseHelper();
             CalendarDays = new ObservableCollection<CalendarDay>();
             PreviousMonthCommand = new RelayCommand(PreviousMonth);
