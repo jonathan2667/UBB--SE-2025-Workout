@@ -16,21 +16,24 @@ using Workout.Core.Data;
 using Workout.Core.Repositories;
 using Workout.Core.Services;
 using Workout.Core.IServices;
-
+using NeoIsisJob.Proxy;
 namespace NeoIsisJob.Views
 {
     public sealed partial class CalendarPage : Page
     {
         public CalendarViewModel ViewModel { get; private set; }
-        private readonly ICalendarService calendarService;
+        private readonly CalendarServiceProxy calendarService;
 
         public CalendarPage()
         {
             this.InitializeComponent();
+            
+            // Initialize services
+            calendarService = new CalendarServiceProxy();
+            
             // Assuming you have a way to get the UserId, e.g., from app state or navigation
             int userId = 1; // Replace with actual user ID source
-            calendarService = new CalendarService();
-            ViewModel = new CalendarViewModel(userId, calendarService);
+            ViewModel = new CalendarViewModel(userId);
             this.DataContext = ViewModel;
             Loaded += CalendarPage_Loaded;
         }

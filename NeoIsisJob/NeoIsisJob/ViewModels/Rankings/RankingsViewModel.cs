@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using NeoIsisJob.Commands;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
 // using Windows.UI;
 using Workout.Core.Models;
+using Workout.Core.IServices;
+using NeoIsisJob.Proxy;
+using NeoIsisJob.Helpers;
+using System.Net.Http;
+using System;
+using Refit;
 using Workout.Core.IServices;
 
 namespace NeoIsisJob.ViewModels.Rankings
 {
     public class RankingsViewModel
     {
-        private readonly IRankingsService rankingsService;
+        private readonly RankingsServiceProxy rankingsService;
         private readonly int userId = 1; // !!!!!!!!!!!!!!! HARDCODED USER VALUE !!!!!!! CHANGE THIS FOR PROD !!!!!!!!
         private readonly List<RankDefinition> rankDefinitions;
 
-        public RankingsViewModel(IRankingsService rankingsService)
+        public RankingsViewModel()
         {
-            this.rankingsService = rankingsService;
+            this.rankingsService = new RankingsServiceProxy();
             this.rankDefinitions = InitializeRankDefinitions();
         }
 

@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using NeoIsisJob.Models;
-using NeoIsisJob.Services;
-
+using Workout.Core.Models;
+using NeoIsisJob.Proxy;
 namespace NeoIsisJob.Views
 {
     public sealed partial class MainPage : Page
     {
         // Services
-        private readonly WorkoutService workoutService;
-        private readonly ExerciseService exerciseService;
-        private readonly CompleteWorkoutService completeWorkoutService;
+        private readonly WorkoutServiceProxy workoutService;
+        private readonly ExerciseServiceProxy exerciseService;
+        private readonly CompleteWorkoutServiceProxy completeWorkoutService;
 
         // Current workout data
         private WorkoutModel currentWorkout;
@@ -39,9 +38,9 @@ namespace NeoIsisJob.Views
             this.InitializeComponent();
 
             // Initialize services
-            workoutService = new WorkoutService();
-            exerciseService = new ExerciseService();
-            completeWorkoutService = new CompleteWorkoutService();
+            workoutService = new WorkoutServiceProxy();
+            exerciseService = new ExerciseServiceProxy();
+            completeWorkoutService = new CompleteWorkoutServiceProxy();
 
             // Set current date
             CurrentDateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM d, yyyy");
@@ -66,23 +65,23 @@ namespace NeoIsisJob.Views
                 if (todaysWorkoutId.HasValue)
                 {
                     // Get the workout details
-                    currentWorkout = workoutService.GetWorkout(todaysWorkoutId.Value);
+                    currentWorkout = workoutService.GetWorkoutAsync(todaysWorkoutId.Value).Result;
 
                     if (currentWorkout != null)
                     {
                         // Get the exercises for this workout
-                        var completeWorkouts = completeWorkoutService.GetCompleteWorkoutsByWorkoutId(currentWorkout.Id);
+                        var completeWorkouts = completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(currentWorkout.WID).Result;
                         currentWorkoutExercises = new List<ExerciseWithDetails>();
 
                         foreach (var completeWorkout in completeWorkouts)
                         {
-                            var exercise = exerciseService.GetExerciseById(completeWorkout.ExerciseId);
+                            var exercise = exerciseService.GetExerciseByIdAsync(completeWorkout.EID).Result;
                             if (exercise != null)
                             {
                                 currentWorkoutExercises.Add(new ExerciseWithDetails
                                 {
                                     Name = exercise.Name,
-                                    Details = $"{completeWorkout.Sets} sets � {completeWorkout.RepetitionsPerSet} reps"
+                                    Details = $"{completeWorkout.Sets} sets × {completeWorkout.RepsPerSet} reps"
                                 });
                             }
                         }
@@ -147,7 +146,7 @@ namespace NeoIsisJob.Views
             try
             {
                 // Get all available workouts
-                var availableWorkouts = workoutService.GetAllWorkouts();
+                var availableWorkouts = workoutService.GetAllWorkoutsAsync().Result;
 
                 if (availableWorkouts.Count == 0)
                 {
@@ -202,7 +201,7 @@ namespace NeoIsisJob.Views
                 if (result == ContentDialogResult.Primary && workoutListView.SelectedItem is WorkoutModel selectedWorkout)
                 {
                     // For testing, store the selected workout ID in local settings
-                    Windows.Storage.ApplicationData.Current.LocalSettings.Values["TodaysWorkoutId"] = selectedWorkout.Id;
+                    Windows.Storage.ApplicationData.Current.LocalSettings.Values["TodaysWorkoutId"] = selectedWorkout.WID;
 
                     // Reload the workout display
                     LoadTodaysWorkout();

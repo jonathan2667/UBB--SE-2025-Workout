@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Controls;
+using System.Net.Http;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Data;
 // using NeoIsisJob.Repositories;
@@ -13,9 +10,10 @@ using Microsoft.UI.Xaml.Controls;
 // using NeoIsisJob.Services.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Data;
-using Workout.Core.Repositories;
 using Workout.Core.Services;
 using Workout.Core.IServices;
+using NeoIsisJob.Proxy;
+using NeoIsisJob.Helpers;
 
 namespace NeoIsisJob.ViewModels.Calendar
 {
@@ -26,20 +24,17 @@ namespace NeoIsisJob.ViewModels.Calendar
         private string monthText;
         private ObservableCollection<CalendarDayModel> calendarDays;
 
-        private readonly ICalendarService calendarService;
-
-        private readonly DatabaseHelper databaseHelper;
+        private readonly CalendarServiceProxy calendarService;
 
         public readonly int UserId;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public CalendarViewModel(int userId, ICalendarService calendarService = null)
+        public CalendarViewModel(int userId)
         {
             this.UserId = userId;
             currentDate = DateTime.Now;
 
-            this.calendarService = calendarService ?? new CalendarService();
-            databaseHelper = new DatabaseHelper();
+            this.calendarService = new CalendarServiceProxy();
             CalendarDays = new ObservableCollection<CalendarDayModel>();
             PreviousMonthCommand = new RelayCommand(PreviousMonth);
             NextMonthCommand = new RelayCommand(NextMonth);

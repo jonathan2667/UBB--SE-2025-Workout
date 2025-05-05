@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 // using NeoIsisJob.Models;
@@ -13,15 +11,19 @@ using System.Diagnostics;
 using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Core.IServices;
+using Workout.Core.IServices;
+using NeoIsisJob.Helpers;
+using System.Net.Http;
+using NeoIsisJob.Proxy;
+using Refit;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
     public class SelectedWorkoutViewModel : INotifyPropertyChanged
     {
-        private readonly IWorkoutService workoutService;
-        // for getting the exercise by id
-        private readonly IExerciseService exerciseService;
-        private readonly ICompleteWorkoutService completeWorkoutService;
+        private readonly WorkoutServiceProxy workoutService;
+        private readonly ExerciseServiceProxy exerciseService;
+        private readonly CompleteWorkoutServiceProxy completeWorkoutService;
         private WorkoutModel selectedWorkout;
         private ObservableCollection<CompleteWorkoutModel> completeWorkouts;
 
@@ -58,23 +60,12 @@ namespace NeoIsisJob.ViewModels.Workout
             }
         }
 
-        // Default constructor for backward compatibility
-        public SelectedWorkoutViewModel() : this(
-            new WorkoutService(),
-            new ExerciseService(),
-            new CompleteWorkoutService())
+        // Default constructor
+        public SelectedWorkoutViewModel()
         {
-        }
-
-        // Constructor with dependency injection
-        public SelectedWorkoutViewModel(
-            IWorkoutService workoutService,
-            IExerciseService exerciseService,
-            ICompleteWorkoutService completeWorkoutService)
-        {
-            this.workoutService = workoutService;
-            this.exerciseService = exerciseService;
-            this.completeWorkoutService = completeWorkoutService;
+            this.workoutService = new WorkoutServiceProxy();
+            this.exerciseService = new ExerciseServiceProxy();
+            this.completeWorkoutService = new CompleteWorkoutServiceProxy();
             this.completeWorkouts = new ObservableCollection<CompleteWorkoutModel>();
         }
 
@@ -112,10 +103,8 @@ namespace NeoIsisJob.ViewModels.Workout
                 // Notify the UI about the change
                 OnPropertyChanged(nameof(SelectedWorkout));
 
-                // Reload the CompleteWorkouts collection if necessary
-                // IList<CompleteWorkoutModel> complWorkouts = FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.Id));
+                // Reload the CompleteWorkouts collection
                 IList<CompleteWorkoutModel> complWorkouts = await FilledCompleteWorkoutsWithExercies(await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(this.selectedWorkout.WID));
-
                 CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(complWorkouts);
             }
             catch (Exception ex)

@@ -1,12 +1,5 @@
-using System;
-using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
-using NeoIsisJob.Repositories;
-using NeoIsisJob.Services;
-using NeoIsisJob.Data;
-using NeoIsisJob.ViewModels;
 using NeoIsisJob.Views;
-using Microsoft.UI.Xaml.Controls;
 
 namespace NeoIsisJob
 {
