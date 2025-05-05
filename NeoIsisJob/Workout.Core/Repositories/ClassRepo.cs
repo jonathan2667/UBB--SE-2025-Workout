@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Workout.Core.Models;
-using Workout.Server.Data;
+using Workout.Core.Data;
 
-namespace Workout.Server.Repositories
+namespace Workout.Core.Repositories
 {
     public class ClassRepo
     {

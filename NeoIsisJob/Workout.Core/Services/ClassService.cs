@@ -7,21 +7,19 @@ using System.Threading.Tasks;
 using Workout.Core.Models;
 using Workout.Core.IServices;
 using Workout.Core.IRepositories;
-using Workout.Server.Repositories;
+using Workout.Core.Repositories;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class ClassService : IClassService
     {
         private readonly IClassRepository _classRepo;
         private readonly IUserClassService _userClassService;
 
-        public ClassService(
-            IClassRepository classRepository = null,
-            IUserClassService userClassService = null)
+        public ClassService(IClassRepository classRepository, IUserClassService userClassService)
         {
-            _classRepo        = classRepository   ?? new ClassRepository();
-            _userClassService = userClassService  ?? new UserClassService();
+            _classRepo        = classRepository ?? throw new ArgumentNullException(nameof(classRepository));
+            _userClassService = userClassService ?? throw new ArgumentNullException(nameof(userClassService));
         }
 
         public async Task<List<ClassModel>> GetAllClassesAsync()
@@ -76,9 +74,9 @@ namespace Workout.Server.Services
             {
                 var userClass = new UserClassModel
                 {
-                    UserId         = userId,
-                    ClassId        = classId,
-                    EnrollmentDate = date.Date
+                    UID         = userId,
+                    CID        = classId,
+                    Date = date.Date
                 };
 
                 await _userClassService

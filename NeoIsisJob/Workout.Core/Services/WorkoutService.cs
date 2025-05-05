@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Server.Repositories;
+using Workout.Core.Repositories;
 using Workout.Core.IServices;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class WorkoutService : IWorkoutService
     {
@@ -18,7 +18,7 @@ namespace Workout.Server.Services
         public WorkoutService(IWorkoutRepository workoutRepository = null)
         {
             _workoutRepository = workoutRepository
-                ?? new WorkoutRepo();//throw new ArgumentNullException(nameof(workoutRepository));
+                ?? throw new ArgumentNullException(nameof(workoutRepository));
         }
 
         public async Task<WorkoutModel> GetWorkoutAsync(int workoutId)

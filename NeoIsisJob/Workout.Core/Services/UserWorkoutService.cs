@@ -7,7 +7,7 @@ using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.IServices;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class UserWorkoutService : IUserWorkoutService
     {
@@ -29,19 +29,19 @@ namespace Workout.Server.Services
             var workouts = await _userWorkoutRepository
                                 .GetUserWorkoutModelByDateAsync(date)
                                 .ConfigureAwait(false);
-            return workouts.FirstOrDefault(w => w.UserId == userId);
+            return workouts.FirstOrDefault(w => w.UID == userId);
         }
 
         public async Task AddUserWorkoutAsync(UserWorkoutModel userWorkout)
         {
             if (userWorkout == null)
                 throw new ArgumentNullException(nameof(userWorkout));
-            if (userWorkout.UserId <= 0)
+            if (userWorkout.UID <= 0)
                 throw new ArgumentException("UserId must be positive.", nameof(userWorkout));
             if (userWorkout.Date == default)
                 throw new ArgumentException("Date must be specified.", nameof(userWorkout));
 
-            var existing = await GetUserWorkoutForDateAsync(userWorkout.UserId, userWorkout.Date)
+            var existing = await GetUserWorkoutForDateAsync(userWorkout.UID, userWorkout.Date)
                                 .ConfigureAwait(false);
             if (existing != null)
             {

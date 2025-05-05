@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using Workout.Core.Data;
 using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Server.Repositories;
+using Workout.Core.Repositories;
 using Workout.Core.IServices;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class CalendarService : ICalendarService
     {
@@ -18,11 +18,13 @@ namespace Workout.Server.Services
         private readonly IUserWorkoutRepository userWorkoutRepo;
 
         public CalendarService(
-            ICalendarRepository calendarRepository = null,
-            IUserWorkoutRepository userWorkoutRepo = null)
+            ICalendarRepository calendarRepository,
+            IUserWorkoutRepository userWorkoutRepo)
         {
-            this.calendarRepository = calendarRepository ?? new CalendarRepository();
-            this.userWorkoutRepo = userWorkoutRepo ?? new UserWorkoutRepo(new DatabaseHelper());
+            this.calendarRepository = calendarRepository
+                ?? throw new ArgumentNullException(nameof(calendarRepository));
+            this.userWorkoutRepo = userWorkoutRepo
+                ?? throw new ArgumentNullException(nameof(userWorkoutRepo));
         }
 
         public async Task<List<CalendarDayModel>> GetCalendarDaysForMonthAsync(int userId, DateTime date)
@@ -73,7 +75,7 @@ namespace Workout.Server.Services
         {
             var w = await GetUserWorkoutAsync(userId, day.Date);
             if (w != null)
-                await DeleteUserWorkoutAsync(userId, w.WorkoutId, day.Date);
+                await DeleteUserWorkoutAsync(userId, w.WID, day.Date);
         }
 
         public async Task ChangeWorkoutAsync(int userId, CalendarDayModel day)
@@ -81,7 +83,7 @@ namespace Workout.Server.Services
             // same logic as Remove; you can extend to Add afterward
             var w = await GetUserWorkoutAsync(userId, day.Date);
             if (w != null)
-                await DeleteUserWorkoutAsync(userId, w.WorkoutId, day.Date);
+                await DeleteUserWorkoutAsync(userId, w.WID, day.Date);
         }
 
         public string GetWorkoutDaysCountText(ObservableCollection<CalendarDayModel> calendarDays)

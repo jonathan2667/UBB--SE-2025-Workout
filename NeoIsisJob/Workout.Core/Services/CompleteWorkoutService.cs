@@ -5,22 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Data.Interfaces;
 using Workout.Core.Models;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 using Workout.Core.Data;
 using Workout.Core.Repositories;
 using Workout.Core.IRepositories;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class CompleteWorkoutService : ICompleteWorkoutService
     {
         private readonly ICompleteWorkoutRepository _completeWorkoutRepository;
 
-        public CompleteWorkoutService(IDatabaseHelper databaseHelper)
-        {
-            //if (databaseHelper == null) throw new ArgumentNullException(nameof(databaseHelper));
-            _completeWorkoutRepository = new CompleteWorkoutRepo(databaseHelper);
-        }
+        //public CompleteWorkoutService(IDatabaseHelper databaseHelper)
+        //{
+        //    //if (databaseHelper == null) throw new ArgumentNullException(nameof(databaseHelper));
+        //    _completeWorkoutRepository = new CompleteWorkoutRepo(databaseHelper);
+        //}
 
         public CompleteWorkoutService(ICompleteWorkoutRepository completeWorkoutRepository)
         {
@@ -28,10 +28,10 @@ namespace Workout.Server.Services
                 ?? throw new ArgumentNullException(nameof(completeWorkoutRepository));
         }
 
-        public CompleteWorkoutService()
-            : this(new CompleteWorkoutRepo(new DatabaseHelper()))
-        {
-        }
+        //public CompleteWorkoutService()
+        //    : this(new CompleteWorkoutRepo(new DatabaseHelper()))
+        //{
+        //}
 
         public async Task<IList<CompleteWorkoutModel>> GetAllCompleteWorkoutsAsync()
         {
@@ -48,7 +48,7 @@ namespace Workout.Server.Services
             var all = await _completeWorkoutRepository
                              .GetAllCompleteWorkoutsAsync();
                              //.ConfigureAwait(false);
-            return all.Where(cw => cw.WorkoutId == workoutId).ToList();
+            return all.Where(cw => cw.WID == workoutId).ToList();
         }
 
         public async Task DeleteCompleteWorkoutsByWorkoutIdAsync(int workoutId)

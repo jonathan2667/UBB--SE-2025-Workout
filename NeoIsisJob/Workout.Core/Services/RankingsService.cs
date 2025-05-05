@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Server.Repositories;
+using Workout.Core.Repositories;
 using Workout.Core.IServices;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class RankingsService : IRankingsService
     {
@@ -18,7 +18,7 @@ namespace Workout.Server.Services
         public RankingsService(IRankingsRepository rankingsRepository)
         {
             _rankingsRepository = rankingsRepository
-                ?? new RankingsRepository();//throw new ArgumentNullException(nameof(rankingsRepository));
+                ?? throw new ArgumentNullException(nameof(rankingsRepository));
         }
 
         public async Task<IList<RankingModel>> GetAllRankingsByUserIDAsync(int userId)

@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Workout.Core.Models;
-using Workout.Server.Repositories;
+using Workout.Core.Repositories;
 using Workout.Core.IServices;
 using Workout.Core.IRepositories;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class UserClassService : IUserClassService 
     {
         private readonly IUserClassRepo userClassRepository;
 
-        public UserClassService()
+        public UserClassService(IUserClassRepo userClassRepository)
         {
-            this.userClassRepository = new UserClassRepo();
+            this.userClassRepository = userClassRepository ?? throw new ArgumentNullException(nameof(userClassRepository));
         }
 
         public async Task<List<UserClassModel>> GetAllUserClassesAsync()

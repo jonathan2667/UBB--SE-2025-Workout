@@ -7,7 +7,7 @@ using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Core.IRepositories;
 
-namespace Workout.Server.Services
+namespace Workout.Core.Services
 {
     public class UserService : IUserService
     {
