@@ -41,7 +41,7 @@ namespace Workout.Server.Controllers
             }
         }
 
-        [HttpPost("api/workouttype/{workoutTypeName")]
+        [HttpPost("api/workouttype/{workoutTypeName}")]
         public async Task<IActionResult> AddWorkoutType([FromBody] string workoutTypeName)
         {
             try

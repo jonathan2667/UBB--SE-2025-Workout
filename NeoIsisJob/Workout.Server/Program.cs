@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Workout.Core.IRepositories;
 using Workout.Core.Repositories;
-using Workout.Server.Data;
+using Workout.Core.IServices;
+using Workout.Core.Services;
+using Workout.Core.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,6 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<WorkoutDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register repositories
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepo>();
 builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
@@ -25,6 +26,20 @@ builder.Services.AddScoped<IWorkoutTypeRepository, WorkoutTypeRepo>();
 builder.Services.AddScoped<IPersonalTrainerRepo, PersonalTrainerRepo>();
 builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
+
+// Register repositories
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
+builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<IClassTypeService, ClassTypeService>();
+builder.Services.AddScoped<IUserClassService, UserClassService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
+builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
+builder.Services.AddScoped<IPersonalTrainerService, PersonalTrainerService>();
+builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
+builder.Services.AddScoped<IRankingsService, RankingsService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

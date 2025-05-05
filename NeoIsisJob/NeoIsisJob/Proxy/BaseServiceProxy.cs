@@ -21,11 +21,11 @@ namespace NeoIsisJob.Proxy
             // If configuration is provided, read base URL from there, otherwise use default
             if (configuration != null)
             {
-                _baseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7001/";
+                _baseUrl = configuration["ApiSettings:BaseUrl"] ?? "https://localhost:5261/";
             }
             else
             {
-                _baseUrl = "https://localhost:7001/";
+                _baseUrl = "https://localhost:5261/";
             }
 
             // Ensure the base URL ends with a slash

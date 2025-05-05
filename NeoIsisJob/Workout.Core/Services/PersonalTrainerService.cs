@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Workout.Core.Repositories;
 using Workout.Core.Models;
 using Workout.Core.IRepositories;
+using Workout.Core.IServices;
 
 namespace Workout.Core.Services
 {
-    public class PersonalTrainerService
+    public class PersonalTrainerService : IPersonalTrainerService
     {
         private readonly IPersonalTrainerRepo personalTrainerRepository;
 
