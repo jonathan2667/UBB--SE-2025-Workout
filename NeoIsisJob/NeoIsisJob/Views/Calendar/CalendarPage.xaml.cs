@@ -320,16 +320,42 @@ namespace NeoIsisJob.Views
                             }
                         };
 
+                        //dialog.SecondaryButtonClick += async (s, args) =>
+                        //{
+                        //    if (day.HasWorkout && day.Date >= DateTime.Now.Date)
+                        //    {
+                        //        args.Cancel = true; // Keep dialog open
+                        //        await calendarService.RemoveWorkoutAsync(ViewModel.UserId, day);
+                        //        ViewModel.UpdateCalendar(); // Force calendar update
+                        //        dialog.Hide(); // Close the dialog
+                        //    }
+                        //};
+
                         dialog.SecondaryButtonClick += async (s, args) =>
                         {
                             if (day.HasWorkout && day.Date >= DateTime.Now.Date)
                             {
-                                args.Cancel = true; // Keep dialog open
-                                await calendarService.RemoveWorkoutAsync(ViewModel.UserId, day);
-                                ViewModel.UpdateCalendar(); // Force calendar update
-                                dialog.Hide(); // Close the dialog
+                                args.Cancel = true;  // keep dialog open while we work
+
+                                // 1) fetch the UserWorkout so we know which WID to delete
+                                var existing = await calendarService.GetUserWorkoutAsync(ViewModel.UserId, day.Date);
+
+                                if (existing != null)
+                                {
+                                    // 2) call the correct delete method
+                                    await calendarService.DeleteUserWorkoutAsync(
+                                        ViewModel.UserId,
+                                        existing.WID,
+                                        day.Date
+                                    );
+                                }
+
+                                // 3) refresh your calendar UI
+                                ViewModel.UpdateCalendar();
+                                dialog.Hide();
                             }
                         };
+
                     }
                     else
                     {

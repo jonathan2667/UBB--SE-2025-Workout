@@ -206,22 +206,40 @@ namespace NeoIsisJob.Proxy
             }
         }
 
+        //protected async Task DeleteAsync(string url)
+        //{
+        //    try
+        //    {
+        //        Debug.WriteLine($"[BaseServiceProxy] DELETE: {_httpClient.BaseAddress}{url}");
+        //        var response = await _httpClient.DeleteAsync(url);
+
+        //        Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+        //        response.EnsureSuccessStatusCode();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine($"[BaseServiceProxy] ERROR in DeleteAsync: {ex.Message}");
+        //        throw;
+        //    }
+        //}
         protected async Task DeleteAsync(string url)
         {
-            try
+            // Log the full request URL
+            Debug.WriteLine($"[BaseServiceProxy] DELETE: {_httpClient.BaseAddress}{url}");
+
+            // Send the DELETE
+            var response = await _httpClient.DeleteAsync(url);
+            Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+
+            // If it isn’t a success (2xx), read and log the error JSON, then throw
+            if (!response.IsSuccessStatusCode)
             {
-                Debug.WriteLine($"[BaseServiceProxy] DELETE: {_httpClient.BaseAddress}{url}");
-                var response = await _httpClient.DeleteAsync(url);
-                
-                Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+                var body = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"[BaseServiceProxy] DELETE error body: {body}");
                 response.EnsureSuccessStatusCode();
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[BaseServiceProxy] ERROR in DeleteAsync: {ex.Message}");
-                throw;
-            }
         }
+
 
         protected async Task<T> DeleteAsync<T>(string url)
         {

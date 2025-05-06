@@ -220,10 +220,7 @@ namespace NeoIsisJob.Proxy
         public Task UpdateUserWorkoutAsync(UserWorkoutModel uw)
             => PutAsync($"{BaseRoute}/userworkout", uw);
 
-        // DELETE /api/calendar/userworkout/{userId}/{workoutId}/{yyyy}/{MM}/{dd}
-        public Task DeleteUserWorkoutAsync(int userId, int workoutId, DateTime date)
-            => DeleteAsync(
-                $"{BaseRoute}/userworkout/{userId}/{workoutId}/{date:yyyy}/{date:MM}/{date:dd}");
+        
 
         // PUT /api/calendar/workout/{userId}/{yyyy}/{MM}/{dd}
         public Task ChangeWorkoutAsync(int userId, CalendarDayModel day)
@@ -269,11 +266,27 @@ namespace NeoIsisJob.Proxy
             return new ObservableCollection<CalendarDayModel>(list);
         }
 
+        ///// <summary>
+        ///// Alias for your old RemoveWorkoutAsync signature:
+        ///// </summary>
+        //public Task RemoveWorkoutAsync(int userId, CalendarDayModel day)
+        //    => DeleteAsync(
+        //        $"{BaseRoute}/workout/{userId}/{day.Date:yyyy}/{day.Date:MM}/{day.Date:dd}");
+
+
+        //not sure if its ok yet
+    //    public Task RemoveWorkoutAsync(int userId, CalendarDayModel day)
+    //=> DeleteAsync($"{BaseRoute}/workout/{userId}/{day.Date:yyyy}/{day.Date:MM}/{day.Date:dd}");
+
+
+
         /// <summary>
-        /// Alias for your old RemoveWorkoutAsync signature:
+        /// DELETE /api/calendar/userworkout/{userId}/{workoutId}/{yyyy}/{MM}/{dd}
         /// </summary>
-        public Task RemoveWorkoutAsync(int userId, CalendarDayModel day)
+        public Task DeleteUserWorkoutAsync(int userId, int workoutId, DateTime date)
             => DeleteAsync(
-                $"{BaseRoute}/workout/{userId}/{day.Date:yyyy}/{day.Date:MM}/{day.Date:dd}");
+                $"{BaseRoute}/userworkout/{userId}/{workoutId}/{date:yyyy}/{date:MM}/{date:dd}");
+
+
     }
 }
