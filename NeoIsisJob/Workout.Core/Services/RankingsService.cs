@@ -13,43 +13,28 @@ namespace Workout.Core.Services
 {
     public class RankingsService : IRankingsService
     {
-        private readonly IRankingsRepository _rankingsRepository;
+        private readonly IRankingsRepository rankingsRepository;
 
         public RankingsService(IRankingsRepository rankingsRepository)
         {
-            _rankingsRepository = rankingsRepository
+            this.rankingsRepository = rankingsRepository
                 ?? throw new ArgumentNullException(nameof(rankingsRepository));
         }
 
         public async Task<IList<RankingModel>> GetAllRankingsByUserIDAsync(int userId)
         {
-            //if (userId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(userId), "userId must be positive.");
-
-            return await _rankingsRepository
+            return await rankingsRepository
                          .GetAllRankingsByUserIDAsync(userId);
-                         //.ConfigureAwait(false);
         }
 
         public async Task<RankingModel> GetRankingByFullIDAsync(int userId, int muscleGroupId)
         {
-            //if (userId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(userId), "userId must be positive.");
-            //if (muscleGroupId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(muscleGroupId), "muscleGroupId must be positive.");
-
-            return await _rankingsRepository
+            return await rankingsRepository
                          .GetRankingByFullIDAsync(userId, muscleGroupId);
-                         //.ConfigureAwait(false);
         }
 
         public int CalculatePointsToNextRank(int currentPoints, IList<RankDefinition> rankDefinitions)
         {
-            //if (currentPoints < 0)
-            //    throw new ArgumentOutOfRangeException(nameof(currentPoints), "currentPoints cannot be negative.");
-            //if (rankDefinitions == null || !rankDefinitions.Any())
-            //    throw new ArgumentException("rankDefinitions cannot be null or empty.", nameof(rankDefinitions));
-
             var currentRankDefinition = rankDefinitions.FirstOrDefault(r =>
                currentPoints >= r.MinPoints && currentPoints < r.MaxPoints)
                ?? rankDefinitions.Last();

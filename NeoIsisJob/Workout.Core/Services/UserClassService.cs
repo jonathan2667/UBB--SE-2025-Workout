@@ -8,7 +8,7 @@ using Workout.Core.IRepositories;
 
 namespace Workout.Core.Services
 {
-    public class UserClassService : IUserClassService 
+    public class UserClassService : IUserClassService
     {
         private readonly IUserClassRepo userClassRepository;
 
@@ -29,9 +29,6 @@ namespace Workout.Core.Services
 
         public async Task AddUserClassAsync(UserClassModel userClassModel)
         {
-            //if (userClassModel == null)
-            //    throw new ArgumentNullException(nameof(userClassModel));
-
             await userClassRepository.AddUserClassModelAsync(userClassModel);
         }
 

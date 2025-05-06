@@ -46,7 +46,11 @@ namespace Workout.Core.Services
             {
                 calendarDays.Add(new CalendarDayModel { IsEnabled = false, GridRow = row, GridColumn = col });
                 col++;
-                if (col > 6) { col = 0; row++; }
+                if (col > 6)
+                {
+                    col = 0;
+                    row++;
+                }
             }
 
             DateTime today = DateTime.Now.Date;
@@ -75,7 +79,9 @@ namespace Workout.Core.Services
         {
             var w = await GetUserWorkoutAsync(userId, day.Date);
             if (w != null)
+            {
                 await DeleteUserWorkoutAsync(userId, w.WID, day.Date);
+            }
         }
 
         public async Task ChangeWorkoutAsync(int userId, CalendarDayModel day)
@@ -83,7 +89,9 @@ namespace Workout.Core.Services
             // same logic as Remove; you can extend to Add afterward
             var w = await GetUserWorkoutAsync(userId, day.Date);
             if (w != null)
+            {
                 await DeleteUserWorkoutAsync(userId, w.WID, day.Date);
+            }
         }
 
         public string GetWorkoutDaysCountText(ObservableCollection<CalendarDayModel> calendarDays)

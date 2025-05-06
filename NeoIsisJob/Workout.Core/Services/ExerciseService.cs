@@ -12,28 +12,23 @@ namespace Workout.Core.Services
 {
     public class ExerciseService : IExerciseService
     {
-        private readonly IExerciseRepository _exerciseRepository;
+        private readonly IExerciseRepository exerciseRepository;
 
         public ExerciseService(IExerciseRepository exerciseRepository)
         {
-            _exerciseRepository = exerciseRepository ?? throw new ArgumentNullException(nameof(exerciseRepository));
+            this.exerciseRepository = exerciseRepository ?? throw new ArgumentNullException(nameof(exerciseRepository));
         }
 
         public async Task<ExercisesModel> GetExerciseByIdAsync(int exerciseId)
         {
-            //if (exerciseId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(exerciseId), "exerciseId must be positive.");
-
-            return await _exerciseRepository
+            return await exerciseRepository
                          .GetExerciseByIdAsync(exerciseId);
-                         //.ConfigureAwait(false);
         }
 
         public async Task<IList<ExercisesModel>> GetAllExercisesAsync()
         {
-            return await _exerciseRepository
+            return await exerciseRepository
                          .GetAllExercisesAsync();
-                         //.ConfigureAwait(false);
         }
     }
 }

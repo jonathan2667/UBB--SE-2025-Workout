@@ -13,78 +13,55 @@ namespace Workout.Core.Services
 {
     public class ClassService : IClassService
     {
-        private readonly IClassRepository _classRepo;
-        private readonly IUserClassService _userClassService;
+        private readonly IClassRepository classRepo;
+        private readonly IUserClassService userClassService;
 
         public ClassService(IClassRepository classRepository, IUserClassService userClassService)
         {
-            _classRepo        = classRepository ?? throw new ArgumentNullException(nameof(classRepository));
-            _userClassService = userClassService ?? throw new ArgumentNullException(nameof(userClassService));
+            classRepo = classRepository ?? throw new ArgumentNullException(nameof(classRepository));
+            this.userClassService = userClassService ?? throw new ArgumentNullException(nameof(userClassService));
         }
 
         public async Task<List<ClassModel>> GetAllClassesAsync()
         {
-            return await _classRepo
+            return await classRepo
                 .GetAllClassModelAsync();
-                //.ConfigureAwait(false);
         }
-
         public async Task<ClassModel> GetClassByIdAsync(int classId)
         {
-            //if (classId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(classId), "classId must be positive.");
-
-            return await _classRepo
+            return await classRepo
                 .GetClassModelByIdAsync(classId);
-                //.ConfigureAwait(false);
+                // .ConfigureAwait(false);
         }
 
         public async Task AddClassAsync(ClassModel classModel)
         {
-            //if (classModel == null)
-            //    throw new ArgumentNullException(nameof(classModel));
-            //if (string.IsNullOrWhiteSpace(classModel.Name))
-            //    throw new ArgumentException("Name is required.", nameof(classModel));
-
-            await _classRepo
+            await classRepo
                 .AddClassModelAsync(classModel);
-                //.ConfigureAwait(false);
         }
 
         public async Task DeleteClassAsync(int classId)
         {
-            //if (classId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(classId), "classId must be positive.");
-
-            await _classRepo
+            await classRepo
                 .DeleteClassModelAsync(classId);
-                //.ConfigureAwait(false);
+                // .ConfigureAwait(false);
         }
 
         public async Task<string> ConfirmRegistrationAsync(int userId, int classId, DateTime date)
         {
-            //if (userId  <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(userId), "userId must be positive.");
-            //if (classId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(classId), "classId must be positive.");
-            //if (date.Date < DateTime.Today)
-            //    return "Please choose a valid date (today or future).";
-
             try
             {
                 var userClass = new UserClassModel
                 {
-                    UID         = userId,
-                    CID        = classId,
+                    UID = userId,
+                    CID = classId,
                     Date = date.Date
                 };
 
-                await _userClassService
+                await userClassService
                     .AddUserClassAsync(userClass);
-                //.ConfigureAwait(false);
 
                 var cls = await GetClassByIdAsync(classId);
-                              //.ConfigureAwait(false);
 
                 Debug.WriteLine($"Successfully registered for class {cls.Name}");
                 return string.Empty;

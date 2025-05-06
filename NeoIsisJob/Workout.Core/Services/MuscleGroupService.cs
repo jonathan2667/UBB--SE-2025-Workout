@@ -12,21 +12,16 @@ namespace Workout.Core.Services
 {
     public class MuscleGroupService : IMuscleGroupService
     {
-        private readonly IMuscleGroupRepo _muscleGroupRepository;
+        private readonly IMuscleGroupRepo muscleGroupRepository;
 
         public MuscleGroupService(IMuscleGroupRepo muscleGroupRepository)
         {
-            _muscleGroupRepository = muscleGroupRepository ?? throw new ArgumentNullException(nameof(muscleGroupRepository));
+            this.muscleGroupRepository = muscleGroupRepository ?? throw new ArgumentNullException(nameof(muscleGroupRepository));
         }
-            
         public async Task<MuscleGroupModel> GetMuscleGroupByIdAsync(int muscleGroupId)
         {
-            //if (muscleGroupId <= 0)
-            //    throw new ArgumentOutOfRangeException(nameof(muscleGroupId), "muscleGroupId must be positive.");
-
-            return await _muscleGroupRepository
+            return await muscleGroupRepository
                          .GetMuscleGroupByIdAsync(muscleGroupId);
-                         //.ConfigureAwait(false);
         }
     }
 }
