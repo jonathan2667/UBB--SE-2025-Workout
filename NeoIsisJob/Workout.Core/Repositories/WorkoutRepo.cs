@@ -10,28 +10,28 @@ namespace Workout.Core.Repositories
 {
     public class WorkoutRepo : IWorkoutRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public WorkoutRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<WorkoutModel> GetWorkoutByIdAsync(int workoutId)
         {
-            var workout = await _context.Workouts
+            var workout = await context.Workouts
                 .Include(w => w.WorkoutType)
                 .FirstOrDefaultAsync(w => w.WID == workoutId);
-                
+
             return workout ?? new WorkoutModel();
         }
 
         public async Task<WorkoutModel> GetWorkoutByNameAsync(string workoutName)
         {
-            var workout = await _context.Workouts
+            var workout = await context.Workouts
                 .Include(w => w.WorkoutType)
                 .FirstOrDefaultAsync(w => w.Name == workoutName);
-                
+
             return workout ?? new WorkoutModel();
         }
 
@@ -42,18 +42,18 @@ namespace Workout.Core.Repositories
                 Name = workoutName,
                 WTID = workoutTypeId
             };
-            
-            _context.Workouts.Add(workout);
-            await _context.SaveChangesAsync();
+
+            context.Workouts.Add(workout);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteWorkoutAsync(int workoutId)
         {
-            var workout = await _context.Workouts.FindAsync(workoutId);
+            var workout = await context.Workouts.FindAsync(workoutId);
             if (workout != null)
             {
-                _context.Workouts.Remove(workout);
-                await _context.SaveChangesAsync();
+                context.Workouts.Remove(workout);
+                await context.SaveChangesAsync();
             }
         }
 
@@ -65,30 +65,30 @@ namespace Workout.Core.Repositories
             }
 
             // Check for duplicates
-            bool duplicateExists = await _context.Workouts
+            bool duplicateExists = await context.Workouts
                 .AnyAsync(w => w.Name == workout.Name && w.WID != workout.WID);
-                
+
             if (duplicateExists)
             {
                 throw new Exception("A workout with this name already exists.");
             }
 
             // Perform the update
-            var existingWorkout = await _context.Workouts.FindAsync(workout.WID);
+            var existingWorkout = await context.Workouts.FindAsync(workout.WID);
             if (existingWorkout == null)
             {
                 throw new Exception("No workout was updated. Ensure the workout ID exists.");
             }
-            
+
             existingWorkout.Name = workout.Name;
             existingWorkout.WTID = workout.WTID;
-            
-            await _context.SaveChangesAsync();
+
+            await context.SaveChangesAsync();
         }
 
         public async Task<IList<WorkoutModel>> GetAllWorkoutsAsync()
         {
-            return await _context.Workouts
+            return await context.Workouts
                 .Include(w => w.WorkoutType)
                 .ToListAsync();
         }

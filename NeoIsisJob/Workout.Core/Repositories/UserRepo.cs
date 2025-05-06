@@ -11,41 +11,43 @@ namespace Workout.Core.Repositories
 {
     public class UserRepo : IUserRepo
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public UserRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<UserModel?> GetUserByIdAsync(int userId)
         {
-            return await _context.Users
+            return await context.Users
                 .FirstOrDefaultAsync(u => u.ID == userId);
         }
 
         public async Task<int> InsertUserAsync()
         {
             var user = new UserModel();
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
             return user.ID;
         }
 
         public async Task<bool> DeleteUserByIdAsync(int userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await context.Users.FindAsync(userId);
             if (user == null)
+            {
                 return false;
+            }
 
-            _context.Users.Remove(user);
-            int rowsAffected = await _context.SaveChangesAsync();
+            context.Users.Remove(user);
+            int rowsAffected = await context.SaveChangesAsync();
             return rowsAffected > 0;
         }
 
         public async Task<List<UserModel>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await context.Users.ToListAsync();
         }
     }
 }

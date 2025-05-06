@@ -10,41 +10,41 @@ namespace Workout.Core.Repositories
 {
     public class WorkoutTypeRepo : IWorkoutTypeRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public WorkoutTypeRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<WorkoutTypeModel> GetWorkoutTypeByIdAsync(int workoutTypeId)
         {
-            var workoutType = await _context.WorkoutTypes
+            var workoutType = await context.WorkoutTypes
                 .FirstOrDefaultAsync(wt => wt.WTID == workoutTypeId);
-                
+
             return workoutType ?? new WorkoutTypeModel();
         }
 
         public async Task InsertWorkoutTypeAsync(string workoutTypeName)
         {
             var workoutType = new WorkoutTypeModel { Name = workoutTypeName };
-            _context.WorkoutTypes.Add(workoutType);
-            await _context.SaveChangesAsync();
+            context.WorkoutTypes.Add(workoutType);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteWorkoutTypeAsync(int workoutTypeId)
         {
-            var workoutType = await _context.WorkoutTypes.FindAsync(workoutTypeId);
+            var workoutType = await context.WorkoutTypes.FindAsync(workoutTypeId);
             if (workoutType != null)
             {
-                _context.WorkoutTypes.Remove(workoutType);
-                await _context.SaveChangesAsync();
+                context.WorkoutTypes.Remove(workoutType);
+                await context.SaveChangesAsync();
             }
         }
 
         public async Task<IList<WorkoutTypeModel>> GetAllWorkoutTypesAsync()
         {
-            return await _context.WorkoutTypes.ToListAsync();
+            return await context.WorkoutTypes.ToListAsync();
         }
     }
 }

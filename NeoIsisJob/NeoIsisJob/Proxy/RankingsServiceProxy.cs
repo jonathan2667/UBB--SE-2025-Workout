@@ -11,7 +11,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "rankings";
 
-        public RankingsServiceProxy(IConfiguration configuration = null) 
+        public RankingsServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -65,4 +65,4 @@ namespace NeoIsisJob.Proxy
             return nextRank.MinPoints - currentPoints;
         }
     }
-} 
+}

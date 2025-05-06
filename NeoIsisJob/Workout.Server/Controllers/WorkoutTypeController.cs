@@ -1,81 +1,7 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using Workout.Core.IServices;
-
-//namespace Workout.Server.Controllers
-//{
-//    [ApiController]
-//    [Route("api/[controller]")]
-//    public class WorkoutTypeController : ControllerBase
-//    {
-//        private readonly IWorkoutTypeService workoutTypeService;
-//        public WorkoutTypeController(IWorkoutTypeService workoutTypeService)
-//        {
-//            this.workoutTypeService = workoutTypeService;
-//        }
-
-//        [HttpGet("api/workouttype")]
-//        public async Task<IActionResult> GetAllWorkoutTypes()
-//        {
-//            try
-//            {
-//                var workoutTypes = await workoutTypeService.GetAllWorkoutTypesAsync();
-//                return Ok(workoutTypes);
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error fetching workout types: {ex.Message}");
-//            }
-//        }
-
-//        [HttpGet("api/workouttype/{workoutTypeId}")]
-//        public async Task<IActionResult> GetWorkoutTypeById(int workoutTypeId)
-//        {
-//            try
-//            {
-//                var workoutType = await workoutTypeService.GetWorkoutTypeByIdAsync(workoutTypeId);
-//                return Ok(workoutType);
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error fetching workout type: {ex.Message}");
-//            }
-//        }
-
-//        [HttpPost("api/workouttype/{workoutTypeName}")]
-//        public async Task<IActionResult> AddWorkoutType([FromBody] string workoutTypeName)
-//        {
-//            try
-//            {
-//                await workoutTypeService.InsertWorkoutTypeAsync(workoutTypeName);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error adding workout type: {ex.Message}");
-//            }
-//        }
-
-//        [HttpDelete("api/workouttype/{workoutTypeId}")]
-//        public async Task<IActionResult> DeleteWorkoutType(int workoutTypeId)
-//        {
-//            try
-//            {
-//                await workoutTypeService.DeleteWorkoutTypeAsync(workoutTypeId);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error deleting workout type: {ex.Message}");
-//            }
-//        }
-//    }
-//}
-
-
-// Workout.Server/Controllers/WorkoutTypeController.cs
-using Microsoft.AspNetCore.Mvc;
+﻿// Workout.Server/Controllers/WorkoutTypeController.cs
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 
@@ -85,16 +11,16 @@ namespace Workout.Server.Controllers
     [Route("api/workouttype")]
     public class WorkoutTypeController : ControllerBase
     {
-        private readonly IWorkoutTypeService _service;
+        private readonly IWorkoutTypeService service;
 
         public WorkoutTypeController(IWorkoutTypeService service)
-            => _service = service;
+            => this.service = service;
 
         // GET /api/workouttype
         [HttpGet]
         public async Task<ActionResult<IEnumerable<WorkoutTypeModel>>> GetAll()
         {
-            var types = await _service.GetAllWorkoutTypesAsync();
+            var types = await service.GetAllWorkoutTypesAsync();
             return Ok(types);
         }
 
@@ -102,8 +28,11 @@ namespace Workout.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<WorkoutTypeModel>> GetById(int id)
         {
-            var type = await _service.GetWorkoutTypeByIdAsync(id);
-            if (type == null) return NotFound();
+            var type = await service.GetWorkoutTypeByIdAsync(id);
+            if (type == null)
+            {
+                return NotFound();
+            }
             return Ok(type);
         }
 
@@ -111,7 +40,7 @@ namespace Workout.Server.Controllers
         [HttpPost("{name}")]
         public async Task<IActionResult> Create(string name)
         {
-            await _service.InsertWorkoutTypeAsync(name);
+            await service.InsertWorkoutTypeAsync(name);
             return CreatedAtAction(nameof(GetById), new { id = /* assume service returns new Id */ 0 }, null);
         }
 
@@ -119,7 +48,7 @@ namespace Workout.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.DeleteWorkoutTypeAsync(id);
+            await service.DeleteWorkoutTypeAsync(id);
             return NoContent();
         }
     }

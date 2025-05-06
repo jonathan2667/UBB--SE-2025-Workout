@@ -137,7 +137,6 @@ namespace NeoIsisJob.ViewModels.Workout
             this.muscleGroupService = new MuscleGroupServiceProxy();
             this.workoutService = new WorkoutServiceProxy();
             this.completeWorkoutService = new CompleteWorkoutServiceProxy();
-            
             this.WorkoutTypes = new ObservableCollection<WorkoutTypeModel>();
             this.Exercises = new ObservableCollection<ExercisesModel>();
             this.SelectedExercises = new ObservableCollection<ExercisesModel>();

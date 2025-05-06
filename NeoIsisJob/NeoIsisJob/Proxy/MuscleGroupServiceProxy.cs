@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "musclegroup";
 
-        public MuscleGroupServiceProxy(IConfiguration configuration = null) 
+        public MuscleGroupServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }

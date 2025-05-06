@@ -1,9 +1,9 @@
-using NeoIsisJob.Helpers;
-using NeoIsisJob.Proxy;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-// using NeoIsisJob.Services.Interfaces;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
+
 namespace NeoIsisJob.ViewModels
 {
     public class ClassesViewModel

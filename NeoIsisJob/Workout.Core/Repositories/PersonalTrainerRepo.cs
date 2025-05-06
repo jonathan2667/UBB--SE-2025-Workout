@@ -10,18 +10,18 @@ namespace Workout.Core.Repositories
 {
     public class PersonalTrainerRepo : IPersonalTrainerRepo
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public PersonalTrainerRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<PersonalTrainerModel?> GetPersonalTrainerModelByIdAsync(int personalTrainerId)
         {
             try
             {
-                return await _context.PersonalTrainers
+                return await context.PersonalTrainers
                     .FirstOrDefaultAsync(pt => pt.PTID == personalTrainerId);
             }
             catch (Exception ex)
@@ -34,7 +34,7 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                return await _context.PersonalTrainers.ToListAsync();
+                return await context.PersonalTrainers.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -46,8 +46,8 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                _context.PersonalTrainers.Add(personalTrainer);
-                await _context.SaveChangesAsync();
+                context.PersonalTrainers.Add(personalTrainer);
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -59,11 +59,11 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                var trainer = await _context.PersonalTrainers.FindAsync(personalTrainerId);
+                var trainer = await context.PersonalTrainers.FindAsync(personalTrainerId);
                 if (trainer != null)
                 {
-                    _context.PersonalTrainers.Remove(trainer);
-                    await _context.SaveChangesAsync();
+                    context.PersonalTrainers.Remove(trainer);
+                    await context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

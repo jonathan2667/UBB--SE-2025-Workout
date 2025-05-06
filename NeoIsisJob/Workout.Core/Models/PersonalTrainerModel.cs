@@ -11,18 +11,14 @@ namespace Workout.Core.Models
         [Key]
         [Column("PTID")]
         public int PTID { get; set; }
-        
         [Required]
         [MaxLength(50)]
         public string FirstName { get; set; }
-        
         [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
-        
         [Column("WorksSince")]
         public DateTime WorksSince { get; set; }
-        
         [NotMapped]
         public string Name => $"{FirstName} {LastName}";
 

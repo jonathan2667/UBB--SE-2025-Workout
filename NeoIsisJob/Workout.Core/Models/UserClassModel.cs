@@ -10,10 +10,8 @@ namespace Workout.Core.Models
     {
         [Column("UID")]
         public int UID { get; set; }
-        
         [Column("CID")]
         public int CID { get; set; }
-        
         [Column("Date")]
         public DateTime Date { get; set; }
 
@@ -27,11 +25,9 @@ namespace Workout.Core.Models
             CID = classId;
             Date = date;
         }
-        
         // Navigation properties
         [ForeignKey("UID")]
         public virtual UserModel User { get; set; }
-        
         [ForeignKey("CID")]
         public virtual ClassModel Class { get; set; }
     }

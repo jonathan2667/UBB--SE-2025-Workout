@@ -1,10 +1,10 @@
-﻿using NeoIsisJob.Helpers;
-using NeoIsisJob.Proxy;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
 using Workout.Core.Models;
 
 namespace NeoIsisJob.ViewModels

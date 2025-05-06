@@ -10,18 +10,18 @@ namespace Workout.Core.Repositories
 {
     public class ExerciseRepo : IExerciseRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public ExerciseRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<IList<ExercisesModel>> GetAllExercisesAsync()
         {
             try
             {
-                return await _context.Exercises
+                return await context.Exercises
                     .Include(e => e.MuscleGroup)
                     .ToListAsync();
             }
@@ -35,7 +35,7 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                return await _context.Exercises
+                return await context.Exercises
                     .Include(e => e.MuscleGroup)
                     .FirstOrDefaultAsync(e => e.EID == exerciseId);
             }

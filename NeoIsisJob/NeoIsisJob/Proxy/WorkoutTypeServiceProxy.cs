@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "workouttype";
 
-        public WorkoutTypeServiceProxy(IConfiguration configuration = null) 
+        public WorkoutTypeServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -70,4 +70,4 @@ namespace NeoIsisJob.Proxy
             }
         }
     }
-} 
+}

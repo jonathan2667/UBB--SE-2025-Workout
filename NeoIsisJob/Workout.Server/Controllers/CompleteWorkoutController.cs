@@ -5,12 +5,11 @@ namespace Workout.Server.Controllers
 {
     public class CompleteWorkoutController : ControllerBase
     {
-
-        private readonly ICompleteWorkoutService _completeWorkoutService;
+        private readonly ICompleteWorkoutService completeWorkoutService;
 
         public CompleteWorkoutController(ICompleteWorkoutService completeWorkoutService)
         {
-            _completeWorkoutService = completeWorkoutService;
+            this.completeWorkoutService = completeWorkoutService;
         }
 
         [HttpGet("api/completeworkout")]
@@ -18,7 +17,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var completeWorkouts = await _completeWorkoutService.GetAllCompleteWorkoutsAsync();
+                var completeWorkouts = await completeWorkoutService.GetAllCompleteWorkoutsAsync();
                 return Ok(completeWorkouts);
             }
             catch (Exception ex)
@@ -32,7 +31,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var completeWorkouts = await _completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(workoutId);
+                var completeWorkouts = await completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(workoutId);
                 return Ok(completeWorkouts);
             }
             catch (Exception ex)
@@ -46,7 +45,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                await _completeWorkoutService.DeleteCompleteWorkoutsByWorkoutIdAsync(workoutId);
+                await completeWorkoutService.DeleteCompleteWorkoutsByWorkoutIdAsync(workoutId);
                 return Ok();
             }
             catch (Exception ex)
@@ -60,7 +59,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                await _completeWorkoutService.InsertCompleteWorkoutAsync(workoutId, exerciseId, sets, repetitionsPerSet);
+                await completeWorkoutService.InsertCompleteWorkoutAsync(workoutId, exerciseId, sets, repetitionsPerSet);
                 return Ok();
             }
             catch (Exception ex)
@@ -68,6 +67,5 @@ namespace Workout.Server.Controllers
                 return BadRequest($"Error inserting complete workout: {ex.Message}");
             }
         }
-
     }
 }

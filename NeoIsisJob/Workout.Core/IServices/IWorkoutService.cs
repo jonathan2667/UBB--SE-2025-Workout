@@ -16,5 +16,4 @@ namespace Workout.Core.IServices
         Task UpdateWorkoutAsync(WorkoutModel workout);
         Task<IList<WorkoutModel>> GetAllWorkoutsAsync();
     }
-
 }

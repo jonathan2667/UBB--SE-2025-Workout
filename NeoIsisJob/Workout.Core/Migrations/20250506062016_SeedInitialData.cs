@@ -101,11 +101,11 @@ namespace Workout.Core.Migrations
                 columns: new[] { "WID", "Description", "Name", "WTID" },
                 values: new object[,]
                 {
-                    { 1, "", "workout1", 1 },
-                    { 2, "", "workout2", 1 },
-                    { 3, "", "workout3", 1 },
-                    { 4, "", "workout4", 1 },
-                    { 5, "", "workout5", 2 }
+                    { 1, string.Empty, "workout1", 1 },
+                    { 2, string.Empty, "workout2", 1 },
+                    { 3, string.Empty, "workout3", 1 },
+                    { 4, string.Empty, "workout4", 1 },
+                    { 5, string.Empty, "workout5", 2 }
                 });
 
             migrationBuilder.InsertData(

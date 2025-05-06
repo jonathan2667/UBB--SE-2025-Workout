@@ -6,15 +6,14 @@ using System.Windows.Input;
 using System.Linq;
 using System;
 using System.Diagnostics;
+using System.Net.Http;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
 using NeoIsisJob.Commands;
-
 using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Core.IServices;
 using NeoIsisJob.Helpers;
-using System.Net.Http;
 using Refit;
 using NeoIsisJob.Proxy;
 
@@ -64,13 +63,13 @@ namespace NeoIsisJob.ViewModels.Classes
         public ClassesViewModel()
         {
             Debug.WriteLine("[ClassesViewModel] Initializing");
-            
+
             // Initialize proxies
             this.classService = new ClassServiceProxy();
             this.classTypeService = new ClassTypeServiceProxy();
             this.personalTrainerService = new PersonalTrainerServiceProxy();
             this.userClassService = new UserClassServiceProxy();
-            
+
             // Initialize collections
             Classes = new ObservableCollection<ClassModel>();
             ClassTypes = new ObservableCollection<ClassTypeModel>();
@@ -81,7 +80,7 @@ namespace NeoIsisJob.ViewModels.Classes
             CloseRegisterPopupCommand = new RelayCommand(CloseRegisterPopup);
             OpenRegisterPopupCommand = new RelayCommand<ClassModel>(OpenRegisterPopup);
             RefreshCommand = new RelayCommand(async () => await InitializeDataAsync());
-            
+
             // Load data
             InitializeDataAsync().ConfigureAwait(false);
         }
@@ -138,7 +137,6 @@ namespace NeoIsisJob.ViewModels.Classes
                 OnPropertyChanged();
             }
         }
-        
         public DateTimeOffset SelectedDate
         {
             get => selectedDate;
@@ -154,22 +152,20 @@ namespace NeoIsisJob.ViewModels.Classes
             SelectedClass = classModel;
             IsRegisterPopupOpen = true;
         }
-        
         private async Task InitializeDataAsync()
         {
             try
             {
                 IsLoading = true;
                 ErrorMessage = null;
-                
+
                 Debug.WriteLine("[ClassesViewModel] Loading data...");
-                
+
                 // Load classes and class types in parallel
                 await Task.WhenAll(
                     LoadClassesAsync(),
-                    LoadClassTypesAsync()
-                );
-                
+                    LoadClassTypesAsync());
+
                 Debug.WriteLine("[ClassesViewModel] Data loaded successfully");
             }
             catch (Exception ex)
@@ -182,7 +178,6 @@ namespace NeoIsisJob.ViewModels.Classes
                 IsLoading = false;
             }
         }
-        
         private async Task LoadClassesAsync()
         {
             try
@@ -210,7 +205,6 @@ namespace NeoIsisJob.ViewModels.Classes
 
                     Classes.Add(classItem);
                 }
-                
                 // Update HasClasses property
                 OnPropertyChanged(nameof(HasClasses));
                 Debug.WriteLine("[ClassesViewModel] Classes loaded successfully");
@@ -228,15 +222,15 @@ namespace NeoIsisJob.ViewModels.Classes
             {
                 Debug.WriteLine("[ClassesViewModel] Loading class types...");
                 ClassTypes.Clear();
-                
+
                 var classTypes = await this.classTypeService.GetAllClassTypesAsync();
                 Debug.WriteLine($"[ClassesViewModel] Loaded {classTypes.Count} class types");
-                
+
                 foreach (var classType in classTypes)
                 {
                     ClassTypes.Add(classType);
                 }
-                
+
                 Debug.WriteLine("[ClassesViewModel] Class types loaded successfully");
             }
             catch (Exception ex)
@@ -245,7 +239,7 @@ namespace NeoIsisJob.ViewModels.Classes
                 throw; // Let the parent method handle the exception
             }
         }
-        
+
         private string dateError;
         public string DateError
         {
@@ -276,7 +270,7 @@ namespace NeoIsisJob.ViewModels.Classes
             {
                 int currentUserId = GetCurrentUserId();
                 Debug.WriteLine($"[ClassesViewModel] Registering user {currentUserId} for class {SelectedClass.CID} on {SelectedDate.Date}");
-                
+
                 var userClass = new UserClassModel
                 {
                     UID = currentUserId,

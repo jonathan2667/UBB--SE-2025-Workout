@@ -11,14 +11,14 @@ namespace Workout.Core.Repositories
 {
     public class CalendarRepository : ICalendarRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
         private const int FirstDayOfMonth = 1;
         private const int StartEndMonthDifference = 1;
         private const int StartEndDayDifference = -1;
 
         public CalendarRepository(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<List<CalendarDayModel>> GetCalendarDaysForMonthAsync(int userId, DateTime month)
@@ -29,27 +29,25 @@ namespace Workout.Core.Repositories
             int daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
 
             // Get user workouts for this month
-            var userWorkouts = await _context.UserWorkouts
+            var userWorkouts = await context.UserWorkouts
                 .Where(uw => uw.UID == userId && uw.Date >= firstDay && uw.Date <= lastDay)
                 .ToListAsync();
 
             // Get user classes for this month
-            var userClasses = await _context.UserClasses
+            var userClasses = await context.UserClasses
                 .Where(uc => uc.UID == userId && uc.Date >= firstDay && uc.Date <= lastDay)
                 .ToListAsync();
 
             // Prepare dictionaries for quick lookup
             var workoutDays = userWorkouts
                 .ToDictionary(
-                    uw => uw.Date.Date, 
-                    uw => (HasWorkout: true, Completed: uw.Completed)
-                );
+                    uw => uw.Date.Date,
+                    uw => (HasWorkout: true, Completed: uw.Completed));
 
             var classDays = userClasses
                 .ToDictionary(
                     uc => uc.Date.Date,
-                    _ => true
-                );
+                    _ => true);
 
             for (int day = FirstDayOfMonth; day <= daysInMonth; day++)
             {
@@ -74,14 +72,14 @@ namespace Workout.Core.Repositories
 
         public async Task<UserWorkoutModel?> GetUserWorkoutAsync(int userId, DateTime date)
         {
-            return await _context.UserWorkouts
+            return await context.UserWorkouts
                 .Include(uw => uw.Workout)
                 .FirstOrDefaultAsync(uw => uw.UID == userId && uw.Date.Date == date.Date);
         }
 
         public async Task<string?> GetUserClassAsync(int userId, DateTime date)
         {
-            var userClass = await _context.UserClasses
+            var userClass = await context.UserClasses
                 .Include(uc => uc.Class)
                 .FirstOrDefaultAsync(uc => uc.UID == userId && uc.Date.Date == date.Date);
 
@@ -90,7 +88,7 @@ namespace Workout.Core.Repositories
 
         public async Task<List<WorkoutModel>> GetWorkoutsAsync()
         {
-            return await _context.Workouts.ToListAsync();
+            return await context.Workouts.ToListAsync();
         }
     }
 }

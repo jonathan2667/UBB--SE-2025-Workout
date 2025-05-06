@@ -14,5 +14,4 @@ namespace Workout.Core.IServices
         /// </summary>
         Task<MuscleGroupModel> GetMuscleGroupByIdAsync(int muscleGroupId);
     }
-
 }

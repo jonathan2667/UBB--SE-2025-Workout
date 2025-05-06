@@ -11,18 +11,18 @@ namespace Workout.Core.Repositories
 {
     public class CompleteWorkoutRepo : ICompleteWorkoutRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public CompleteWorkoutRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<IList<CompleteWorkoutModel>> GetAllCompleteWorkoutsAsync()
         {
             try
             {
-                return await _context.CompleteWorkouts
+                return await context.CompleteWorkouts
                     .Include(cw => cw.Workout)
                     .Include(cw => cw.Exercise)
                     .ToListAsync();
@@ -37,12 +37,12 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                var workoutsToDelete = await _context.CompleteWorkouts
+                var workoutsToDelete = await context.CompleteWorkouts
                     .Where(cw => cw.WID == workoutId)
                     .ToListAsync();
 
-                _context.CompleteWorkouts.RemoveRange(workoutsToDelete);
-                await _context.SaveChangesAsync();
+                context.CompleteWorkouts.RemoveRange(workoutsToDelete);
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -62,8 +62,8 @@ namespace Workout.Core.Repositories
                     RepsPerSet = repetitionsPerSet
                 };
 
-                _context.CompleteWorkouts.Add(completeWorkout);
-                await _context.SaveChangesAsync();
+                context.CompleteWorkouts.Add(completeWorkout);
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

@@ -10,26 +10,25 @@ namespace Workout.Core.Repositories
 {
     public class ClassRepo
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public ClassRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<ClassModel> GetClassModelByIdAsync(int classId)
         {
-            var classModel = await _context.Classes
+            var classModel = await context.Classes
                 .Include(c => c.PersonalTrainer)
                 .Include(c => c.ClassType)
                 .FirstOrDefaultAsync(c => c.CID == classId);
-                
             return classModel ?? new ClassModel();
         }
 
         public async Task<List<ClassModel>> GetAllClassModelAsync()
         {
-            return await _context.Classes
+            return await context.Classes
                 .Include(c => c.PersonalTrainer)
                 .Include(c => c.ClassType)
                 .ToListAsync();
@@ -37,17 +36,17 @@ namespace Workout.Core.Repositories
 
         public async Task AddClassModelAsync(ClassModel classModel)
         {
-            _context.Classes.Add(classModel);
-            await _context.SaveChangesAsync();
+            context.Classes.Add(classModel);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteClassModelAsync(int classId)
         {
-            var classModel = await _context.Classes.FindAsync(classId);
+            var classModel = await context.Classes.FindAsync(classId);
             if (classModel != null)
             {
-                _context.Classes.Remove(classModel);
-                await _context.SaveChangesAsync();
+                context.Classes.Remove(classModel);
+                await context.SaveChangesAsync();
             }
         }
     }

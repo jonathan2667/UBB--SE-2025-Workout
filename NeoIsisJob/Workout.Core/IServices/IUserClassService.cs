@@ -14,5 +14,4 @@ namespace Workout.Core.IServices
         Task AddUserClassAsync(UserClassModel userClassModel);
         Task DeleteUserClassAsync(int userId, int classId, DateTime date);
     }
-
 }

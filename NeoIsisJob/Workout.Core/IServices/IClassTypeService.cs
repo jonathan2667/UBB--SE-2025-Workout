@@ -13,6 +13,5 @@ namespace Workout.Core.IServices
         Task<ClassTypeModel> GetClassTypeByIdAsync(int classTypeId);
         Task AddClassTypeAsync(ClassTypeModel classTypeModel);
         Task DeleteClassTypeAsync(int classTypeId);
-
     }
 }

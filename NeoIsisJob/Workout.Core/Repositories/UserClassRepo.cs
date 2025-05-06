@@ -11,16 +11,16 @@ namespace Workout.Core.Repositories
 {
     public class UserClassRepo : IUserClassRepo
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public UserClassRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<UserClassModel?> GetUserClassModelByIdAsync(int userId, int classId, DateTime enrollmentDate)
         {
-            return await _context.UserClasses
+            return await context.UserClasses
                 .Include(uc => uc.User)
                 .Include(uc => uc.Class)
                 .FirstOrDefaultAsync(uc => uc.UID == userId && uc.CID == classId && uc.Date == enrollmentDate);
@@ -28,7 +28,7 @@ namespace Workout.Core.Repositories
 
         public async Task<List<UserClassModel>> GetAllUserClassModelAsync()
         {
-            return await _context.UserClasses
+            return await context.UserClasses
                 .Include(uc => uc.User)
                 .Include(uc => uc.Class)
                 .ToListAsync();
@@ -36,25 +36,24 @@ namespace Workout.Core.Repositories
 
         public async Task AddUserClassModelAsync(UserClassModel userClass)
         {
-            _context.UserClasses.Add(userClass);
-            await _context.SaveChangesAsync();
+            context.UserClasses.Add(userClass);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteUserClassModelAsync(int userId, int classId, DateTime enrollmentDate)
         {
-            var userClass = await _context.UserClasses
+            var userClass = await context.UserClasses
                 .FirstOrDefaultAsync(uc => uc.UID == userId && uc.CID == classId && uc.Date == enrollmentDate);
-                
             if (userClass != null)
             {
-                _context.UserClasses.Remove(userClass);
-                await _context.SaveChangesAsync();
+                context.UserClasses.Remove(userClass);
+                await context.SaveChangesAsync();
             }
         }
 
         public async Task<List<UserClassModel>> GetUserClassModelByDateAsync(DateTime date)
         {
-            return await _context.UserClasses
+            return await context.UserClasses
                 .Include(uc => uc.User)
                 .Include(uc => uc.Class)
                 .Where(uc => uc.Date.Date == date.Date)
