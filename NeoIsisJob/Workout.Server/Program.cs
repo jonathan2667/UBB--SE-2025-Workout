@@ -26,6 +26,8 @@ builder.Services.AddScoped<IWorkoutTypeRepository, WorkoutTypeRepo>();
 builder.Services.AddScoped<IPersonalTrainerRepo, PersonalTrainerRepo>();
 builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
+builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+
 
 // Register repositories
 builder.Services.AddScoped<IUserService, UserService>();
@@ -40,6 +42,8 @@ builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
 builder.Services.AddScoped<IPersonalTrainerService, PersonalTrainerService>();
 builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
