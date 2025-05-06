@@ -10,39 +10,37 @@ namespace Workout.Core.Repositories
 {
     public class ClassTypeRepo
     {
-        private readonly WorkoutDbContext _context;
-        
+        private readonly WorkoutDbContext context;
         public ClassTypeRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<ClassTypeModel> GetClassTypeModelByIdAsync(int classTypeId)
         {
-            var classType = await _context.ClassTypes
+            var classType = await context.ClassTypes
                 .FirstOrDefaultAsync(ct => ct.CTID == classTypeId);
-                
             return classType ?? new ClassTypeModel();
         }
 
         public async Task<List<ClassTypeModel>> GetAllClassTypeModelAsync()
         {
-            return await _context.ClassTypes.ToListAsync();
+            return await context.ClassTypes.ToListAsync();
         }
 
         public async Task AddClassTypeModelAsync(ClassTypeModel classType)
         {
-            _context.ClassTypes.Add(classType);
-            await _context.SaveChangesAsync();
+            context.ClassTypes.Add(classType);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteClassTypeModelAsync(int classTypeId)
         {
-            var classType = await _context.ClassTypes.FindAsync(classTypeId);
+            var classType = await context.ClassTypes.FindAsync(classTypeId);
             if (classType != null)
             {
-                _context.ClassTypes.Remove(classType);
-                await _context.SaveChangesAsync();
+                context.ClassTypes.Remove(classType);
+                await context.SaveChangesAsync();
             }
         }
     }

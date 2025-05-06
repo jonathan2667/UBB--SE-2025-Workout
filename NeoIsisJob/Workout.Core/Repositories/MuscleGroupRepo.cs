@@ -10,18 +10,18 @@ namespace Workout.Core.Repositories
 {
     public class MuscleGroupRepo : IMuscleGroupRepo
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public MuscleGroupRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<MuscleGroupModel?> GetMuscleGroupByIdAsync(int muscleGroupId)
         {
             try
             {
-                return await _context.MuscleGroups
+                return await context.MuscleGroups
                     .FirstOrDefaultAsync(mg => mg.MGID == muscleGroupId);
             }
             catch (Exception ex)
@@ -34,7 +34,7 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                return await _context.MuscleGroups.ToListAsync();
+                return await context.MuscleGroups.ToListAsync();
             }
             catch (Exception ex)
             {

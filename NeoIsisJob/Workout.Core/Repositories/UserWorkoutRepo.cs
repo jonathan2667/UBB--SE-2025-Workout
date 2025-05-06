@@ -11,16 +11,16 @@ namespace Workout.Core.Repositories
 {
     public class UserWorkoutRepo : IUserWorkoutRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public UserWorkoutRepo(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<List<UserWorkoutModel>> GetUserWorkoutModelByDateAsync(DateTime date)
         {
-            return await _context.UserWorkouts
+            return await context.UserWorkouts
                 .Include(uw => uw.User)
                 .Include(uw => uw.Workout)
                 .Where(uw => uw.Date.Date == date.Date)
@@ -29,7 +29,7 @@ namespace Workout.Core.Repositories
 
         public async Task<UserWorkoutModel?> GetUserWorkoutModelAsync(int userId, int workoutId, DateTime date)
         {
-            return await _context.UserWorkouts
+            return await context.UserWorkouts
                 .Include(uw => uw.User)
                 .Include(uw => uw.Workout)
                 .FirstOrDefaultAsync(uw => uw.UID == userId && uw.WID == workoutId && uw.Date.Date == date.Date);
@@ -37,31 +37,30 @@ namespace Workout.Core.Repositories
 
         public async Task AddUserWorkoutAsync(UserWorkoutModel userWorkout)
         {
-            _context.UserWorkouts.Add(userWorkout);
-            await _context.SaveChangesAsync();
+            context.UserWorkouts.Add(userWorkout);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateUserWorkoutAsync(UserWorkoutModel userWorkout)
         {
-            var existingUserWorkout = await _context.UserWorkouts
+            var existingUserWorkout = await context.UserWorkouts
                 .FirstOrDefaultAsync(uw => uw.UID == userWorkout.UID && uw.WID == userWorkout.WID && uw.Date.Date == userWorkout.Date.Date);
 
             if (existingUserWorkout != null)
             {
                 existingUserWorkout.Completed = userWorkout.Completed;
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
 
         public async Task DeleteUserWorkoutAsync(int userId, int workoutId, DateTime date)
         {
-            var userWorkout = await _context.UserWorkouts
+            var userWorkout = await context.UserWorkouts
                 .FirstOrDefaultAsync(uw => uw.UID == userId && uw.WID == workoutId && uw.Date.Date == date.Date);
-                
             if (userWorkout != null)
             {
-                _context.UserWorkouts.Remove(userWorkout);
-                await _context.SaveChangesAsync();
+                context.UserWorkouts.Remove(userWorkout);
+                await context.SaveChangesAsync();
             }
         }
     }

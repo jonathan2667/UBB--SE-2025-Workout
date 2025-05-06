@@ -11,18 +11,18 @@ namespace Workout.Core.Repositories
 {
     public class RankingsRepository : IRankingsRepository
     {
-        private readonly WorkoutDbContext _context;
+        private readonly WorkoutDbContext context;
 
         public RankingsRepository(WorkoutDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<RankingModel?> GetRankingByFullIDAsync(int userId, int muscleGroupId)
         {
             try
             {
-                return await _context.Rankings
+                return await context.Rankings
                     .Include(r => r.MuscleGroup)
                     .FirstOrDefaultAsync(r => r.UID == userId && r.MGID == muscleGroupId);
             }
@@ -36,7 +36,7 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                return await _context.Rankings
+                return await context.Rankings
                     .Include(r => r.MuscleGroup)
                     .Where(r => r.UID == userId)
                     .ToListAsync();
