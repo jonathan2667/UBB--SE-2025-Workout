@@ -177,6 +177,109 @@
 //    }
 //}
 // Workout.Server/Controllers/CalendarController.cs
+
+
+//using Microsoft.AspNetCore.Mvc;
+//using System;
+//using System.Collections.Generic;
+//using System.Collections.ObjectModel;
+//using System.Threading.Tasks;
+//using Workout.Core.IServices;
+//using Workout.Core.Models;
+
+//namespace Workout.Server.Controllers
+//{
+//    [ApiController]
+//    [Route("api/[controller]")]    // ⇒ /api/calendar
+//    public class CalendarController : ControllerBase
+//    {
+//        private readonly ICalendarService _calendarService;
+//        public CalendarController(ICalendarService calendarService)
+//            => _calendarService = calendarService;
+
+//        // GET /api/calendar/{userId}/{year}/{month}
+//        [HttpGet("{userId}/{year}/{month}")]
+//        public async Task<IActionResult> GetCalendarDays(int userId, int year, int month)
+//        {
+//            var date = new DateTime(year, month, 1);
+//            var days = await _calendarService.GetCalendarDaysForMonthAsync(userId, date);
+//            return Ok(days);
+//        }
+
+//        // GET /api/calendar/{userId}/{year}/{month}/{day}
+//        [HttpGet("{userId}/{year}/{month}/{day}")]
+//        public async Task<IActionResult> GetUserWorkout(int userId, int year, int month, int day)
+//        {
+//            var date = new DateTime(year, month, day);
+//            var workout = await _calendarService.GetUserWorkoutAsync(userId, date);
+//            return Ok(workout);
+//        }
+
+//        // GET /api/calendar/workouts
+//        [HttpGet("workouts")]
+//        public async Task<IActionResult> GetWorkouts()
+//            => Ok(await _calendarService.GetWorkoutsAsync());
+
+//        // POST /api/calendar/userworkout
+//        [HttpPost("userworkout")]
+//        public async Task<IActionResult> AddUserWorkout([FromBody] UserWorkoutModel uw)
+//        {
+//            await _calendarService.AddUserWorkoutAsync(uw);
+//            return Ok();
+//        }
+
+//        // PUT /api/calendar/userworkout
+//        [HttpPut("userworkout")]
+//        public async Task<IActionResult> UpdateUserWorkout([FromBody] UserWorkoutModel uw)
+//        {
+//            await _calendarService.UpdateUserWorkoutAsync(uw);
+//            return Ok();
+//        }
+
+//        // DELETE /api/calendar/userworkout/{userId}/{workoutId}/{year}/{month}/{day}
+//        [HttpDelete("userworkout/{userId}/{workoutId}/{year}/{month}/{day}")]
+//        public async Task<IActionResult> DeleteUserWorkout(int userId, int workoutId, int year, int month, int day)
+//        {
+//            var date = new DateTime(year, month, day);
+//            await _calendarService.DeleteUserWorkoutAsync(userId, workoutId, date);
+//            return Ok();
+//        }
+
+//        // PUT /api/calendar/workout/{userId}/{year}/{month}/{day}
+//        [HttpPut("workout/{userId}/{year}/{month}/{day}")]
+//        public async Task<IActionResult> ChangeWorkout(
+//            int userId, int year, int month, int day,
+//            [FromBody] CalendarDayModel payload)
+//        {
+//            // your service only needs (userId, CalendarDayModel)
+//            await _calendarService.ChangeWorkoutAsync(userId, payload);
+//            return Ok();
+//        }
+
+//        // POST /api/calendar/workoutdayscount
+//        [HttpPost("workoutdayscount")]
+//        public IActionResult WorkoutDaysCount([FromBody] List<CalendarDayModel> days)
+//        {
+//            // wrap into ObservableCollection to match service signature
+//            var text = _calendarService.GetWorkoutDaysCountText(
+//                new ObservableCollection<CalendarDayModel>(days));
+//            return Ok(text);
+//        }
+
+//        // POST /api/calendar/dayscount
+//        [HttpPost("dayscount")]
+//        public IActionResult DaysCount([FromBody] List<CalendarDayModel> days)
+//        {
+//            var text = _calendarService.GetDaysCountText(
+//                new ObservableCollection<CalendarDayModel>(days));
+//            return Ok(text);
+//        }
+//    }
+//}
+
+
+
+// Workout.Server/Controllers/CalendarController.cs
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -188,16 +291,17 @@ using Workout.Core.Models;
 namespace Workout.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]    // ⇒ /api/calendar
+    [Route("api/calendar")]
     public class CalendarController : ControllerBase
     {
         private readonly ICalendarService _calendarService;
+
         public CalendarController(ICalendarService calendarService)
             => _calendarService = calendarService;
 
         // GET /api/calendar/{userId}/{year}/{month}
         [HttpGet("{userId}/{year}/{month}")]
-        public async Task<IActionResult> GetCalendarDays(int userId, int year, int month)
+        public async Task<ActionResult<IEnumerable<CalendarDayModel>>> GetCalendarDays(int userId, int year, int month)
         {
             var date = new DateTime(year, month, 1);
             var days = await _calendarService.GetCalendarDaysForMonthAsync(userId, date);
@@ -206,7 +310,7 @@ namespace Workout.Server.Controllers
 
         // GET /api/calendar/{userId}/{year}/{month}/{day}
         [HttpGet("{userId}/{year}/{month}/{day}")]
-        public async Task<IActionResult> GetUserWorkout(int userId, int year, int month, int day)
+        public async Task<ActionResult<UserWorkoutModel>> GetUserWorkout(int userId, int year, int month, int day)
         {
             var date = new DateTime(year, month, day);
             var workout = await _calendarService.GetUserWorkoutAsync(userId, date);
@@ -215,7 +319,7 @@ namespace Workout.Server.Controllers
 
         // GET /api/calendar/workouts
         [HttpGet("workouts")]
-        public async Task<IActionResult> GetWorkouts()
+        public async Task<ActionResult<IEnumerable<WorkoutModel>>> GetWorkouts()
             => Ok(await _calendarService.GetWorkoutsAsync());
 
         // POST /api/calendar/userworkout
@@ -249,16 +353,14 @@ namespace Workout.Server.Controllers
             int userId, int year, int month, int day,
             [FromBody] CalendarDayModel payload)
         {
-            // your service only needs (userId, CalendarDayModel)
             await _calendarService.ChangeWorkoutAsync(userId, payload);
             return Ok();
         }
 
         // POST /api/calendar/workoutdayscount
         [HttpPost("workoutdayscount")]
-        public IActionResult WorkoutDaysCount([FromBody] List<CalendarDayModel> days)
+        public ActionResult<string> WorkoutDaysCount([FromBody] List<CalendarDayModel> days)
         {
-            // wrap into ObservableCollection to match service signature
             var text = _calendarService.GetWorkoutDaysCountText(
                 new ObservableCollection<CalendarDayModel>(days));
             return Ok(text);
@@ -266,7 +368,7 @@ namespace Workout.Server.Controllers
 
         // POST /api/calendar/dayscount
         [HttpPost("dayscount")]
-        public IActionResult DaysCount([FromBody] List<CalendarDayModel> days)
+        public ActionResult<string> DaysCount([FromBody] List<CalendarDayModel> days)
         {
             var text = _calendarService.GetDaysCountText(
                 new ObservableCollection<CalendarDayModel>(days));
