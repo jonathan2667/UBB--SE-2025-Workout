@@ -29,5 +29,4 @@ namespace Workout.Core.IServices
         /// </summary>
         Task<IList<WorkoutTypeModel>> GetAllWorkoutTypesAsync();
     }
-
 }

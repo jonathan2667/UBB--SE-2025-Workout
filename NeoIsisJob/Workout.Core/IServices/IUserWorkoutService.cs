@@ -29,5 +29,4 @@ namespace Workout.Core.IServices
         /// </summary>
         Task DeleteUserWorkoutAsync(int userId, int workoutId, DateTime date);
     }
-
 }

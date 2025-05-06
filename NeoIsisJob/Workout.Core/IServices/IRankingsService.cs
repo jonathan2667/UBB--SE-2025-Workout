@@ -24,5 +24,4 @@ namespace Workout.Core.IServices
         /// </summary>
         int CalculatePointsToNextRank(int currentPoints, IList<RankDefinition> rankDefinitions);
     }
-
 }

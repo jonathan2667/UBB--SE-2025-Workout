@@ -14,5 +14,4 @@ namespace Workout.Core.IServices
         Task AddPersonalTrainerAsync(PersonalTrainerModel personalTrainerModel);
         Task DeletePersonalTrainerAsync(int personalTrainerId);
     }
-
 }

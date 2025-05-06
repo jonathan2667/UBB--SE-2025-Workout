@@ -29,5 +29,4 @@ namespace Workout.Core.IServices
         /// </summary>
         Task InsertCompleteWorkoutAsync(int workoutId, int exerciseId, int sets, int repetitionsPerSet);
     }
-
 }

@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Models;
 
-
 namespace Workout.Core.IServices
 {
     public interface ICalendarService
