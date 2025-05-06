@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "classtype";
 
-        public ClassTypeServiceProxy(IConfiguration configuration = null) 
+        public ClassTypeServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -69,4 +69,4 @@ namespace NeoIsisJob.Proxy
             }
         }
     }
-} 
+}

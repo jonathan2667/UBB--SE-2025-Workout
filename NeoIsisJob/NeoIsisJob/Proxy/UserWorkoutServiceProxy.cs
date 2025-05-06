@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "userworkout";
 
-        public UserWorkoutServiceProxy(IConfiguration configuration = null) 
+        public UserWorkoutServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -43,7 +43,6 @@ namespace NeoIsisJob.Proxy
                 throw;
             }
         }
-
         public async Task CompleteUserWorkoutAsync(int userId, int workoutId, DateTime date)
         {
             try
@@ -72,4 +71,4 @@ namespace NeoIsisJob.Proxy
             }
         }
     }
-} 
+}

@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "class";
 
-        public ClassServiceProxy(IConfiguration configuration = null) 
+        public ClassServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -79,7 +79,7 @@ namespace NeoIsisJob.Proxy
                     ClassId = classId,
                     Date = date
                 };
-                
+
                 var result = await PostAsync<string>($"{EndpointName}/confirm", request);
                 return result;
             }
@@ -97,4 +97,4 @@ namespace NeoIsisJob.Proxy
         public int ClassId { get; set; }
         public DateTime Date { get; set; }
     }
-} 
+}

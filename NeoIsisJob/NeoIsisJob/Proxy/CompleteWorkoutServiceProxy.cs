@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "completeworkout";
 
-        public CompleteWorkoutServiceProxy(IConfiguration configuration = null) 
+        public CompleteWorkoutServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -76,4 +76,4 @@ namespace NeoIsisJob.Proxy
             }
         }
     }
-} 
+}

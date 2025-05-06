@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "userclass";
 
-        public UserClassServiceProxy(IConfiguration configuration = null) 
+        public UserClassServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
@@ -72,4 +72,4 @@ namespace NeoIsisJob.Proxy
             }
         }
     }
-} 
+}

@@ -10,7 +10,7 @@ namespace NeoIsisJob.Proxy
     {
         private const string EndpointName = "user";
 
-        public UserServiceProxy(IConfiguration configuration = null) 
+        public UserServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
