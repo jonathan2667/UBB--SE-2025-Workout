@@ -133,22 +133,40 @@ namespace NeoIsisJob.Proxy
             }
         }
 
+        //protected async Task PostAsync(string url, object data)
+        //{
+        //    try
+        //    {
+        //        Debug.WriteLine($"[BaseServiceProxy] POST: {_httpClient.BaseAddress}{url}");
+        //        var response = await _httpClient.PostAsJsonAsync(url, data, _jsonOptions);
+
+        //        Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+        //        response.EnsureSuccessStatusCode();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine($"[BaseServiceProxy] ERROR in PostAsync: {ex.Message}");
+        //        throw;
+        //    }
+        //}
         protected async Task PostAsync(string url, object data)
         {
-            try
-            {
-                Debug.WriteLine($"[BaseServiceProxy] POST: {_httpClient.BaseAddress}{url}");
-                var response = await _httpClient.PostAsJsonAsync(url, data, _jsonOptions);
-                
-                Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
-                response.EnsureSuccessStatusCode();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[BaseServiceProxy] ERROR in PostAsync: {ex.Message}");
-                throw;
-            }
+            Debug.WriteLine($"[BaseServiceProxy] POST: {_httpClient.BaseAddress}{url}");
+            var response = await _httpClient.PostAsJsonAsync(url, data, _jsonOptions);
+            Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+
+            // if it succeeded (200–299), return immediately
+            if (response.IsSuccessStatusCode)
+                return;
+
+            // otherwise read the error payload and throw a more descriptive exception
+            var errorPayload = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine($"[BaseServiceProxy] POST error body: {errorPayload}");
+            throw new HttpRequestException(
+                $"POST {url} failed with {(int)response.StatusCode} {response.StatusCode}: {errorPayload}"
+            );
         }
+
 
         protected async Task<T> PutAsync<T>(string url, object data)
         {
