@@ -58,7 +58,7 @@ namespace NeoIsisJob.Proxy
             }
 
             // Deserialize the non-empty JSON
-            return JsonSerializer.Deserialize<T>(json, jsonOptions)!;
+            return JsonSerializer.Deserialize<T>(json, jsonOptions) !;
         }
         protected async Task<T> PostAsync<T>(string url, object data)
         {

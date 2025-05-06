@@ -1,94 +1,8 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using Workout.Core.IServices;
-//using Workout.Core.Models;
-
-
-//namespace Workout.Server.Controllers
-//{
-//    [ApiController]
-//    [Route("api/[controller]")]
-//    public class ClassController : ControllerBase
-//    {
-//        private readonly IClassService _classService;
-
-//        public ClassController(IClassService classService)
-//        {
-//            _classService = classService;
-//        }
-
-//        [HttpGet("api/class")]
-//        public async Task<IActionResult> GetAllClasses()
-//        {
-//            try
-//            {
-//                var classes = await _classService.GetAllClassesAsync();
-//                return Ok(classes);
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error fetching classes: {ex.Message}");
-//            }
-//        }
-//        [HttpGet("api/class/{classId}")]
-//        public async Task<IActionResult> GetClassById(int classId)
-//        {
-//            try
-//            {
-//                var classModel = await _classService.GetClassByIdAsync(classId);
-//                return Ok(classModel);
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error fetching class: {ex.Message}");
-//            }
-//        }
-//        [HttpPost("api/class")]
-//        public async Task<IActionResult> AddClass([FromBody] ClassModel classModel)
-//        {
-//            try
-//            {
-//                await _classService.AddClassAsync(classModel);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error adding class: {ex.Message}");
-//            }
-//        }
-//        [HttpDelete("api/class/{classId}")]
-//        public async Task<IActionResult> DeleteClass(int classId)
-//        {
-//            try
-//            {
-//                await _classService.DeleteClassAsync(classId);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error deleting class: {ex.Message}");
-//            }
-//        }
-//        [HttpPut("api/class/confirm/{userId}/{classId}/{date}")]
-//        public async Task<IActionResult> ConfirmRegistration(int userId, int classId, DateTime date)
-//        {
-//            try
-//            {
-//                await _classService.ConfirmRegistrationAsync(userId, classId, date);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                return BadRequest($"Error updating class: {ex.Message}");
-//            }
-//        }
-//    }
-//}
-
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Workout.Server.Controllers
 {
@@ -96,18 +10,18 @@ namespace Workout.Server.Controllers
     [Route("api/class")]
     public class ClassController : ControllerBase
     {
-        private readonly IClassService _classService;
+        private readonly IClassService classService;
 
         public ClassController(IClassService classService)
         {
-            _classService = classService;
+            this.classService = classService;
         }
 
         // GET /api/class
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClassModel>>> GetAll()
         {
-            var items = await _classService.GetAllClassesAsync();
+            var items = await classService.GetAllClassesAsync();
             return Ok(items);
         }
 
@@ -115,8 +29,11 @@ namespace Workout.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ClassModel>> GetById(int id)
         {
-            var item = await _classService.GetClassByIdAsync(id);
-            if (item == null) return NotFound();
+            var item = await classService.GetClassByIdAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
             return Ok(item);
         }
 
@@ -124,7 +41,7 @@ namespace Workout.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<ClassModel>> Create([FromBody] ClassModel model)
         {
-            await _classService.AddClassAsync(model);
+            await classService.AddClassAsync(model);
             // Assuming the repo/EF fills model.CID
             return CreatedAtAction(nameof(GetById), new { id = model.CID }, model);
         }
@@ -133,7 +50,7 @@ namespace Workout.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _classService.DeleteClassAsync(id);
+            await classService.DeleteClassAsync(id);
             return NoContent();
         }
 
@@ -141,7 +58,7 @@ namespace Workout.Server.Controllers
         [HttpPost("confirm")]
         public async Task<ActionResult<string>> ConfirmRegistration([FromBody] ConfirmRegistrationRequest req)
         {
-            var result = await _classService.ConfirmRegistrationAsync(req.UserId, req.ClassId, req.Date);
+            var result = await classService.ConfirmRegistrationAsync(req.UserId, req.ClassId, req.Date);
             return Ok(result);
         }
     }

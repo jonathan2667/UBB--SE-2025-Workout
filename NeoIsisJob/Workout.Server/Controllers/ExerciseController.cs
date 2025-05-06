@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
-
-
 namespace Workout.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ExerciseController : ControllerBase
     {
-        private readonly IExerciseService _exerciseService;
+        private readonly IExerciseService exerciseService;
 
         public ExerciseController(IExerciseService exerciseService)
         {
-            _exerciseService = exerciseService;
+            this.exerciseService = exerciseService;
         }
 
         [HttpGet("api/exercise")]
@@ -20,7 +18,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var exercises = await _exerciseService.GetAllExercisesAsync();
+                var exercises = await exerciseService.GetAllExercisesAsync();
                 return Ok(exercises);
             }
             catch (Exception ex)
@@ -33,13 +31,13 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var exercise = await _exerciseService.GetExerciseByIdAsync(exerciseId);
+                var exercise = await exerciseService.GetExerciseByIdAsync(exerciseId);
                 return Ok(exercise);
             }
             catch (Exception ex)
             {
                 return BadRequest($"Error fetching exercise: {ex.Message}");
             }
-        }    
+        }
     }
 }

@@ -7,10 +7,10 @@ namespace Workout.Server.Controllers
     [Route("api/[controller]")]
     public class MuscleGroupController : ControllerBase
     {
-        private readonly IMuscleGroupService _muscleGroupService;
+        private readonly IMuscleGroupService muscleGroupService;
         public MuscleGroupController(IMuscleGroupService muscleGroupService)
         {
-            _muscleGroupService = muscleGroupService;
+            this.muscleGroupService = muscleGroupService;
         }
 
         [HttpGet("api/musclegroup/{muscleGroupId}")]
@@ -18,7 +18,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var muscleGroups = await _muscleGroupService.GetMuscleGroupByIdAsync(muscleGroupId);
+                var muscleGroups = await muscleGroupService.GetMuscleGroupByIdAsync(muscleGroupId);
                 return Ok(muscleGroups);
             }
             catch (Exception ex)

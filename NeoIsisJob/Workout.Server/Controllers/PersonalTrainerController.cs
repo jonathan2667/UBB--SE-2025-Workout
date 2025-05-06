@@ -1,19 +1,18 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 
-namespace Workout.Server.Controllers 
+namespace Workout.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PersonalTrainerController : ControllerBase
     {
-        private readonly IPersonalTrainerService _personalTrainerService;
+        private readonly IPersonalTrainerService personalTrainerService;
 
         public PersonalTrainerController(IPersonalTrainerService personalTrainerService)
         {
-            _personalTrainerService = personalTrainerService;
+            this.personalTrainerService = personalTrainerService;
         }
 
         [HttpGet("api/personaltrainer")]
@@ -21,7 +20,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var personalTrainers = await _personalTrainerService.GetAllPersonalTrainersAsync();
+                var personalTrainers = await personalTrainerService.GetAllPersonalTrainersAsync();
                 return Ok(personalTrainers);
             }
             catch (Exception ex)
@@ -35,7 +34,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                var personalTrainer = await _personalTrainerService.GetPersonalTrainerByIdAsync(personalTrainerId);
+                var personalTrainer = await personalTrainerService.GetPersonalTrainerByIdAsync(personalTrainerId);
                 return Ok(personalTrainer);
             }
             catch (Exception ex)
@@ -49,7 +48,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                await _personalTrainerService.AddPersonalTrainerAsync(personalTrainerModel);
+                await personalTrainerService.AddPersonalTrainerAsync(personalTrainerModel);
                 return Ok();
             }
             catch (Exception ex)
@@ -63,7 +62,7 @@ namespace Workout.Server.Controllers
         {
             try
             {
-                await _personalTrainerService.DeletePersonalTrainerAsync(personalTrainerId);
+                await personalTrainerService.DeletePersonalTrainerAsync(personalTrainerId);
                 return Ok();
             }
             catch (Exception ex)
