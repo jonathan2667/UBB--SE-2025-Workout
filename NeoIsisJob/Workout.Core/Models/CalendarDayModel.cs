@@ -14,34 +14,21 @@ namespace Workout.Core.Models
     {
         [Key]
         public int Id { get; set; }
-        
         public int DayNumber { get; set; }
-        
         public bool IsCurrentDay { get; set; }
-        
         public bool IsEnabled { get; set; } = true;
-        
         [NotMapped]
         public bool IsNotCurrentDay => !IsCurrentDay;
-        
         public int GridRow { get; set; }
-        
         public int GridColumn { get; set; }
-        
         public bool HasClass { get; set; }
-        
         public bool HasWorkout { get; set; }
-        
         public bool IsWorkoutCompleted { get; set; }
-        
         public DateTime Date { get; set; }
-        
         [NotMapped]
         public ICommand ClickCommand { get; set; }
-        
         [NotMapped]
         public ICommand RemoveWorkoutCommand { get; set; }
-        
         [NotMapped]
         public ICommand ChangeWorkoutCommand { get; set; }
     }

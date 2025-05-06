@@ -11,7 +11,6 @@ namespace Workout.Core.Models
         [Key]
         [Column("CTID")]
         public int CTID { get; set; }
-        
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }

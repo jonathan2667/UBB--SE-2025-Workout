@@ -10,10 +10,8 @@ namespace Workout.Core.Models
     {
         [Column("UID")]
         public int UID { get; set; }
-        
         [Column("MGID")]
         public int MGID { get; set; }
-        
         [Range(0, 10000)]
         [Column("Rank")]
         public int Rank { get; set; }
@@ -28,11 +26,9 @@ namespace Workout.Core.Models
             MGID = muscleGroupId;
             Rank = rank;
         }
-        
         // Navigation properties
         [ForeignKey("UID")]
         public virtual UserModel User { get; set; }
-        
         [ForeignKey("MGID")]
         public virtual MuscleGroupModel MuscleGroup { get; set; }
     }
