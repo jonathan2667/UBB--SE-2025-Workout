@@ -27,10 +27,10 @@ namespace NeoIsisJob.Views
         public CalendarPage()
         {
             this.InitializeComponent();
-            
+
             // Initialize services
             calendarService = new CalendarServiceProxy();
-            
+
             // Assuming you have a way to get the UserId, e.g., from app state or navigation
             int userId = 1; // Replace with actual user ID source
             ViewModel = new CalendarViewModel(userId);
@@ -320,17 +320,6 @@ namespace NeoIsisJob.Views
                             }
                         };
 
-                        //dialog.SecondaryButtonClick += async (s, args) =>
-                        //{
-                        //    if (day.HasWorkout && day.Date >= DateTime.Now.Date)
-                        //    {
-                        //        args.Cancel = true; // Keep dialog open
-                        //        await calendarService.RemoveWorkoutAsync(ViewModel.UserId, day);
-                        //        ViewModel.UpdateCalendar(); // Force calendar update
-                        //        dialog.Hide(); // Close the dialog
-                        //    }
-                        //};
-
                         dialog.SecondaryButtonClick += async (s, args) =>
                         {
                             if (day.HasWorkout && day.Date >= DateTime.Now.Date)
@@ -346,8 +335,7 @@ namespace NeoIsisJob.Views
                                     await calendarService.DeleteUserWorkoutAsync(
                                         ViewModel.UserId,
                                         existing.WID,
-                                        day.Date
-                                    );
+                                        day.Date);
                                 }
 
                                 // 3) refresh your calendar UI
@@ -355,7 +343,6 @@ namespace NeoIsisJob.Views
                                 dialog.Hide();
                             }
                         };
-
                     }
                     else
                     {
@@ -382,7 +369,6 @@ namespace NeoIsisJob.Views
                 await dialog.ShowAsync();
             }
         }
-
         private async void DayButton_Click_NoWorkout(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("DayButton_Click_Future triggered");
