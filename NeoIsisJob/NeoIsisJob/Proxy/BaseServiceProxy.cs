@@ -6,7 +6,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
-
+using System.Net;
+using System.Text.Json;
 namespace NeoIsisJob.Proxy
 {
     public abstract class BaseServiceProxy
@@ -69,26 +70,47 @@ namespace NeoIsisJob.Proxy
             };
         }
 
+        //protected async Task<T> GetAsync<T>(string url)
+        //{
+        //    try
+        //    {
+        //        Debug.WriteLine($"[BaseServiceProxy] GET: {_httpClient.BaseAddress}{url}");
+        //        var response = await _httpClient.GetAsync(url);
+
+        //        Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+        //        response.EnsureSuccessStatusCode();
+
+        //        var result = await response.Content.ReadFromJsonAsync<T>(_jsonOptions);
+        //        Debug.WriteLine($"[BaseServiceProxy] Received data: {result != null}");
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine($"[BaseServiceProxy] ERROR in GetAsync: {ex.Message}");
+        //        throw;
+        //    }
+        //}
         protected async Task<T> GetAsync<T>(string url)
         {
-            try
-            {
-                Debug.WriteLine($"[BaseServiceProxy] GET: {_httpClient.BaseAddress}{url}");
-                var response = await _httpClient.GetAsync(url);
-                
-                Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
-                response.EnsureSuccessStatusCode();
-                
-                var result = await response.Content.ReadFromJsonAsync<T>(_jsonOptions);
-                Debug.WriteLine($"[BaseServiceProxy] Received data: {result != null}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[BaseServiceProxy] ERROR in GetAsync: {ex.Message}");
-                throw;
-            }
+            Debug.WriteLine($"[BaseServiceProxy] GET: {_httpClient.BaseAddress}{url}");
+            using var response = await _httpClient.GetAsync(url);
+            Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
+
+            // If the server returns 204 No Content, just return default(T)
+            if (response.StatusCode == HttpStatusCode.NoContent)
+                return default!;
+
+            response.EnsureSuccessStatusCode();
+
+            // Read the raw body string first
+            var json = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(json))
+                return default!;    // no JSON ? return null / default
+
+            // Deserialize the non-empty JSON
+            return JsonSerializer.Deserialize<T>(json, _jsonOptions)!;
         }
+
 
         protected async Task<T> PostAsync<T>(string url, object data)
         {
