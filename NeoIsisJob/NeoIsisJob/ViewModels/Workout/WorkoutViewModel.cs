@@ -4,13 +4,10 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Services;
-// using NeoIsisJob.Services.Interfaces;
-using NeoIsisJob.Commands;
-using Workout.Core.Models;
 using System.Net.Http;
 using System;
+using NeoIsisJob.Commands;
+using Workout.Core.Models;
 using NeoIsisJob.Helpers;
 using NeoIsisJob.Proxy;
 

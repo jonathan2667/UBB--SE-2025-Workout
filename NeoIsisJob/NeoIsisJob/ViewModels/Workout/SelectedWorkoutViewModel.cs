@@ -5,15 +5,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Diagnostics;
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Services;
-// using NeoIsisJob.Services.Interfaces;
+using System.Net.Http;
 using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Core.IServices;
 using Workout.Core.IServices;
 using NeoIsisJob.Helpers;
-using System.Net.Http;
 using NeoIsisJob.Proxy;
 using Refit;
 

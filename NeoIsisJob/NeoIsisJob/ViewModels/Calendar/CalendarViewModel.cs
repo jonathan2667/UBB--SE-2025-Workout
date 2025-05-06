@@ -5,11 +5,6 @@ using System.Windows.Input;
 using System.Net.Http;
 using System.Diagnostics;
 using System.Threading.Tasks;
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Data;
-// using NeoIsisJob.Repositories;
-// using NeoIsisJob.Services;
-// using NeoIsisJob.Services.Interfaces;
 using Workout.Core.Models;
 using Workout.Core.Data;
 using Workout.Core.Services;
@@ -111,11 +106,11 @@ namespace NeoIsisJob.ViewModels.Calendar
             {
                 IsLoading = true;
                 ErrorMessage = null;
-                
+
                 Debug.WriteLine($"[CalendarViewModel] Initializing calendar for {currentDate:yyyy-MM}");
-                
+
                 await UpdateCalendarInternalAsync();
-                
+
                 Debug.WriteLine("[CalendarViewModel] Calendar initialized successfully");
             }
             catch (Exception ex)
@@ -135,11 +130,11 @@ namespace NeoIsisJob.ViewModels.Calendar
             {
                 IsLoading = true;
                 ErrorMessage = null;
-                
+
                 Debug.WriteLine($"[CalendarViewModel] Updating calendar for {currentDate:yyyy-MM}");
-                
+
                 await UpdateCalendarInternalAsync();
-                
+
                 Debug.WriteLine("[CalendarViewModel] Calendar updated successfully");
             }
             catch (Exception ex)
@@ -153,17 +148,6 @@ namespace NeoIsisJob.ViewModels.Calendar
             }
         }
 
-        //private async Task UpdateCalendarInternalAsync()
-        //{
-        //    YearText = currentDate.Year.ToString();
-        //    MonthText = currentDate.ToString("MMMM");
-
-        //    Debug.WriteLine($"[CalendarViewModel] Fetching calendar days for {UserId} on {currentDate:yyyy-MM-dd}");
-        //    var days = await calendarService.GetCalendarDaysAsync(UserId, currentDate);
-        //    Debug.WriteLine($"[CalendarViewModel] Received {days.Count} calendar days");
-
-        //    CalendarDays = days;
-        //}
         private async Task UpdateCalendarInternalAsync()
         {
             YearText = currentDate.Year.ToString();
@@ -191,8 +175,6 @@ namespace NeoIsisJob.ViewModels.Calendar
             // Finally, publish to the UI
             CalendarDays = new ObservableCollection<CalendarDayModel>(days);
         }
-
-
         private void RefreshCalendar()
         {
             Debug.WriteLine("[CalendarViewModel] Manual refresh requested");
@@ -219,11 +201,11 @@ namespace NeoIsisJob.ViewModels.Calendar
             {
                 IsLoading = true;
                 ErrorMessage = null;
-                
+
                 Debug.WriteLine($"[CalendarViewModel] Adding workout {userWorkout.WID} for user {userWorkout.UID} on {userWorkout.Date:yyyy-MM-dd}");
                 await calendarService.AddUserWorkoutAsync(userWorkout);
                 Debug.WriteLine("[CalendarViewModel] Workout added successfully");
-                
+
                 UpdateCalendar();
             }
             catch (Exception ex)
@@ -240,11 +222,11 @@ namespace NeoIsisJob.ViewModels.Calendar
             {
                 IsLoading = true;
                 ErrorMessage = null;
-                
+
                 Debug.WriteLine($"[CalendarViewModel] Updating workout {userWorkout.WID} for user {userWorkout.UID} on {userWorkout.Date:yyyy-MM-dd}");
                 await calendarService.UpdateUserWorkoutAsync(userWorkout);
                 Debug.WriteLine("[CalendarViewModel] Workout updated successfully");
-                
+
                 UpdateCalendar();
             }
             catch (Exception ex)
@@ -261,11 +243,11 @@ namespace NeoIsisJob.ViewModels.Calendar
             {
                 IsLoading = true;
                 ErrorMessage = null;
-                
+
                 Debug.WriteLine($"[CalendarViewModel] Deleting workout {workoutId} for user {UserId} on {date:yyyy-MM-dd}");
                 await calendarService.DeleteUserWorkoutAsync(UserId, workoutId, date);
                 Debug.WriteLine("[CalendarViewModel] Workout deleted successfully");
-                
+
                 UpdateCalendar();
             }
             catch (Exception ex)

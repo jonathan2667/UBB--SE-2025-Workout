@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Net.Http;
+using System;
 using Microsoft.UI.Xaml.Media;
 // using Windows.UI;
 using Workout.Core.Models;
 using Workout.Core.IServices;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Helpers;
-using System.Net.Http;
-using System;
 using Refit;
 using Workout.Core.IServices;
 
@@ -27,20 +27,6 @@ namespace NeoIsisJob.ViewModels.Rankings
             this.rankDefinitions = InitializeRankDefinitions();
         }
 
-        // private List<RankDefinition> InitializeRankDefinitions()
-        // {
-        //    return new List<RankDefinition>
-        //    {
-        //        new RankDefinition { Name = "Challenger", MinPoints = 9500, MaxPoints = 10000, Color = Colors.Aquamarine, ImagePath = "/Assets/Ranks/Rank8.png" },
-        //        new RankDefinition { Name = "Grandmaster", MinPoints = 8500, MaxPoints = 9500, Color = Colors.OrangeRed, ImagePath = "/Assets/Ranks/Rank7.png" },
-        //        new RankDefinition { Name = "Master", MinPoints = 7000, MaxPoints = 8500, Color = Colors.DarkViolet, ImagePath = "/Assets/Ranks/Rank6.png" },
-        //        new RankDefinition { Name = "Elite", MinPoints = 5000, MaxPoints = 7000, Color = Colors.DarkGreen, ImagePath = "/Assets/Ranks/Rank5.png" },
-        //        new RankDefinition { Name = "Gold", MinPoints = 3500, MaxPoints = 5000, Color = Colors.Gold, ImagePath = "/Assets/Ranks/Rank4.png" },
-        //        new RankDefinition { Name = "Silver", MinPoints = 2250, MaxPoints = 3500, Color = Colors.Silver, ImagePath = "/Assets/Ranks/Rank3.png" },
-        //        new RankDefinition { Name = "Bronze", MinPoints = 1000, MaxPoints = 2250, Color = Colors.SandyBrown, ImagePath = "/Assets/Ranks/Rank2.png" },
-        //        new RankDefinition { Name = "Beginner", MinPoints = 0, MaxPoints = 1000, Color = Colors.DimGray, ImagePath = "/Assets/Ranks/Rank1.png" }
-        //    };
-        // }
         private List<RankDefinition> InitializeRankDefinitions()
         {
             return new List<RankDefinition>
@@ -128,16 +114,6 @@ namespace NeoIsisJob.ViewModels.Rankings
             return this.rankingsService.CalculatePointsToNextRank(currentRank, rankDefinitions);
         }
 
-        // public RankingModel GetRankingByMGID(int muscleGroupid)
-        // {
-        //    return this.rankingsService.GetRankingByFullID(this.userId, muscleGroupid);
-        // }
-
-        // public SolidColorBrush GetRankColor(int rank)
-        // {
-        //    var rankDefinition = GetRankDefinitionForPoints(rank);
-        //    return new SolidColorBrush(rankDefinition.Color);
-        // }
         public async Task<RankingModel> GetRankingByMGID(int muscleGroupid)
         {
             return await this.rankingsService.GetRankingByFullIDAsync(this.userId, muscleGroupid);
