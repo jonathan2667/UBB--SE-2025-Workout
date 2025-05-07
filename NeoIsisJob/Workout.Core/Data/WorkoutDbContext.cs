@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Workout.Core.Models;
 
@@ -25,6 +24,18 @@ namespace Workout.Core.Data
         public DbSet<RankingModel> Rankings { get; set; }
         public DbSet<CalendarDayModel> CalendarDays { get; set; }
         public DbSet<RankDefinition> RankDefinitions { get; set; }
+
+        public DbSet<CategoryModel> Categories { get; set; }
+
+        public DbSet<ProductModel> Products { get; set; }
+
+        public DbSet<CartItemModel> CartItems { get; set; }
+
+        public DbSet<WishlistItemModel> WishlistItems { get; set; }
+
+        public DbSet<OrderModel> Orders { get; set; }
+
+        public DbSet<OrderItemModel> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
