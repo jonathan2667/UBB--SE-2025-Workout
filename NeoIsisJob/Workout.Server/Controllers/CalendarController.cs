@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
+using Workout.Core.Services;
 
 namespace Workout.Server.Controllers
 {
@@ -36,6 +37,20 @@ namespace Workout.Server.Controllers
             return Ok(workout);
         }
 
+        // GET /api/calendar/{userId}/{year}/{month}/{day}/class
+        [HttpGet("{userId}/{year}/{month}/{day}/class")]
+        public async Task<ActionResult<string>> GetUserClass(
+            int userId, int year, int month, int day)
+        {
+            var date = new DateTime(year, month, day);
+            // this should call into your service‐layer to fetch the class name
+            var className = await calendarService.GetUserClassAsync(userId, date);
+            if (className == null)
+            {
+                return NotFound();
+            }
+            return Ok(className);
+        }
         // GET /api/calendar/workouts
         [HttpGet("workouts")]
         public async Task<ActionResult<IEnumerable<WorkoutModel>>> GetWorkouts()

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;    // ← add this
 
 namespace Workout.Core.Models
 {
@@ -10,14 +9,14 @@ namespace Workout.Core.Models
     {
         [Column("UID")]
         public int UID { get; set; }
+
         [Column("CID")]
         public int CID { get; set; }
+
         [Column("Date")]
         public DateTime Date { get; set; }
 
-        public UserClassModel()
-        {
-        }
+        public UserClassModel() { }
 
         public UserClassModel(int userId, int classId, DateTime date)
         {
@@ -25,10 +24,14 @@ namespace Workout.Core.Models
             CID = classId;
             Date = date;
         }
-        // Navigation properties
+
+        // navigation props must be ignored & nullable:
+        [JsonIgnore]
         [ForeignKey("UID")]
-        public virtual UserModel User { get; set; }
+        public virtual UserModel? User { get; set; }
+
+        [JsonIgnore]
         [ForeignKey("CID")]
-        public virtual ClassModel Class { get; set; }
+        public virtual ClassModel? Class { get; set; }
     }
 }
