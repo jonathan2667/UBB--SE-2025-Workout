@@ -12,8 +12,8 @@ using Workout.Core.Data;
 namespace Workout.Core.Migrations
 {
     [DbContext(typeof(WorkoutDbContext))]
-    [Migration("20250507140939_ShopTablesAdded")]
-    partial class ShopTablesAdded
+    [Migration("20250507145924_ShopModelsAdded")]
+    partial class ShopModelsAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

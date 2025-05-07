@@ -7,7 +7,7 @@ namespace Workout.Core.IRepositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using WorkoutApp.Utils.Filters;
+    using Workout.Core.Utils.Filters;
 
     /// <summary>
     /// Defines the basic CRUD operations for a repository.

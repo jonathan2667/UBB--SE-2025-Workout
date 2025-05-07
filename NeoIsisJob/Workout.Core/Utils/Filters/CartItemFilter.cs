@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.Utils.Filters
+namespace Workout.Core.Utils.Filters
 {
     using System;
     using System.Collections.Generic;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Workout.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class ShopTablesAdded : Migration
+    public partial class ShopModelsAdded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
