@@ -73,12 +73,6 @@ namespace Workout.Core.Repositories
         /// <returns>
         /// The same <see cref="WishlistItemModel"/> entity with the newly generated ID assigned.
         /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown if the current user ID is not available in the session.
-        /// </exception>
-        /// <exception cref="Exception">
-        /// Thrown if the insertion fails or the new ID is invalid.
-        /// </exception>
         public async Task<WishlistItemModel> CreateAsync(WishlistItemModel entity)
         {
             int customerId = 1;
