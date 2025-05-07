@@ -73,17 +73,16 @@ namespace Workout.Core.Repositories
         /// <exception cref="Exception">Thrown when no category is found with the specified ID.</exception>
         public async Task<CategoryModel> UpdateAsync(CategoryModel entity)
         {
-            int rowsAffected = await this.context.Categories
-                .Where(c => c.ID == entity.ID)
-                .ExecuteUpdateAsync(c => c
-                    .SetProperty(x => x.Name, entity.Name));
-
-            if (rowsAffected == 0)
+            var existing = await this.context.Categories.FindAsync(entity.ID);
+            if (existing == null)
             {
                 throw new Exception($"No category found with ID {entity.ID}.");
             }
 
-            return entity;
+            existing.Name = entity.Name;
+            await this.context.SaveChangesAsync();
+
+            return existing;
         }
 
         /// <summary>
