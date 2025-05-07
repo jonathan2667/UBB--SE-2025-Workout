@@ -127,7 +127,7 @@
   -->
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-	  <CodeAnalysisRuleSet>SE.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <!-- Publish Properties -->
