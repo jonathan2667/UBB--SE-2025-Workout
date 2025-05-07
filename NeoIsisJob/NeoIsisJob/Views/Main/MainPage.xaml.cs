@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Workout.Core.Models;
 using NeoIsisJob.Proxy;
+
 namespace NeoIsisJob.Views
 {
     public sealed partial class MainPage : Page
@@ -13,6 +15,7 @@ namespace NeoIsisJob.Views
         private readonly WorkoutServiceProxy workoutService;
         private readonly ExerciseServiceProxy exerciseService;
         private readonly CompleteWorkoutServiceProxy completeWorkoutService;
+        private readonly CalendarServiceProxy calendarService;
 
         // Current workout data
         private WorkoutModel currentWorkout;
@@ -41,7 +44,7 @@ namespace NeoIsisJob.Views
             workoutService = new WorkoutServiceProxy();
             exerciseService = new ExerciseServiceProxy();
             completeWorkoutService = new CompleteWorkoutServiceProxy();
-
+            calendarService = new CalendarServiceProxy();
             // Set current date
             CurrentDateTextBlock.Text = DateTime.Now.ToString("dddd, MMMM d, yyyy");
 
@@ -140,80 +143,83 @@ namespace NeoIsisJob.Views
             currentWorkout = null;
             currentWorkoutExercises = null;
         }
-
         private async void AddWorkoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Get all available workouts
-                var availableWorkouts = workoutService.GetAllWorkoutsAsync().Result;
+                // 1) Fetch list of workouts asynchronously
+                var availableWorkouts = await workoutService.GetAllWorkoutsAsync();
 
                 if (availableWorkouts.Count == 0)
                 {
-                    ContentDialog noWorkoutsDialog = new ContentDialog
+                    var noWorkoutsDialog = new ContentDialog
                     {
                         Title = "No Workouts Available",
                         Content = "There are no workouts available to add.",
                         CloseButtonText = "OK",
                         XamlRoot = this.XamlRoot
                     };
-
                     await noWorkoutsDialog.ShowAsync();
                     return;
                 }
 
-                // Create the dialog
-                ContentDialog selectWorkoutDialog = new ContentDialog
+                // 2) Show selection dialog
+                var selectWorkoutDialog = new ContentDialog
                 {
                     Title = "Select a Workout",
-                    PrimaryButtonText = "Add",
                     CloseButtonText = "Cancel",
+                    PrimaryButtonText = "Add",
                     XamlRoot = this.XamlRoot
                 };
 
-                // Create a list view for the workout selection
-                ListView workoutListView = new ListView
+                var workoutListView = new ListView
                 {
                     SelectionMode = ListViewSelectionMode.Single,
                     ItemsSource = availableWorkouts,
                     DisplayMemberPath = "Name",
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch,
                     Height = 300,
                     Margin = new Thickness(0, 10, 0, 10)
                 };
 
-                // Set the dialog content
                 selectWorkoutDialog.Content = workoutListView;
-
-                // Disable the primary button initially (until a selection is made)
                 selectWorkoutDialog.IsPrimaryButtonEnabled = false;
 
-                // Enable the button when a workout is selected
-                workoutListView.SelectionChanged += (s, args) =>
-                {
+                workoutListView.SelectionChanged += (_, __) =>
                     selectWorkoutDialog.IsPrimaryButtonEnabled = workoutListView.SelectedItem != null;
-                };
 
-                // Show the dialog and process the result
                 var result = await selectWorkoutDialog.ShowAsync();
-
-                if (result == ContentDialogResult.Primary && workoutListView.SelectedItem is WorkoutModel selectedWorkout)
+                if (result != ContentDialogResult.Primary || workoutListView.SelectedItem is not WorkoutModel selected)
                 {
-                    // For testing, store the selected workout ID in local settings
-                    Windows.Storage.ApplicationData.Current.LocalSettings.Values["TodaysWorkoutId"] = selectedWorkout.WID;
-
-                    // Reload the workout display
-                    LoadTodaysWorkout();
+                    return;
                 }
+
+                // 3) POST to calendar/userworkout
+                var today = DateTime.Now.Date;
+                var uw = new UserWorkoutModel(
+                    userId: currentUserId,
+                    workoutId: selected.WID,
+                    date: today,
+                    completed: false);
+
+                await calendarService.AddUserWorkoutAsync(uw);
+
+                // 4) Refresh UI exactly like your calendar page does
+                //    or store to LocalSettings if you still want that fallback
+                LoadTodaysWorkout();
             }
             catch (Exception ex)
             {
-                // For debugging
-                System.Diagnostics.Debug.WriteLine($"Error adding workout: {ex.Message}");
+                Debug.WriteLine($"Error adding workout: {ex}");
+                var dlg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = ex.Message,
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+                await dlg.ShowAsync();
             }
         }
-
         private void CompleteWorkoutButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentWorkout != null)
