@@ -76,18 +76,8 @@ namespace Workout.Core.Repositories
         /// <returns>The created cart item.</returns>
         public async Task<CartItemModel> CreateAsync(CartItemModel entity)
         {
-            // The current userID needs to be properly fetched.
-            int customerID = 1;
-
             await this.context.CartItems.AddAsync(entity);
             await this.context.SaveChangesAsync();
-
-            int newId = await this.context.CartItems
-                .Where(ci => ci.ProductID == entity.ProductID && ci.UserID == customerID)
-                .Select(ci => ci.ID)
-                .FirstOrDefaultAsync();
-            entity.ID = newId;
-
             return entity;
         }
 
