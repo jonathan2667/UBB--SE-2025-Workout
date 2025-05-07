@@ -2,12 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.Repository
+namespace Workout.Core.IRepositories
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using WorkoutApp.Utils;
     using WorkoutApp.Utils.Filters;
 
     /// <summary>
