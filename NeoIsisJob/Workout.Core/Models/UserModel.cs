@@ -31,5 +31,9 @@ namespace Workout.Core.Models
         public virtual ICollection<UserWorkoutModel> UserWorkouts { get; set; }
         public virtual ICollection<UserClassModel> UserClasses { get; set; }
         public virtual ICollection<RankingModel> Rankings { get; set; }
+
+        public ICollection<CartItemModel> CartItems { get; set; }
+        public ICollection<WishlistItemModel> WishlistItems { get; set; }
+        public ICollection<OrderModel> Orders { get; set; }
     }
 }

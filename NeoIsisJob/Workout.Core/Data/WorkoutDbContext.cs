@@ -95,6 +95,55 @@ namespace Workout.Core.Data
                 .WithMany()
                 .HasForeignKey(r => r.MGID);
 
+            // Define shop relationships
+            modelBuilder.Entity<ProductModel>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CartItemModel>()
+                .HasOne(ci => ci.User)
+                .WithMany(u => u.CartItems)
+                .HasForeignKey(ci => ci.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CartItemModel>()
+                .HasOne(ci => ci.Product)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WishlistItemModel>()
+                .HasOne(w => w.User)
+                .WithMany(u => u.WishlistItems)
+                .HasForeignKey(w => w.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WishlistItemModel>()
+                .HasOne(w => w.Product)
+                .WithMany(p => p.WishlistItems)
+                .HasForeignKey(w => w.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderModel>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderItemModel>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderItemModel>()
+                .HasOne(oi => oi.Product)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(oi => oi.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Table mappings
             modelBuilder.Entity<UserModel>().ToTable("Users");
             modelBuilder.Entity<WorkoutModel>().ToTable("Workouts");
@@ -110,6 +159,13 @@ namespace Workout.Core.Data
             modelBuilder.Entity<RankingModel>().ToTable("Rankings");
             modelBuilder.Entity<CalendarDayModel>().ToTable("CalendarDays");
             modelBuilder.Entity<RankDefinition>().ToTable("RankDefinitions");
+
+            modelBuilder.Entity<CategoryModel>().ToTable("Category");
+            modelBuilder.Entity<ProductModel>().ToTable("Product");
+            modelBuilder.Entity<CartItemModel>().ToTable("CartItem");
+            modelBuilder.Entity<WishlistItemModel>().ToTable("WishlistItem");
+            modelBuilder.Entity<OrderModel>().ToTable("Order");
+            modelBuilder.Entity<OrderItemModel>().ToTable("OrderItem");
 
             // Seed data
             modelBuilder.Entity<MuscleGroupModel>().HasData(
