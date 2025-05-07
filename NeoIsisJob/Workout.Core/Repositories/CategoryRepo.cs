@@ -93,17 +93,11 @@ namespace Workout.Core.Repositories
         /// <returns><c>true</c> if the category was successfully deleted; otherwise, <c>false</c>.</returns>
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                await this.context.Categories
-                    .Where(c => c.ID == id)
-                    .ExecuteDeleteAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            int rowsAffected = await this.context.Categories
+                .Where(c => c.ID == id)
+                .ExecuteDeleteAsync();
+
+            return rowsAffected > 0;
         }
     }
 }

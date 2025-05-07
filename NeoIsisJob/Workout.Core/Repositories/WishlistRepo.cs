@@ -103,17 +103,11 @@ namespace Workout.Core.Repositories
         /// </returns>
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                await this.context.WishlistItems
-                    .Where(wi => wi.ID == id)
-                    .ExecuteDeleteAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            int rowsAffected = await this.context.Categories
+                .Where(wi => wi.ID == id)
+                .ExecuteDeleteAsync();
+
+            return rowsAffected > 0;
         }
     }
 }
