@@ -12,6 +12,7 @@ namespace Workout.Core.IServices
         Task<WorkoutModel> GetWorkoutAsync(int workoutId);
         Task<WorkoutModel> GetWorkoutByNameAsync(string workoutName);
         Task InsertWorkoutAsync(string workoutName, int workoutTypeId);
+        Task InsertWorkoutAsync(string workoutName, int workoutTypeId, string description);
         Task DeleteWorkoutAsync(int workoutId);
         Task UpdateWorkoutAsync(WorkoutModel workout);
         Task<IList<WorkoutModel>> GetAllWorkoutsAsync();

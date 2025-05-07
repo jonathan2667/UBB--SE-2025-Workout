@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using NeoIsisJob.Models;
+// using NeoIsisJob.Models;
 using NeoIsisJob.ViewModels.Classes;
 using NeoIsisJob.ViewModels.Workout;
 using Microsoft.Extensions.DependencyInjection;

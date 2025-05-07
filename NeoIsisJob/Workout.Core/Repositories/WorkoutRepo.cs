@@ -37,13 +37,26 @@ namespace Workout.Core.Repositories
 
         public async Task InsertWorkoutAsync(string workoutName, int workoutTypeId)
         {
-            var workout = new WorkoutModel
+            // supply a default non-null description if none
+            var w = new WorkoutModel
             {
                 Name = workoutName,
-                WTID = workoutTypeId
+                WTID = workoutTypeId,
+                Description = string.Empty
             };
+            context.Workouts.Add(w);
+            await context.SaveChangesAsync();
+        }
 
-            context.Workouts.Add(workout);
+        public async Task InsertWorkoutAsync(string workoutName, int workoutTypeId, string description)
+        {
+            var w = new WorkoutModel
+            {
+                Name = workoutName,
+                WTID = workoutTypeId,
+                Description = description ?? string.Empty
+            };
+            context.Workouts.Add(w);
             await context.SaveChangesAsync();
         }
 

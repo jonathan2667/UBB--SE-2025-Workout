@@ -26,6 +26,7 @@ namespace Workout.Server.Controllers
 
         // GET /api/workout/{workoutName}
         [HttpGet("{workoutName}")]
+        [HttpGet("name/{workoutName}")]
         public async Task<ActionResult<WorkoutModel>> GetByName(string workoutName)
         {
             var workout = await workoutService.GetWorkoutByNameAsync(workoutName);
@@ -42,6 +43,19 @@ namespace Workout.Server.Controllers
         {
             await workoutService.InsertWorkoutAsync(workoutName, workoutTypeId);
             return CreatedAtAction(nameof(GetByName), new { workoutName }, null);
+        }
+        // Workout.Server/Controllers/WorkoutController.cs
+        [HttpPost]
+        public async Task<IActionResult> CreateFromBody([FromBody] WorkoutModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+            await workoutService.InsertWorkoutAsync(model.Name, model.WTID, model.Description);
+            return CreatedAtAction(nameof(GetByName),
+                new { workoutName = model.Name },
+                model);
         }
 
         // DELETE /api/workout/{workoutId}

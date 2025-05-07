@@ -47,7 +47,7 @@ namespace NeoIsisJob.Proxy
         {
             try
             {
-                await DeleteAsync($"{EndpointName}/workout/{workoutId}");
+                await DeleteAsync($"{EndpointName}/{workoutId}");
             }
             catch (Exception ex)
             {

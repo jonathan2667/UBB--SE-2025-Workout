@@ -53,6 +53,26 @@ namespace Workout.Core.Services
                 throw new Exception("An error occurred while inserting workout.", ex);
             }
         }
+        public async Task InsertWorkoutAsync(string workoutName, int workoutTypeId, string description)
+        {
+            if (string.IsNullOrWhiteSpace(workoutName))
+            {
+                throw new ArgumentException("Workout name cannot be empty.", nameof(workoutName));
+            }
+
+            try
+            {
+                await workoutRepository.InsertWorkoutAsync(workoutName, workoutTypeId, description);
+            }
+            catch (SqlException ex) when (ex.Number == 2627)
+            {
+                throw new Exception("A workout with this name already exists.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while inserting workout.", ex);
+            }
+        }
 
         public async Task DeleteWorkoutAsync(int workoutId)
         {

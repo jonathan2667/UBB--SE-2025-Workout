@@ -47,12 +47,8 @@ namespace NeoIsisJob.Proxy
         {
             try
             {
-                var data = new
-                {
-                    workoutName,
-                    workoutTypeId
-                };
-                await PostAsync($"{EndpointName}", data);
+                var escaped = Uri.EscapeDataString(workoutName);
+                await PostAsync($"{EndpointName}/{escaped}/{workoutTypeId}", null);
             }
             catch (Exception ex)
             {
