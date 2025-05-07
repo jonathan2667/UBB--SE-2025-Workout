@@ -12,6 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Service\Mocks\**" />
+    <Content Remove="Service\Mocks\**" />
+    <EmbeddedResource Remove="Service\Mocks\**" />
+    <None Remove="Service\Mocks\**" />
+    <Page Remove="Service\Mocks\**" />
+    <PRIResource Remove="Service\Mocks\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="8.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
@@ -33,10 +42,6 @@
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Service\Mocks\" />
   </ItemGroup>
 
 </Project>
