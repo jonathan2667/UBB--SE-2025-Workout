@@ -98,7 +98,7 @@ namespace Workout.Core.Repositories
         /// <returns>A boolean indicating whether the deletion was successful.</returns>
         public async Task<bool> DeleteAsync(int cartItemID)
         {
-            int rowsAffected = await this.context.Categories
+            int rowsAffected = await this.context.CartItems
                 .Where(c => c.ID == cartItemID)
                 .ExecuteDeleteAsync();
 
