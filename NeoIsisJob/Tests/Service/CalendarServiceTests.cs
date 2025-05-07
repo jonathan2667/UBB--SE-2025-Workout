@@ -13,15 +13,15 @@ namespace Workout.Tests.Services
 {
     public class CalendarServiceTests
     {
-        private readonly Mock<ICalendarRepository> _calendarRepoMock;
-        private readonly Mock<IUserWorkoutRepository> _userWorkoutRepoMock;
-        private readonly CalendarService _calendarService;
+        private readonly Mock<ICalendarRepository> calendarRepoMock;
+        private readonly Mock<IUserWorkoutRepository> userWorkoutRepoMock;
+        private readonly CalendarService calendarService;
 
         public CalendarServiceTests()
         {
-            _calendarRepoMock = new Mock<ICalendarRepository>();
-            _userWorkoutRepoMock = new Mock<IUserWorkoutRepository>();
-            _calendarService = new CalendarService(_calendarRepoMock.Object, _userWorkoutRepoMock.Object);
+            calendarRepoMock = new Mock<ICalendarRepository>();
+            userWorkoutRepoMock = new Mock<IUserWorkoutRepository>();
+            calendarService = new CalendarService(calendarRepoMock.Object, userWorkoutRepoMock.Object);
         }
 
         [Fact]
@@ -35,11 +35,11 @@ namespace Workout.Tests.Services
                 new CalendarDayModel { Date = date, HasWorkout = true }
             };
 
-            _calendarRepoMock.Setup(r => r.GetCalendarDaysForMonthAsync(userId, date))
+            calendarRepoMock.Setup(r => r.GetCalendarDaysForMonthAsync(userId, date))
                              .ReturnsAsync(expectedDays);
 
             // Act
-            var result = await _calendarService.GetCalendarDaysForMonthAsync(userId, date);
+            var result = await calendarService.GetCalendarDaysForMonthAsync(userId, date);
 
             // Assert
             Assert.Single(result);
@@ -57,11 +57,11 @@ namespace Workout.Tests.Services
                 new CalendarDayModel { Date = currentDate, HasWorkout = true }
             };
 
-            _calendarRepoMock.Setup(r => r.GetCalendarDaysForMonthAsync(userId, currentDate))
+            calendarRepoMock.Setup(r => r.GetCalendarDaysForMonthAsync(userId, currentDate))
                              .ReturnsAsync(days);
 
             // Act
-            var result = await _calendarService.GetCalendarDaysAsync(userId, currentDate);
+            var result = await calendarService.GetCalendarDaysAsync(userId, currentDate);
 
             // Assert
             Assert.Contains(result, d => d.HasWorkout);
@@ -76,17 +76,17 @@ namespace Workout.Tests.Services
             var workout = new UserWorkoutModel { WID = 10 };
             var day = new CalendarDayModel { Date = date };
 
-            _calendarRepoMock.Setup(r => r.GetUserWorkoutAsync(userId, date))
+            calendarRepoMock.Setup(r => r.GetUserWorkoutAsync(userId, date))
                              .ReturnsAsync(workout);
 
-            _userWorkoutRepoMock.Setup(r => r.DeleteUserWorkoutAsync(userId, workout.WID, date))
+            userWorkoutRepoMock.Setup(r => r.DeleteUserWorkoutAsync(userId, workout.WID, date))
                                 .Returns(Task.CompletedTask);
 
             // Act
-            await _calendarService.RemoveWorkoutAsync(userId, day);
+            await calendarService.RemoveWorkoutAsync(userId, day);
 
             // Assert
-            _userWorkoutRepoMock.Verify(r => r.DeleteUserWorkoutAsync(userId, workout.WID, date), Times.Once);
+            userWorkoutRepoMock.Verify(r => r.DeleteUserWorkoutAsync(userId, workout.WID, date), Times.Once);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace Workout.Tests.Services
             };
 
             // Act
-            var result = _calendarService.GetWorkoutDaysCountText(days);
+            var result = calendarService.GetWorkoutDaysCountText(days);
 
             // Assert
             Assert.Equal("Workout Days: 1", result);
@@ -111,14 +111,14 @@ namespace Workout.Tests.Services
         {
             // Arrange
             var workout = new UserWorkoutModel { WID = 1 };
-            _userWorkoutRepoMock.Setup(r => r.AddUserWorkoutAsync(workout))
+            userWorkoutRepoMock.Setup(r => r.AddUserWorkoutAsync(workout))
                                 .Returns(Task.CompletedTask);
 
             // Act
-            await _calendarService.AddUserWorkoutAsync(workout);
+            await calendarService.AddUserWorkoutAsync(workout);
 
             // Assert
-            _userWorkoutRepoMock.Verify(r => r.AddUserWorkoutAsync(workout), Times.Once);
+            userWorkoutRepoMock.Verify(r => r.AddUserWorkoutAsync(workout), Times.Once);
         }
     }
 }
