@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Tests.Repo.Tests
 {
-    public class OrderRepositoryTestscs
+    public class OrderRepositoryTests
     {
         private WorkoutDbContext GetInMemoryDbContext()
         {
