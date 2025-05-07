@@ -98,11 +98,15 @@ namespace Workout.Core.Repositories
         /// <returns>A boolean indicating whether the deletion was successful.</returns>
         public async Task<bool> DeleteAsync(int cartItemID)
         {
-            int rowsAffected = await this.context.CartItems
-                .Where(c => c.ID == cartItemID)
-                .ExecuteDeleteAsync();
+            var item = await this.context.CartItems.FindAsync(cartItemID);
+            if (item == null)
+            {
+                return false;
+            }
 
-            return rowsAffected > 0;
+            this.context.CartItems.Remove(item);
+            await this.context.SaveChangesAsync();
+            return true;
         }
     }
 }
