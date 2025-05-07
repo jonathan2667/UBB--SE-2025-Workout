@@ -75,18 +75,8 @@ namespace Workout.Core.Repositories
         /// </returns>
         public async Task<WishlistItemModel> CreateAsync(WishlistItemModel entity)
         {
-            int customerId = 1;
-
             await this.context.WishlistItems.AddAsync(entity);
-            int result = await this.context.SaveChangesAsync();
-
-            int newId = await this.context.WishlistItems
-                .Where(wi => wi.UserID == customerId)
-                .Select(wi => wi.ID)
-                .OrderByDescending(id => id)
-                .FirstOrDefaultAsync();
-
-            entity.ID = newId;
+            await this.context.SaveChangesAsync();
             return entity;
         }
 
