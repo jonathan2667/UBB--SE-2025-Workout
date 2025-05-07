@@ -29,13 +29,11 @@ namespace Tests.Repo.Tests
 
             context.Categories.AddRange(
                 new CategoryModel { ID = 1, Name = "Weights" },
-                new CategoryModel { ID = 2, Name = "Cardio" }
-            );
+                new CategoryModel { ID = 2, Name = "Cardio" });
 
             context.Products.AddRange(
                 new ProductModel { ID = 1, Name = "Dumbbell", Price = 20, CategoryID = 1, PhotoURL = "photo1" },
-                new ProductModel { ID = 2, Name = "Treadmill", Price = 200, CategoryID = 2, PhotoURL = "photo2" }
-            );
+                new ProductModel { ID = 2, Name = "Treadmill", Price = 200, CategoryID = 2, PhotoURL = "photo2" });
             await context.SaveChangesAsync();
 
             var repository = new ProductRepository(context);
@@ -207,7 +205,6 @@ namespace Tests.Repo.Tests
             // Assert
             Xunit.Assert.Equal("Invalid filter type (Parameter 'filter')", exception.Message);
         }
-
     }
 }
 
