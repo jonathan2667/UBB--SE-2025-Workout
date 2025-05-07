@@ -2,13 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.Repository
+namespace Workout.Core.IRepositories
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using WorkoutApp.Utils;
-    using WorkoutApp.Utils.Filters;
+    using Workout.Core.Utils.Filters;
+
 
     /// <summary>
     /// Defines the basic CRUD operations for a repository.
