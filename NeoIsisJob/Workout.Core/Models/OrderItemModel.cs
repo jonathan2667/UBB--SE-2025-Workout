@@ -6,6 +6,17 @@
     [Table("OrderItem")]
     public class OrderItemModel
     {
+        public OrderItemModel()
+        {
+        }
+
+        public OrderItemModel(int orderId, int productId, int quantity)
+        {
+            this.OrderID = orderId;
+            this.ProductID = productId;
+            this.Quantity = quantity;
+        }
+
         [Key]
         public int ID { get; set; }
 

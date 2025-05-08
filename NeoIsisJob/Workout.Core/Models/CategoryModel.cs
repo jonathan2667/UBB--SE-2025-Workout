@@ -15,6 +15,16 @@ namespace Workout.Core.Models
     [Table("Category")]
     public class CategoryModel
     {
+        public CategoryModel()
+        {
+        }
+
+        public CategoryModel(int id, string name)
+        {
+            this.Name = name;
+            Products = new List<ProductModel>();
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the category.
         /// </summary>

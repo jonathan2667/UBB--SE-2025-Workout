@@ -15,6 +15,16 @@ namespace Workout.Core.Models
     [Table("WishlistItem")]
     public class WishlistItemModel
     {
+        public WishlistItemModel()
+        {
+        }
+
+        public WishlistItemModel(int productId, int userId)
+        {
+            ProductID = productId;
+            UserID = userId;
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the wishlist item.
         /// </summary>
