@@ -7,6 +7,7 @@ namespace Workout.Core.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Represents a category entity in the system.
@@ -24,12 +25,13 @@ namespace Workout.Core.Models
         /// Gets or sets the name of the category.
         /// </summary>
         [Required]
-        [MaxLength(100)]
+        [StringLength(100)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of products associated with the category.
         /// </summary>
-        public ICollection<ProductModel> Products { get; set; }
+        [JsonIgnore]
+        public ICollection<ProductModel>? Products { get; set; }
     }
 }
