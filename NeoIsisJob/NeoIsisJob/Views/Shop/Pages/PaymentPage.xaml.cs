@@ -2,30 +2,24 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Pages
+namespace Workout.Core.View.Pages
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.InteropServices.WindowsRuntime;
-    using Microsoft.UI.Xaml;
-    using Microsoft.UI.Xaml.Controls;
-    using Microsoft.UI.Xaml.Controls.Primitives;
-    using Microsoft.UI.Xaml.Data;
-    using Microsoft.UI.Xaml.Input;
-    using Microsoft.UI.Xaml.Media;
-    using Microsoft.UI.Xaml.Navigation;
-    using Windows.Foundation;
-    using Windows.Foundation.Collections;
-    using WorkoutApp.ViewModel;
+    using System.Threading.Tasks;
+    using Workout.Core.Models;
+    using Workout.Core.ViewModel;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
 
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// The payment page.
     /// </summary>
-    public sealed partial class PaymentPage : Page
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class PaymentPage : ContentPage
     {
-        private readonly PaymentPageViewModel paymentPageViewModel;
+        private readonly PaymentPageViewModel viewModel;
+        private readonly CartViewModel cartViewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentPage"/> class.
@@ -33,25 +27,54 @@ namespace WorkoutApp.View.Pages
         public PaymentPage()
         {
             this.InitializeComponent();
-            this.paymentPageViewModel = new PaymentPageViewModel();
+            this.viewModel = new PaymentPageViewModel();
+            this.cartViewModel = new CartViewModel();
+            this.BindingContext = this.viewModel;
+            this.LoadCartItems();
         }
 
-        private async void SendOrderButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Loads the cart items.
+        /// </summary>
+        private async void LoadCartItems()
         {
-            bool successFlag = await this.paymentPageViewModel.SendOrder();
-
-            ContentDialog dialog = new ContentDialog
+            try
             {
-                Title = successFlag ? "Order Placed" : "Order Failed",
-                Content = successFlag ? "Your order was successfully placed." : "Something went wrong. Please try again.",
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot,
-            };
-            await dialog.ShowAsync();
-
-            if (successFlag)
+                IEnumerable<CartItemModel> cartItems = await this.cartViewModel.GetAllCartItemsAsync();
+                this.CartItemsListView.ItemsSource = cartItems;
+                decimal total = await this.cartViewModel.CalculateTotalAsync();
+                this.TotalLabel.Text = $"Total: ${total:F2}";
+            }
+            catch (Exception ex)
             {
-                MainWindow.AppFrame?.Navigate(typeof(MainPage));
+                await this.DisplayAlert("Error", $"Failed to load cart items: {ex.Message}", "OK");
+            }
+        }
+
+        /// <summary>
+        /// Handles the process payment button click event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private async void OnProcessPaymentButtonClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                IEnumerable<CartItemModel> cartItems = await this.cartViewModel.GetAllCartItemsAsync();
+                decimal total = await this.cartViewModel.CalculateTotalAsync();
+
+                // Create the order
+                OrderModel order = await this.viewModel.CreateOrderAsync(cartItems, total);
+
+                // Clear the cart
+                await this.viewModel.ClearCartAsync();
+
+                await this.DisplayAlert("Success", "Payment processed successfully", "OK");
+                await this.Navigation.PopAsync();
+            }
+            catch (Exception ex)
+            {
+                await this.DisplayAlert("Error", $"Failed to process payment: {ex.Message}", "OK");
             }
         }
     }

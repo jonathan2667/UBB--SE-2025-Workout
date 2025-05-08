@@ -2,17 +2,19 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace Workout.Core.View.Components
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Models;
+    using Workout.Core.Models;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
 
     /// <summary>
-    /// A reusable component that displays a vertical list of products.
+    /// The vertical product list component.
     /// </summary>
-    public sealed partial class VerticalProductListComponent : UserControl
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class VerticalProductListComponent : ContentView
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VerticalProductListComponent"/> class.
@@ -30,13 +32,13 @@ namespace WorkoutApp.View.Components
         /// <summary>
         /// Gets or sets the list of products to display.
         /// </summary>
-        public IEnumerable<Product> ProductList { get; set; } = new List<Product>();
+        public IEnumerable<ProductModel> ProductList { get; set; } = new List<ProductModel>();
 
         /// <summary>
         /// Sets the product list and refreshes the view.
         /// </summary>
         /// <param name="products">The list of products to display.</param>
-        public void SetProducts(IEnumerable<Product> products)
+        public void SetProducts(IEnumerable<ProductModel> products)
         {
             this.ProductList = products;
             this.ProductListView.ItemsSource = this.ProductList;
@@ -49,7 +51,7 @@ namespace WorkoutApp.View.Components
         /// <param name="e">Event data for the item click event.</param>
         public void ProductList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is Product product && product.ID.HasValue)
+            if (e.ClickedItem is ProductModel product && product.ID.HasValue)
             {
                 this.ProductClicked?.Invoke(this, product.ID.Value);
             }

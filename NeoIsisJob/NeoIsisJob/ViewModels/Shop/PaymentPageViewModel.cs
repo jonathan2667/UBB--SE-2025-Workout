@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace Workout.Core.ViewModel
 {
     using System;
     using System.Collections.Generic;
@@ -11,18 +11,19 @@ namespace WorkoutApp.ViewModel
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Infrastructure.Session;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+    using Workout.Core.Data.Database;
+    using Workout.Core.Infrastructure.Session;
+    using Workout.Core.Models;
+    using Workout.Core.Repository;
+    using Workout.Core.Service;
 
     /// <summary>
-    /// Represents the view model for the payment page.
+    /// ViewModel responsible for managing payment operations.
     /// </summary>
     public class PaymentPageViewModel
     {
-        private readonly IService<Order> orderService;
+        private readonly IService<OrderModel> orderService;
+        private readonly IService<CartItemModel> cartService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentPageViewModel"/> class.
@@ -30,18 +31,45 @@ namespace WorkoutApp.ViewModel
         public PaymentPageViewModel()
         {
             string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
             }
 
-            DbConnectionFactory dbConnectionFactory = new (connectionString);
-            DbService dbService = new (dbConnectionFactory);
-            SessionManager sessionManager = new ();
-            IRepository<CartItem> cartRepository = new CartRepository(dbService, sessionManager);
-            IRepository<Order> orderRepository = new OrderRepository(dbService, sessionManager);
-            this.orderService = new OrderService(orderRepository, cartRepository);
+            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
+            DbService dbService = new DbService(dbConnectionFactory);
+            SessionManager sessionManager = new SessionManager();
+            IRepository<OrderModel> orderRepository = new OrderRepository(dbService, sessionManager);
+            IRepository<CartItemModel> cartRepository = new CartItemRepository(dbService, sessionManager);
+            this.orderService = new OrderService(orderRepository);
+            this.cartService = new CartService(cartRepository);
+        }
+
+        /// <summary>
+        /// Creates a new order asynchronously.
+        /// </summary>
+        /// <param name="cartItems">The cart items to include in the order.</param>
+        /// <param name="totalAmount">The total amount of the order.</param>
+        /// <returns>The created order.</returns>
+        public async Task<OrderModel> CreateOrderAsync(IEnumerable<CartItemModel> cartItems, decimal totalAmount)
+        {
+            var order = new OrderModel(null, cartItems, totalAmount, DateTime.Now);
+            return await this.orderService.CreateAsync(order);
+        }
+
+        /// <summary>
+        /// Clears the cart after successful payment asynchronously.
+        /// </summary>
+        /// <returns>True if the cart was cleared successfully.</returns>
+        public async Task<bool> ClearCartAsync()
+        {
+            IEnumerable<CartItemModel> cartItems = await this.cartService.GetAllAsync();
+            foreach (var item in cartItems)
+            {
+                await this.cartService.DeleteAsync(item.ID);
+            }
+
+            return true;
         }
 
         /// <summary>

@@ -28,7 +28,7 @@ public class CategoryRepoTests
             new CategoryModel { ID = 2, Name = "Cardio" });
         await context.SaveChangesAsync();
 
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
 
         var result = await repo.GetAllAsync();
 
@@ -42,7 +42,7 @@ public class CategoryRepoTests
         context.Categories.Add(new CategoryModel { ID = 1, Name = "Yoga" });
         await context.SaveChangesAsync();
 
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
 
         var result = await repo.GetByIdAsync(1);
 
@@ -54,7 +54,7 @@ public class CategoryRepoTests
     public async Task CreateAsync_AddsCategory()
     {
         using var context = GetInMemoryDbContext();
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
 
         var newCategory = new CategoryModel { ID = 10, Name = "Mobility" };
 
@@ -72,7 +72,7 @@ public class CategoryRepoTests
         context.Categories.Add(new CategoryModel { ID = 1, Name = "Old Name" });
         await context.SaveChangesAsync();
 
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
         var updated = new CategoryModel { ID = 1, Name = "New Name" };
 
         var result = await repo.UpdateAsync(updated);
@@ -85,7 +85,7 @@ public class CategoryRepoTests
     public async Task UpdateAsync_ThrowsWhenNotFound()
     {
         using var context = GetInMemoryDbContext();
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
 
         var missing = new CategoryModel { ID = 999, Name = "Missing" };
 
@@ -99,7 +99,7 @@ public class CategoryRepoTests
         context.Categories.Add(new CategoryModel { ID = 1, Name = "Delete Me" });
         await context.SaveChangesAsync();
 
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
 
         var result = await repo.DeleteAsync(1);
 
@@ -111,7 +111,7 @@ public class CategoryRepoTests
     public async Task DeleteAsync_ReturnsFalseWhenNotFound()
     {
         using var context = GetInMemoryDbContext();
-        var repo = new CategoryRepo(context);
+        var repo = new CategoryRepository(context);
 
         var result = await repo.DeleteAsync(999);
 

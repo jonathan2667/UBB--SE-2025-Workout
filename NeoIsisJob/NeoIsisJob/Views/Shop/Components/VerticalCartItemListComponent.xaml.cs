@@ -2,22 +2,25 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace Workout.Core.View.Components
 {
     using System;
     using System.Collections.Generic;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Models;
+    using Workout.Core.Models;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
 
     /// <summary>
     /// A reusable component that displays a vertical list of products.
     /// </summary>
-    public sealed partial class VerticalRemovableProductListComponent : UserControl
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public sealed partial class VerticalCartItemListComponent : ContentView
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="VerticalRemovableProductListComponent"/> class.
+        /// Initializes a new instance of the <see cref="VerticalCartItemListComponent"/> class.
         /// </summary>
-        public VerticalRemovableProductListComponent()
+        public VerticalCartItemListComponent()
         {
             this.InitializeComponent();
         }
@@ -35,16 +38,16 @@ namespace WorkoutApp.View.Components
         /// <summary>
         /// Gets or sets the list of products to display.
         /// </summary>
-        public IEnumerable<CartItem> CartItemList { get; set; } = new List<CartItem>();
+        public IEnumerable<CartItemModel> CartItems { get; set; } = new List<CartItemModel>();
 
         /// <summary>
         /// Sets the product list and refreshes the view.
         /// </summary>
-        /// <param name="cartItems">The list of products to display.</param>
-        public void SetProducts(IEnumerable<CartItem> cartItems)
+        /// <param name="items">The list of products to display.</param>
+        public void SetCartItems(IEnumerable<CartItemModel> items)
         {
-            this.CartItemList = cartItems;
-            this.ProductListView.ItemsSource = this.CartItemList;
+            this.CartItems = items;
+            this.CartItemsListView.ItemsSource = this.CartItems;
         }
 
         /// <summary>
@@ -52,9 +55,9 @@ namespace WorkoutApp.View.Components
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">Event data for the item click event.</param>
-        public void ProductList_ItemClick(object sender, ItemClickEventArgs e)
+        public void CartItemsListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is CartItem cartItem && cartItem.Product.ID.HasValue)
+            if (e.ClickedItem is CartItemModel cartItem && cartItem.Product.ID.HasValue)
             {
                 this.CartItemClicked?.Invoke(this, cartItem.Product.ID.Value);
             }

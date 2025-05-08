@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as per your structure
+namespace Workout.Core.ViewModel // Using the singular 'ViewModel' namespace as per your structure
 {
     using System;
     using System.Collections.Generic; // Required for EqualityComparer
@@ -14,11 +14,11 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
     using System.Runtime.CompilerServices; // Required for CallerMemberName
     using System.Threading.Tasks;
     using System.Windows.Input; // Required for ICommand
-    using WorkoutApp.Data.Database; // Required for DbConnectionFactory, DbService
-    using WorkoutApp.Models; // Assuming Product and Category models are here
-    using WorkoutApp.Repository; // Required for ProductRepository
-    using WorkoutApp.Service; // Assuming ProductService and IService<Product> are here
-    using WorkoutApp.Utils.Filters; // Required for ProductFilter
+    using Workout.Core.Data.Database; // Required for DbConnectionFactory, DbService
+    using Workout.Core.Models; // Assuming Product and Category models are here
+    using Workout.Core.Repository; // Required for ProductRepository
+    using Workout.Core.Service; // Assuming ProductService and IService<Product> are here
+    using Workout.Core.Utils.Filters; // Required for ProductFilter
 
     /// <summary>
     /// ViewModel for a single product, designed for UI data binding.
@@ -29,7 +29,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
         // The type is ProductService because GetFilteredAsync is not in IService<Product>
         private readonly ProductService productService;
         private int productId; // Store the product ID internally once loaded
-        private Product? product; // Hold the underlying Product model
+        private ProductModel? product; // Hold the underlying Product model
 
         // Properties to expose Product data for binding
         private string name = "Loading...";
@@ -43,7 +43,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
         private string? photoUrl = null; // Use string? for nullable PhotoURL
 
         // New property for related products
-        private ObservableCollection<Product> relatedProducts = new ObservableCollection<Product>();
+        private ObservableCollection<ProductModel> relatedProducts = new ObservableCollection<ProductModel>();
 
         /// <summary>
         /// Gets the command for saving product changes.
@@ -228,7 +228,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
         /// <summary>
         /// Gets the collection of related products for UI binding.
         /// </summary>
-        public ObservableCollection<Product> RelatedProducts
+        public ObservableCollection<ProductModel> RelatedProducts
         {
             get => this.relatedProducts;
             private set => this.SetProperty(ref this.relatedProducts, value); // Use SetProperty to notify UI
@@ -424,7 +424,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             }
 
             // Create an updated Product model from the ViewModel properties
-            var updatedProduct = new Product(
+            var updatedProduct = new ProductModel(
                 id: this.product.ID, // Use the existing ID
                 name: this.Name,
                 price:this.Price,

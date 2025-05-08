@@ -2,27 +2,24 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace Workout.Core.ViewModel
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Infrastructure.Session;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+    using Workout.Core.Data.Database;
+    using Workout.Core.Infrastructure.Session;
+    using Workout.Core.Models;
+    using Workout.Core.Repository;
+    using Workout.Core.Service;
 
     /// <summary>
-    /// ViewModel responsible for managing cart operations such as adding, retrieving, and removing cart items.
+    /// ViewModel responsible for managing cart operations.
     /// </summary>
     public class CartViewModel
     {
-        /// <summary>
-        /// Service used to interact with cart data.
-        /// </summary>
-        private readonly IService<CartItem> cartService;
+        private readonly IService<CartItemModel> cartService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CartViewModel"/> class.
@@ -30,7 +27,6 @@ namespace WorkoutApp.ViewModel
         public CartViewModel()
         {
             string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
@@ -39,57 +35,67 @@ namespace WorkoutApp.ViewModel
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
             DbService dbService = new DbService(dbConnectionFactory);
             SessionManager sessionManager = new SessionManager();
-            IRepository<CartItem> cartRepository = new CartRepository(dbService, sessionManager);
+            IRepository<CartItemModel> cartRepository = new CartItemRepository(dbService, sessionManager);
             this.cartService = new CartService(cartRepository);
         }
 
         /// <summary>
-        /// Gets the total price of all items in the cart.
+        /// Retrieves all cart items asynchronously.
         /// </summary>
-        public decimal TotalPrice { get; private set; } = 0;
-
-        /// <summary>
-        /// Retrieves all cart items and updates the total price.
-        /// </summary>
-        /// <returns>A collection of <see cref="CartItem"/> objects.</returns>
-        public async Task<IEnumerable<CartItem>> GetAllProductsFromCartAsync()
+        /// <returns>A collection of cart items.</returns>
+        public async Task<IEnumerable<CartItemModel>> GetAllCartItemsAsync()
         {
-            IEnumerable<CartItem> cartItems = await this.cartService.GetAllAsync();
-            this.ComputeTotalPrice(cartItems);
+            IEnumerable<CartItemModel> cartItems = await this.cartService.GetAllAsync();
             return cartItems;
         }
 
         /// <summary>
-        /// Adds a product to the cart.
+        /// Adds a product to the cart asynchronously.
         /// </summary>
         /// <param name="product">The product to add.</param>
-        /// <returns>The newly added <see cref="CartItem"/>.</returns>
-        public async Task<CartItem> AddProductToCart(Product product)
+        /// <param name="quantity">The quantity to add.</param>
+        /// <returns>The created cart item.</returns>
+        public async Task<CartItemModel> AddToCartAsync(ProductModel product, int quantity)
         {
-            return await this.cartService.CreateAsync(new CartItem(null, product, 1));
+            return await this.cartService.CreateAsync(new CartItemModel(null, product, quantity));
         }
 
         /// <summary>
-        /// Removes a product from the cart by its ID.
+        /// Updates a cart item's quantity asynchronously.
         /// </summary>
-        /// <param name="cartItemID">The ID of the cart item to remove.</param>
-        /// <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
-        public async Task<bool> RemoveProductFromCart(int cartItemID)
+        /// <param name="cartItemId">The cart item ID.</param>
+        /// <param name="quantity">The new quantity.</param>
+        /// <returns>The updated cart item.</returns>
+        public async Task<CartItemModel> UpdateCartItemQuantityAsync(int cartItemId, int quantity)
         {
-            return await this.cartService.DeleteAsync(cartItemID);
-        }
-
-        /// <summary>
-        /// Computes the total price of the provided cart items.
-        /// </summary>
-        /// <param name="cartItems">The cart items to total.</param>
-        private void ComputeTotalPrice(IEnumerable<CartItem> cartItems)
-        {
-            this.TotalPrice = 0;
-            foreach (CartItem item in cartItems)
+            var cartItem = await this.cartService.GetByIdAsync(cartItemId);
+            if (cartItem == null)
             {
-                this.TotalPrice += item.Product.Price;
+                throw new ArgumentException($"Cart item with ID {cartItemId} not found.");
             }
+
+            cartItem.Quantity = quantity;
+            return await this.cartService.UpdateAsync(cartItem);
+        }
+
+        /// <summary>
+        /// Removes a cart item asynchronously.
+        /// </summary>
+        /// <param name="cartItemId">The cart item ID to remove.</param>
+        /// <returns>True if the item was removed successfully.</returns>
+        public async Task<bool> RemoveFromCartAsync(int cartItemId)
+        {
+            return await this.cartService.DeleteAsync(cartItemId);
+        }
+
+        /// <summary>
+        /// Calculates the total price of all items in the cart asynchronously.
+        /// </summary>
+        /// <returns>The total price.</returns>
+        public async Task<decimal> CalculateTotalAsync()
+        {
+            IEnumerable<CartItemModel> cartItems = await this.cartService.GetAllAsync();
+            return cartItems.Sum(item => item.Product.Price * item.Quantity);
         }
     }
 }

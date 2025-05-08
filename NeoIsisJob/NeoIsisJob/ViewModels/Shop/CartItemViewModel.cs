@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace Workout.Core.ViewModel
 {
     using System.ComponentModel;
 

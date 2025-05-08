@@ -2,14 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View
+namespace Workout.Core.View
 {
     using System;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+    using Workout.Core.Data.Database;
+    using Workout.Core.Repository;
+    using Workout.Core.Service;
 
     /// <summary>
     /// A custom button that opens a flyout for adding a new product.

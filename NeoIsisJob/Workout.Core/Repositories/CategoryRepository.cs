@@ -19,15 +19,15 @@ namespace Workout.Core.Repositories
     /// Repository class for managing Category items in the database.
     /// Implements the <see cref="IRepository{Category}"/> interface.
     /// </summary>
-    public class CategoryRepo : IRepository<CategoryModel>
+    public class CategoryRepository : IRepository<CategoryModel>
     {
         private readonly WorkoutDbContext context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CategoryRepo"/> class.
+        /// Initializes a new instance of the <see cref="CategoryRepository"/> class.
         /// </summary>
         /// <param name="context">The database context used for accessing the data store.</param>
-        public CategoryRepo(WorkoutDbContext context)
+        public CategoryRepository(WorkoutDbContext context)
         {
             this.context = context;
         }

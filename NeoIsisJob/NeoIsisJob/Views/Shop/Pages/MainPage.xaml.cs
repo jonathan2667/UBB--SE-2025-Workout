@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View
+namespace Workout.Core.View
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace WorkoutApp.View
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using WorkoutApp.Models;
-    using WorkoutApp.ViewModel;
+    using Workout.Core.Models;
+    using Workout.Core.ViewModel;
 
     /// <summary>
     /// A page that displays the main list of products and allows category filtering.

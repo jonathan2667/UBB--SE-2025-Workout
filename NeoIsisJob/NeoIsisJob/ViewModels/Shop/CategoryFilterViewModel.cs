@@ -2,15 +2,15 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace Workout.Core.ViewModel
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using WorkoutApp.Models;
-    using WorkoutApp.Service;
+    using Workout.Core.Models;
+    using Workout.Core.Service;
 
     /// <summary>
     /// ViewModel for managing and filtering product categories.

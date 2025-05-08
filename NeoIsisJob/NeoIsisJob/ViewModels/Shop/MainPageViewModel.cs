@@ -2,100 +2,96 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace Workout.Core.ViewModel
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
-    using WorkoutApp.Utils.Filters;
+    using Workout.Core.Data.Database;
+    using Workout.Core.Models;
+    using Workout.Core.Repository;
+    using Workout.Core.Service;
+    using Workout.Core.Utils.Filters;
 
     /// <summary>
-    /// The view model for the main page, responsible for loading and providing product data.
+    /// ViewModel responsible for managing the main page operations.
     /// </summary>
     public class MainPageViewModel
     {
-        private readonly IService<Product> productService;
-        private ProductFilter filter;
+        private readonly IService<ProductModel> productService;
+        private readonly IService<CategoryModel> categoryService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainPageViewModel"/> class.
-        /// Sets up the database connection and product service.
         /// </summary>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the database connection string is missing or empty.
-        /// </exception>
         public MainPageViewModel()
         {
             string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
             }
 
-            var dbConnectionFactory = new DbConnectionFactory(connectionString);
-            var dbService = new DbService(dbConnectionFactory);
-            IRepository<Product> productRepository = new ProductRepository(dbService);
+            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
+            DbService dbService = new DbService(dbConnectionFactory);
+            IRepository<ProductModel> productRepository = new ProductRepository(dbService);
+            IRepository<CategoryModel> categoryRepository = new CategoryRepository(dbService);
             this.productService = new ProductService(productRepository);
-            this.filter = new ProductFilter(null, null, null, null, null, null);
+            this.categoryService = new CategoryService(categoryRepository);
         }
 
         /// <summary>
         /// Retrieves all products asynchronously.
         /// </summary>
-        /// <returns>A task that represents the asynchronous operation. The task result contains a list of products.</returns>
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        /// <returns>A collection of products.</returns>
+        public async Task<IEnumerable<ProductModel>> GetAllProductsAsync()
         {
-            return await this.productService.GetFilteredAsync(this.filter);
+            IEnumerable<ProductModel> products = await this.productService.GetAllAsync();
+            return products;
         }
 
         /// <summary>
-        /// Sets the selected category ID for filtering products.
+        /// Retrieves all categories asynchronously.
         /// </summary>
-        /// <param name="categoryId">The ID of the category.</param>
-        public void SetSelectedCategoryID(int categoryId)
+        /// <returns>A collection of categories.</returns>
+        public async Task<IEnumerable<CategoryModel>> GetAllCategoriesAsync()
         {
-            this.filter.CategoryId = categoryId;
+            IEnumerable<CategoryModel> categories = await this.categoryService.GetAllAsync();
+            return categories;
         }
 
         /// <summary>
-        /// Sets the selected brand for filtering products.
+        /// Filters products by category asynchronously.
         /// </summary>
-        /// <param name="color">The color to be set.</param>
-        public void SetSelectedColor(string color)
+        /// <param name="categoryId">The category ID to filter by.</param>
+        /// <returns>A collection of filtered products.</returns>
+        public async Task<IEnumerable<ProductModel>> FilterProductsByCategoryAsync(int categoryId)
         {
-            this.filter.Color = color;
+            IEnumerable<ProductModel> products = await this.productService.GetAllAsync();
+            return products.Where(p => p.Category.ID == categoryId);
         }
 
         /// <summary>
-        /// Sets the selected brand for filtering products.
+        /// Searches products by name asynchronously.
         /// </summary>
-        /// <param name="size">The sizeto be set.</param>
-        public void SetSelectedSize(string size)
+        /// <param name="searchTerm">The search term.</param>
+        /// <returns>A collection of matching products.</returns>
+        public async Task<IEnumerable<ProductModel>> SearchProductsAsync(string searchTerm)
         {
-            this.filter.Size = size;
+            IEnumerable<ProductModel> products = await this.productService.GetAllAsync();
+            return products.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
-        /// Sets the selected brand for filtering products.
+        /// Applies filters to products asynchronously.
         /// </summary>
-        /// <param name="searchTerm">The search term to be set.</param>
-        public void SetSearchTerm(string searchTerm)
+        /// <param name="filters">The filters to apply.</param>
+        /// <returns>A collection of filtered products.</returns>
+        public async Task<IEnumerable<ProductModel>> ApplyFiltersAsync(ProductFilters filters)
         {
-            this.filter.SearchTerm = searchTerm;
-        }
-
-        /// <summary>
-        /// Resets the filters to their default values.
-        /// </summary>
-        public void ResetFilters()
-        {
-            this.filter = new ProductFilter(null, null, null, null, null, null);
+            IEnumerable<ProductModel> products = await this.productService.GetAllAsync();
+            return filters.Apply(products);
         }
     }
 }

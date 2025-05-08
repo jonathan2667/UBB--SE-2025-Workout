@@ -2,17 +2,20 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace Workout.Core.View.Components
 {
     using System;
     using System.Collections.Generic;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Models;
+    using Workout.Core.Models;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
 
     /// <summary>
     /// Component that displays a vertical list of wishlist items.
     /// </summary>
-    public sealed partial class VerticalWishlistItemListComponent : UserControl
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public sealed partial class VerticalWishlistItemListComponent : ContentView
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VerticalWishlistItemListComponent"/> class.
@@ -35,16 +38,16 @@ namespace WorkoutApp.View.Components
         /// <summary>
         /// Gets or sets the list of wishlist items to display.
         /// </summary>
-        public IEnumerable<WishlistItem> WishlistItemList { get; set; } = new List<WishlistItem>();
+        public IEnumerable<WishlistItemModel> WishlistItems { get; set; } = new List<WishlistItemModel>();
 
         /// <summary>
-        /// Sets the product list and refreshes the view.
+        /// Sets the wishlist items.
         /// </summary>
-        /// <param name="wishlistItems">The list of wishlist items to display.</param>
-        public void SetProducts(IEnumerable<WishlistItem> wishlistItems)
+        /// <param name="items">The wishlist items.</param>
+        public void SetWishlistItems(IEnumerable<WishlistItemModel> items)
         {
-            this.WishlistItemList = wishlistItems;
-            this.ProductListView.ItemsSource = this.WishlistItemList;
+            this.WishlistItems = items;
+            this.WishlistItemsListView.ItemsSource = this.WishlistItems;
         }
 
         /// <summary>
@@ -54,7 +57,7 @@ namespace WorkoutApp.View.Components
         /// <param name="e">The event data associated with the item click.</param>
         public void ProductList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is WishlistItem wishlistItem && wishlistItem.Product.ID.HasValue)
+            if (e.ClickedItem is WishlistItemModel wishlistItem && wishlistItem.Product.ID.HasValue)
             {
                 this.WishlistItemClicked?.Invoke(this, wishlistItem.Product.ID.Value);
             }

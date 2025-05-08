@@ -31,7 +31,7 @@ builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
 builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
-builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();
+builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepository>();
 builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
 builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
 builder.Services.AddScoped<IRepository<OrderModel>, OrderRepository>();

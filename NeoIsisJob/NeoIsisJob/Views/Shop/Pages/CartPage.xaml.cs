@@ -2,14 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Pages
+namespace Workout.Core.View.Pages
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using WorkoutApp.Models;
-    using WorkoutApp.ViewModel;
+    using Workout.Core.Models;
+    using Workout.Core.ViewModel;
 
     /// <summary>
     /// A page that displays current items in the cart.

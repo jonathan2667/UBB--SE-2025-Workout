@@ -2,21 +2,23 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Pages
+namespace Workout.Core.View.Pages
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Microsoft.UI.Xaml.Controls;
-    using Microsoft.UI.Xaml.Navigation;
-    using WorkoutApp.Models;
-    using WorkoutApp.ViewModel;
+    using Workout.Core.Models;
+    using Workout.Core.ViewModel;
+    using Xamarin.Forms;
+    using Xamarin.Forms.Xaml;
 
     /// <summary>
-    /// A page that displays the user's wishlist.
+    /// The wishlist page.
     /// </summary>
-    public sealed partial class WishlistPage : Page
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class WishlistPage : ContentPage
     {
-        private readonly WishlistViewModel wishlistViewModel;
+        private readonly WishlistViewModel viewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WishlistPage"/> class.
@@ -24,46 +26,75 @@ namespace WorkoutApp.View.Pages
         public WishlistPage()
         {
             this.InitializeComponent();
-            this.wishlistViewModel = new WishlistViewModel();
+            this.viewModel = new WishlistViewModel();
+            this.BindingContext = this.viewModel;
+            this.LoadWishlistItems();
         }
 
         /// <summary>
-        /// Called when the page is navigated to.
+        /// Loads the wishlist items.
         /// </summary>
-        /// <param name="e">Event data that provides information about the navigation.</param>
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        private async void LoadWishlistItems()
         {
-            base.OnNavigatedTo(e);
             try
             {
-                await this.LoadProducts();
+                IEnumerable<WishlistItemModel> wishlistItems = await this.viewModel.GetAllProductsFromWishlistAsync();
+                this.WishlistItemsListView.ItemsSource = wishlistItems;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                // Handle exceptions, e.g., show a message to the user
-                System.Diagnostics.Debug.WriteLine($"Error loading products: {ex.Message}");
+                await this.DisplayAlert("Error", $"Failed to load wishlist items: {ex.Message}", "OK");
             }
         }
 
         /// <summary>
-        /// Loads the products in the wishlist.
+        /// Handles the remove button click event.
         /// </summary>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        private async Task LoadProducts()
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private async void OnRemoveButtonClicked(object sender, EventArgs e)
         {
-            IEnumerable<WishlistItem> products = await this.wishlistViewModel.GetAllProductsFromWishlistAsync();
-            this.WishlistItemListControl.SetProducts(products);
+            if (sender is Button button && button.CommandParameter is WishlistItemModel item)
+            {
+                try
+                {
+                    bool success = await this.viewModel.RemoveProductFromWishlist(item.ID);
+                    if (success)
+                    {
+                        this.LoadWishlistItems();
+                    }
+                    else
+                    {
+                        await this.DisplayAlert("Error", "Failed to remove item from wishlist", "OK");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await this.DisplayAlert("Error", $"Failed to remove item: {ex.Message}", "OK");
+                }
+            }
         }
 
-        private void VerticalWishlistItemListControl_WishlistItemClicked(object sender, int productID)
+        /// <summary>
+        /// Handles the add to cart button click event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private async void OnAddToCartButtonClicked(object sender, EventArgs e)
         {
-            MainWindow.AppFrame.Navigate(typeof(ProductDetailPage), productID);
-        }
-
-        private async void VerticalWishlistItemListControl_WishlistItemRemoved(object sender, int wishlistItemID)
-        {
-            await this.wishlistViewModel.RemoveProductFromWishlist(wishlistItemID);
-            await this.LoadProducts();
+            if (sender is Button button && button.CommandParameter is WishlistItemModel item)
+            {
+                try
+                {
+                    var cartViewModel = new CartViewModel();
+                    await cartViewModel.AddToCartAsync(item.Product, item.Quantity);
+                    await this.DisplayAlert("Success", "Item added to cart", "OK");
+                }
+                catch (Exception ex)
+                {
+                    await this.DisplayAlert("Error", $"Failed to add item to cart: {ex.Message}", "OK");
+                }
+            }
         }
     }
 }

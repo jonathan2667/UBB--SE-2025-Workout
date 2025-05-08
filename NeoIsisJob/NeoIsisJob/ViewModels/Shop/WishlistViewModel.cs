@@ -2,24 +2,24 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace Workout.Core.ViewModel
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Infrastructure.Session;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+    using Workout.Core.Data.Database;
+    using Workout.Core.Infrastructure.Session;
+    using Workout.Core.Models;
+    using Workout.Core.Repository;
+    using Workout.Core.Service;
 
     /// <summary>
     /// ViewModel responsible for managing wishlist operations.
     /// </summary>
     public class WishlistViewModel
     {
-        private readonly IService<WishlistItem> wishlistService;
+        private readonly IService<WishlistItemModel> wishlistService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WishlistViewModel"/> class.
@@ -35,7 +35,7 @@ namespace WorkoutApp.ViewModel
             DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
             DbService dbService = new DbService(dbConnectionFactory);
             SessionManager sessionManager = new SessionManager();
-            IRepository<WishlistItem> wishlistRepository = new WishlistItemRepository(dbService, sessionManager);
+            IRepository<WishlistItemModel> wishlistRepository = new WishlistItemRepository(dbService, sessionManager);
             this.wishlistService = new WishlistService(wishlistRepository);
         }
 
@@ -43,9 +43,9 @@ namespace WorkoutApp.ViewModel
         /// Retrieves all products from the wishlist asynchronously.
         /// </summary>
         /// <returns>A collection of wishlist items.</returns>
-        public async Task<IEnumerable<WishlistItem>> GetAllProductsFromWishlistAsync()
+        public async Task<IEnumerable<WishlistItemModel>> GetAllProductsFromWishlistAsync()
         {
-            IEnumerable<WishlistItem> wishlistItems = await this.wishlistService.GetAllAsync();
+            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistService.GetAllAsync();
             return wishlistItems;
         }
 
@@ -54,9 +54,9 @@ namespace WorkoutApp.ViewModel
         /// </summary>
         /// <param name="product">The product to add.</param>
         /// <returns>The created wishlist item.</returns>
-        public async Task<WishlistItem> AddProductToWishlist(Product product)
+        public async Task<WishlistItemModel> AddProductToWishlist(ProductModel product)
         {
-            return await this.wishlistService.CreateAsync(new WishlistItem(null, product, 1));
+            return await this.wishlistService.CreateAsync(new WishlistItemModel(null, product, 1));
         }
 
         /// <summary>
@@ -74,10 +74,10 @@ namespace WorkoutApp.ViewModel
         /// </summary>
         /// <param name="productId">The product ID to find.</param>
         /// <returns>The wishlist item, or <c>null</c> if not found.</returns>
-        public async Task<WishlistItem?> GetProductFromWishlist(int productId)
+        public async Task<WishlistItemModel?> GetProductFromWishlist(int productId)
         {
-            IEnumerable<WishlistItem> wishlistItems = await this.wishlistService.GetAllAsync();
-            foreach (WishlistItem item in wishlistItems)
+            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistService.GetAllAsync();
+            foreach (WishlistItemModel item in wishlistItems)
             {
                 if (item.Product.ID == productId)
                 {
