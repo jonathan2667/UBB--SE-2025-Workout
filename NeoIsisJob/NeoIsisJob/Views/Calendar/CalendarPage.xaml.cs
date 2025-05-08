@@ -511,5 +511,20 @@ namespace NeoIsisJob.Views
         {
             this.Frame.Navigate(typeof(RankingPage));
         }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(RankingPage));
+        }
     }
 }

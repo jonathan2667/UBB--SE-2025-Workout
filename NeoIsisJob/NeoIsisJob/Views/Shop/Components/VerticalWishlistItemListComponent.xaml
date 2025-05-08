@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="WorkoutApp.View.Components.VerticalWishlistItemListComponent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WorkoutApp.View.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:model="using:WorkoutApp.Models"
+    mc:Ignorable="d">
+
+    <StackPanel Background="Gray">
+        <ListView
+             x:Name="ProductListView"
+             ItemsSource="{x:Bind WishlistItemList, Mode=OneWay}"
+             SelectionMode="None"
+             IsItemClickEnabled="True"
+             ItemClick="ProductList_ItemClick"
+             Height="540"
+             Width="700">
+
+            <ListView.ItemTemplate>
+                <!-- Inside ListView.ItemTemplate -->
+                <DataTemplate x:DataType="model:WishlistItem">
+                    <Grid Padding="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Product Image -->
+                        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
+                        Width="120" Height="120" Margin="0,0,10,0"
+                        Source="{x:Bind Product.PhotoURL, Mode=OneWay}"
+                        Stretch="Uniform"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+
+                        <!-- Product Name -->
+                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" Foreground="White">
+                         <Run Text="Name: " FontWeight="Bold" FontSize="16"/>
+                         <Run Text="{x:Bind Product.Name, Mode=OneWay}" FontSize="16"/>
+                        </TextBlock>
+
+                        <!-- Product Color -->
+                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" Foreground="White">
+                         <Run Text="Color: " FontWeight="Bold" FontSize="16"/>
+                         <Run Text="{x:Bind Product.Color, Mode=OneWay}" FontSize="16"/>
+                        </TextBlock>
+
+                        <!-- Product Price -->
+                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" Foreground="White">
+                         <Run Text="Price: " FontWeight="Bold" FontSize="16"/>
+                         <Run Text="{x:Bind Product.Price, Mode=OneWay}" FontSize="16"/>
+                        </TextBlock>
+
+                        <!-- Remove Button -->
+                        <Button Grid.RowSpan="3" Grid.Column="2"
+                         Content="Remove"
+                         Tag="{x:Bind ID}"
+                         Click="RemoveButton_Click"
+                         HorizontalAlignment="Right"
+                         Width="100"
+                         Margin="0,5,0,0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
+</UserControl>

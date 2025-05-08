@@ -63,6 +63,22 @@ namespace NeoIsisJob.Views
             // Already on RankingPage
         }
 
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(RankingPage));
+        }
+
         private void Page_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (e.OriginalSource is not Microsoft.UI.Xaml.Shapes.Path)
