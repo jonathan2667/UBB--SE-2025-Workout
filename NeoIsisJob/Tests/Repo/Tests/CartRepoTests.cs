@@ -14,7 +14,7 @@ public class CartRepositoryTests
     private WorkoutDbContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<WorkoutDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()) 
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
         return new WorkoutDbContext(options);
@@ -41,8 +41,7 @@ public class CartRepositoryTests
         context.Products.Add(product);
         context.CartItems.AddRange(
             new CartItemModel { ID = 1, UserID = 1, ProductID = 100 },
-            new CartItemModel { ID = 2, UserID = 1, ProductID = 100 }
-        );
+            new CartItemModel { ID = 2, UserID = 1, ProductID = 100 });
         await context.SaveChangesAsync();
 
         var repo = new CartRepository(context);
@@ -62,7 +61,7 @@ public class CartRepositoryTests
         using var context = GetInMemoryDbContext();
 
         context.Users.Add(new UserModel { ID = 1 });
-        context.Categories.Add(new CategoryModel { Name="TestCategory", ID = 10 });
+        context.Categories.Add(new CategoryModel { Name = "TestCategory", ID = 10 });
         context.Products.Add(new ProductModel
         {
             ID = 100,
@@ -91,7 +90,7 @@ public class CartRepositoryTests
         using var context = GetInMemoryDbContext();
 
         context.Users.Add(new UserModel { ID = 1 });
-        context.Categories.Add(new CategoryModel { ID = 10, Name="TestCategory" });
+        context.Categories.Add(new CategoryModel { ID = 10, Name = "TestCategory" });
         context.Products.Add(new ProductModel
         {
             ID = 100,
@@ -161,7 +160,8 @@ public class CartRepositoryTests
             CategoryID = 10,
             Name = "Test Product",
             PhotoURL = "http://example.com/image.jpg"
-        }); context.CartItems.Add(new CartItemModel { ID = 10, UserID = 1, ProductID = 100 });
+        });
+        context.CartItems.Add(new CartItemModel { ID = 10, UserID = 1, ProductID = 100 });
         await context.SaveChangesAsync();
 
         var repo = new CartRepository(context);
