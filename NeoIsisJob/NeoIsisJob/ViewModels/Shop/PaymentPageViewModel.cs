@@ -1,9 +1,11 @@
 ﻿// <copyright file="PaymentPageViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+using Workout.Core.Models;
 
-namespace Workout.Core.ViewModel
+namespace NeoIsisJob.ViewModels.Shop
 {
+    using NeoIsisJob.Proxy;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -11,38 +13,23 @@ namespace Workout.Core.ViewModel
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Workout.Core.Data.Database;
-    using Workout.Core.Infrastructure.Session;
-    using Workout.Core.Models;
-    using Workout.Core.Repository;
-    using Workout.Core.Service;
 
     /// <summary>
     /// ViewModel responsible for managing payment operations.
     /// </summary>
     public class PaymentPageViewModel
     {
-        private readonly IService<OrderModel> orderService;
-        private readonly IService<CartItemModel> cartService;
+        private readonly OrderServiceProxy orderServiceProxy;
+        private readonly CartServiceProxy cartServiceProxy;
+        private readonly int userID = 1; // This should be replaced with the actual user ID from the session or authentication context.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentPageViewModel"/> class.
         /// </summary>
         public PaymentPageViewModel()
         {
-            string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
-            }
-
-            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
-            DbService dbService = new DbService(dbConnectionFactory);
-            SessionManager sessionManager = new SessionManager();
-            IRepository<OrderModel> orderRepository = new OrderRepository(dbService, sessionManager);
-            IRepository<CartItemModel> cartRepository = new CartItemRepository(dbService, sessionManager);
-            this.orderService = new OrderService(orderRepository);
-            this.cartService = new CartService(cartRepository);
+            this.orderServiceProxy = new OrderServiceProxy();
+            this.cartServiceProxy = new CartServiceProxy();
         }
 
         /// <summary>
@@ -53,8 +40,8 @@ namespace Workout.Core.ViewModel
         /// <returns>The created order.</returns>
         public async Task<OrderModel> CreateOrderAsync(IEnumerable<CartItemModel> cartItems, decimal totalAmount)
         {
-            var order = new OrderModel(null, cartItems, totalAmount, DateTime.Now);
-            return await this.orderService.CreateAsync(order);
+            var order = new OrderModel(this.userID, DateTime.Now);
+            return await this.orderServiceProxy.CreateAsync(order);
         }
 
         /// <summary>
@@ -63,10 +50,10 @@ namespace Workout.Core.ViewModel
         /// <returns>True if the cart was cleared successfully.</returns>
         public async Task<bool> ClearCartAsync()
         {
-            IEnumerable<CartItemModel> cartItems = await this.cartService.GetAllAsync();
+            IEnumerable<CartItemModel> cartItems = await this.cartServiceProxy.GetAllAsync();
             foreach (var item in cartItems)
             {
-                await this.cartService.DeleteAsync(item.ID);
+                await this.cartServiceProxy.DeleteAsync(item.ID);
             }
 
             return true;
@@ -80,7 +67,7 @@ namespace Workout.Core.ViewModel
         {
             try
             {
-                await ((OrderService)this.orderService).CreateOrderFromCartAsync();
+                await ((OrderServiceProxy)this.orderServiceProxy).CreateOrderFromCartAsync();
                 return true;
             }
             catch (Exception exception)
