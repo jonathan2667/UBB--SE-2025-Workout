@@ -1,4 +1,7 @@
-﻿namespace NeoIsisJob.Proxy
+﻿// <copyright file="OrderServiceProxy.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+namespace NeoIsisJob.Proxy
 {
     using System;
     using System.Collections.Generic;
@@ -7,89 +10,104 @@
     using Workout.Core.IServices;
     using Workout.Core.Models;
 
+    /// <summary>
+    /// Proxy service for handling order-related operations.
+    /// </summary>
     public class OrderServiceProxy : BaseServiceProxy, IService<OrderModel>
     {
         private const string BaseRoute = "order";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderServiceProxy"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration instance.</param>
         public OrderServiceProxy(IConfiguration configuration = null)
             : base(configuration)
         {
         }
 
+        /// <inheritdoc/>
         public async Task<OrderModel> CreateAsync(OrderModel entity)
         {
             try
             {
-                OrderModel result = await PostAsync<OrderModel>($"{BaseRoute}", entity);
-                return result;
+                return await this.PostAsync<OrderModel>($"{BaseRoute}", entity);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error creating order: {ex.Message}");
                 throw;
             }
         }
 
+        /// <inheritdoc/>
         public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                await DeleteAsync($"{BaseRoute}/{id}");
+                await this.DeleteAsync($"{BaseRoute}/{id}");
                 return true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error deleting order: {ex.Message}");
                 return false;
             }
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<OrderModel>> GetAllAsync()
         {
             try
             {
-                return await GetAsync<IEnumerable<OrderModel>>($"{BaseRoute}");
+                return await this.GetAsync<IEnumerable<OrderModel>>($"{BaseRoute}");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching all orders: {ex.Message}");
-                return await Task.FromResult<IEnumerable<OrderModel>>(new List<OrderModel>());
+                return new List<OrderModel>();
             }
         }
 
+        /// <inheritdoc/>
         public async Task<OrderModel> GetByIdAsync(int id)
         {
             try
             {
-                return await GetAsync<OrderModel>($"{BaseRoute}/{id}");
+                return await this.GetAsync<OrderModel>($"{BaseRoute}/{id}");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching order by ID: {ex.Message}");
-                return await Task.FromResult<OrderModel>(null);
+                throw;
             }
         }
 
+        /// <inheritdoc/>
         public async Task<OrderModel> UpdateAsync(OrderModel entity)
         {
             try
             {
-                return await PutAsync<OrderModel>($"{BaseRoute}/{entity.ID}", entity);
+                return await this.PutAsync<OrderModel>($"{BaseRoute}/{entity.ID}", entity);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error updating order: {ex.Message}");
-                return await Task.FromResult<OrderModel>(null);
+                throw;
             }
         }
 
+        /// <summary>
+        /// Creates an order from the current cart items.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public async Task CreateOrderFromCartAsync()
         {
             try
             {
-                await PostAsync($"{BaseRoute}/from-cart", null);
+                await this.PostAsync($"{BaseRoute}/from-cart", null);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error creating order from cart: {ex.Message}");
                 throw;
