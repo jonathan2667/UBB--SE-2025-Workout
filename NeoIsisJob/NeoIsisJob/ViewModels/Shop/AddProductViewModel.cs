@@ -2,43 +2,32 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Workout.Core.ViewModel
+using Workout.Core.IServices;
+using Workout.Core.Models;
+
+namespace NeoIsisJob.ViewModels.Shop
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using Workout.Core.IRepositories;
-    using Workout.Core.IServices;
-    using Workout.Core.Models;
-    using Workout.Core.Repositories;
-    using Workout.Core.Services;
+    using NeoIsisJob.Proxy;
 
     /// <summary>
     /// ViewModel responsible for managing product addition operations.
     /// </summary>
     public class AddProductViewModel
     {
-        private readonly IService<ProductModel> productService;
         private readonly IService<CategoryModel> categoryService;
+        private readonly IService<ProductModel> productService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddProductViewModel"/> class.
         /// </summary>
         public AddProductViewModel()
         {
-            string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
-            }
-
-            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
-            DbService dbService = new DbService(dbConnectionFactory);
-            IRepository<ProductModel> productRepository = new ProductRepository(dbService);
-            IRepository<CategoryModel> categoryRepository = new CategoryRepository(dbService);
-            this.productService = new ProductService(productRepository);
-            this.categoryService = new CategoryService(categoryRepository);
+            this.productService = new ProductServiceProxy();
+            this.categoryService = new CategoryServiceProxy();
         }
 
         /// <summary>
@@ -68,7 +57,9 @@ namespace Workout.Core.ViewModel
                 throw new ArgumentException($"Category with ID {categoryId} not found.");
             }
 
-            var product = new ProductModel(null, name, description, price, category, imageUrl);
+            // string name, decimal price, int stock, int categoryID, string description = "", string photoURL = ""
+            // initial stock is hardcoded to 1
+            var product = new ProductModel(name, price, 1, category.ID, description, imageUrl);
             return await this.productService.CreateAsync(product);
         }
     }

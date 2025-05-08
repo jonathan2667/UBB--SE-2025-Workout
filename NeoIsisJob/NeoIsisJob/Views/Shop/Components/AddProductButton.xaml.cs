@@ -2,14 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Workout.Core.View
+using Workout.Core.IServices;
+
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using Workout.Core.Data.Database;
-    using Workout.Core.Repository;
-    using Workout.Core.Service;
+    using NeoIsisJob.Proxy;
 
     /// <summary>
     /// A custom button that opens a flyout for adding a new product.
@@ -29,24 +29,9 @@ namespace Workout.Core.View
         /// </summary>
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            string? connectionString = System.Configuration.ConfigurationManager
-                .ConnectionStrings["DefaultConnection"]?.ConnectionString;
-
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The 'DefaultConnection' connection string is missing.");
-            }
-
-            var connectionFactory = new DbConnectionFactory(connectionString);
-            var dbService = new DbService(connectionFactory);
-            var categoryRepo = new CategoryRepository(dbService);
-            var productRepo = new ProductRepository(dbService);
-            var productService = new ProductService(productRepo);
-            var categoryService = new CategoryService(categoryRepo);
-
             var flyout = new Flyout
             {
-                Content = new AddProductFlyout(productService, categoryService),
+                Content = new AddProductFlyout(new ProductServiceProxy(), new CategoryServiceProxy()),
             };
 
             flyout.ShowAt(this.AddButton); // Ensure AddButton is defined in XAML
