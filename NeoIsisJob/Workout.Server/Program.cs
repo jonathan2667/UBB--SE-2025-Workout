@@ -4,6 +4,7 @@ using Workout.Core.Repositories;
 using Workout.Core.IServices;
 using Workout.Core.Services;
 using Workout.Core.Data;
+using Workout.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,12 @@ builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
+builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
+builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();
+builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
+builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
+builder.Services.AddScoped<IRepository<OrderModel>, OrderRepository>();
+
 // Register repositories
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
@@ -42,6 +49,12 @@ builder.Services.AddScoped<IPersonalTrainerService, PersonalTrainerService>();
 builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
+
+builder.Services.AddScoped<IService<ProductModel>, ProductService>();
+builder.Services.AddScoped<IService<CategoryModel>, CategoryService>();
+builder.Services.AddScoped<IService<CartItemModel>, CartService>();
+builder.Services.AddScoped<IService<WishlistItemModel>, WishlistService>();
+builder.Services.AddScoped<IService<OrderModel>, OrderService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
