@@ -9,14 +9,11 @@ using Workout.Core.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(options =>
-{
-    options.ModelBinderProviders.Insert(0, new CartItemModelBinderProvider());
-})
-.AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 
 // Configure DbContext
 builder.Services.AddDbContext<WorkoutDbContext>(options =>
@@ -41,21 +38,6 @@ builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();
 builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
 builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
 builder.Services.AddScoped<IRepository<OrderModel>, OrderRepository>();
-
-// Register repositories
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IWorkoutService, WorkoutService>();
-builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
-builder.Services.AddScoped<IClassService, ClassService>();
-builder.Services.AddScoped<IClassTypeService, ClassTypeService>();
-builder.Services.AddScoped<IUserClassService, UserClassService>();
-builder.Services.AddScoped<IExerciseService, ExerciseService>();
-builder.Services.AddScoped<IMuscleGroupService, MuscleGroupService>();
-builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
-builder.Services.AddScoped<IPersonalTrainerService, PersonalTrainerService>();
-builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
-builder.Services.AddScoped<IRankingsService, RankingsService>();
-builder.Services.AddScoped<ICalendarService, CalendarService>();
 
 builder.Services.AddScoped<IService<ProductModel>, ProductService>();
 builder.Services.AddScoped<IService<CategoryModel>, CategoryService>();
