@@ -93,7 +93,7 @@ namespace Workout.Core.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to add product {cartItem.Product.ID} to cart.", ex);
+                throw new Exception($"Failed to add product with ID {cartItem.ProductID} to cart.", ex);
             }
         }
 
