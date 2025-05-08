@@ -60,6 +60,13 @@ builder.Services.AddScoped<IService<OrderModel>, OrderService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Remove circular reference
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
