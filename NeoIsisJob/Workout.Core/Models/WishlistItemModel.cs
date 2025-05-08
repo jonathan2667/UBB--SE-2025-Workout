@@ -7,7 +7,6 @@ namespace Workout.Core.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Text.Json.Serialization;
-    using Workout.Core.Models;
 
     /// <summary>
     /// Represents an item in a user's wishlist.
@@ -15,6 +14,16 @@ namespace Workout.Core.Models
     [Table("WishlistItem")]
     public class WishlistItemModel
     {
+        public WishlistItemModel()
+        {
+        }
+
+        public WishlistItemModel(int productId, int userId)
+        {
+            ProductID = productId;
+            UserID = userId;
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the wishlist item.
         /// </summary>
@@ -37,7 +46,6 @@ namespace Workout.Core.Models
         /// Gets or sets the product associated with this wishlist item.
         /// </summary>
         [ForeignKey("ProductID")]
-        [JsonIgnore]
         public ProductModel? Product { get; set; }
 
         /// <summary>

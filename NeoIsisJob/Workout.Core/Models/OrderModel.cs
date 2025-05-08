@@ -15,6 +15,17 @@ namespace Workout.Core.Models
     [Table("Order")]
     public class OrderModel
     {
+        public OrderModel()
+        {
+        }
+
+        public OrderModel(int userId, DateTime orderDate)
+        {
+            this.UserID = userId;
+            this.OrderDate = orderDate;
+            this.OrderItems = new List<OrderItemModel>();
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the order.
         /// </summary>

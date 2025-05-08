@@ -7,7 +7,6 @@ namespace Workout.Core.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Text.Json.Serialization;
-    using Workout.Core.Models;
 
     /// <summary>
     /// Represents an item in the shopping cart.
@@ -15,6 +14,24 @@ namespace Workout.Core.Models
     [Table("CartItem")]
     public class CartItemModel
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CartItemModel"/> class.
+        /// </summary>
+        public CartItemModel()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CartItemModel"/> class with specified product and user IDs.
+        /// </summary>
+        /// <param name="productId">The unique identifier of the product.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        public CartItemModel(int productId, int userId)
+        {
+            ProductID = productId;
+            UserID = userId;
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the cart item.
         /// </summary>
@@ -37,7 +54,6 @@ namespace Workout.Core.Models
         /// Gets or sets the product associated with this cart item.
         /// </summary>
         [ForeignKey("ProductID")]
-        [JsonIgnore]
         public ProductModel? Product { get; set; }
 
         /// <summary>

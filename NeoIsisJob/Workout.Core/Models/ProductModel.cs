@@ -14,6 +14,25 @@ namespace Workout.Core.Models
     [Table("Product")]
     public class ProductModel
     {
+        public ProductModel()
+        {
+        }
+
+        public ProductModel(string name, decimal price, int stock, int categoryId, string size = "N/A", string color = "N/A", string? description = null, string? photoURL = null)
+        {
+            Name = name;
+            Price = price;
+            Stock = stock;
+            CategoryID = categoryId;
+            Size = size;
+            Color = color;
+            Description = description;
+            PhotoURL = photoURL;
+            CartItems = new List<CartItemModel>();
+            OrderItems = new List<OrderItemModel>();
+            WishlistItems = new List<WishlistItemModel>();
+        }
+
         /// <summary>
         /// Gets or sets the unique identifier for the product.
         /// </summary>
@@ -73,7 +92,6 @@ namespace Workout.Core.Models
         /// Gets or sets the category to which the product belongs.
         /// </summary>
         [ForeignKey("CategoryID")]
-        [JsonIgnore]
         public CategoryModel? Category { get; set; }
 
         /// <summary>

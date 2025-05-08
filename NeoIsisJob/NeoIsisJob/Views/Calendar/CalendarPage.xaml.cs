@@ -17,6 +17,7 @@ using Workout.Core.Repositories;
 using Workout.Core.Services;
 using Workout.Core.IServices;
 using NeoIsisJob.Proxy;
+using NeoIsisJob.Views.Shop.Pages;
 namespace NeoIsisJob.Views
 {
     public sealed partial class CalendarPage : Page
@@ -510,6 +511,21 @@ namespace NeoIsisJob.Views
         public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
         }
     }
 }

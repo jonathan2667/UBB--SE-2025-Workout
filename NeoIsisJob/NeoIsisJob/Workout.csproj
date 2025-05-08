@@ -102,8 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
+    <Folder Include="ViewModels\Shop\" />
     <Folder Include="Views\Class\" />
     <Folder Include="Views\Main\" />
+    <Folder Include="Views\Shop\" />
     <Folder Include="Views\Ranking\" />
   </ItemGroup>
   <ItemGroup>

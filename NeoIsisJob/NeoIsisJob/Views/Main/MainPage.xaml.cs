@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Workout.Core.Models;
 using NeoIsisJob.Proxy;
+using NeoIsisJob.Views.Shop.Pages;
 
 namespace NeoIsisJob.Views
 {
@@ -268,6 +269,21 @@ namespace NeoIsisJob.Views
         public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
         }
     }
 }

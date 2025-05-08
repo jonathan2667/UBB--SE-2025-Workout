@@ -77,6 +77,7 @@ namespace Workout.Core.Repositories
             this.context.Entry(product).CurrentValues.SetValues(entity);
             await this.context.SaveChangesAsync();
             await this.context.Entry(product).ReloadAsync();
+            await this.context.Entry(product).Reference(p => p.Category).LoadAsync();
             return product!;
         }
 
