@@ -10,7 +10,6 @@ namespace NeoIsisJob.Views.Shop.Components
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob.Proxy;
     using NeoIsisJob.ViewModels.Shop;
-    using WorkoutApp.ViewModel;
 
     /// <summary>
     /// A filter component for selecting a product category.
