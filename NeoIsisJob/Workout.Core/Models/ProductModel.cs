@@ -15,6 +15,38 @@ namespace Workout.Core.Models
     public class ProductModel
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ProductModel"/> class.
+        /// </summary>
+        public ProductModel()
+        {
+            this.CartItems = new List<CartItemModel>();
+            this.WishlistItems = new List<WishlistItemModel>();
+            this.OrderItems = new List<OrderItemModel>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductModel"/> class with specified properties.
+        /// </summary>
+        /// <param name="name">The name of the product.</param>
+        /// <param name="price">The price of the product.</param>
+        /// <param name="stock">The stock quantity of the product.</param>
+        /// <param name="categoryID">The ID of the category to which the product belongs.</param>
+        /// <param name="description">The description of the product.</param>
+        /// <param name="photoURL">The URL of the product's photo.</param>
+        public ProductModel(string name, decimal price, int stock, int categoryID, string description = "", string photoURL = "")
+        {
+            this.Name = name;
+            this.Price = price;
+            this.Stock = stock;
+            this.CategoryID = categoryID;
+            this.Description = description;
+            this.PhotoURL = photoURL;
+            this.CartItems = new List<CartItemModel>();
+            this.WishlistItems = new List<WishlistItemModel>();
+            this.OrderItems = new List<OrderItemModel>();
+        }
+
+        /// <summary>
         /// Gets or sets the unique identifier for the product.
         /// </summary>
         [Key]

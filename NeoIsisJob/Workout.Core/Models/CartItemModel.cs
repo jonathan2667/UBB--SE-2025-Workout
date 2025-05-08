@@ -15,6 +15,24 @@ namespace Workout.Core.Models
     public class CartItemModel
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="CartItemModel"/> class.
+        /// </summary>
+        public CartItemModel()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CartItemModel"/> class with specified user and product.
+        /// </summary>
+        /// <param name="userID">The ID of the user.</param>
+        /// <param name="productID">The ID of the product.</param>
+        public CartItemModel(int userID, int productID)
+        {
+            this.UserID = userID;
+            this.ProductID = productID;
+        }
+
+        /// <summary>
         /// Gets or sets the unique identifier for the cart item.
         /// </summary>
         [Key]

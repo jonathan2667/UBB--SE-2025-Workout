@@ -15,6 +15,24 @@ namespace Workout.Core.Models
     public class CategoryModel
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="CategoryModel"/> class.
+        /// </summary>
+        public CategoryModel()
+        {
+            this.Products = new List<ProductModel>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CategoryModel"/> class with a specified name.
+        /// </summary>
+        /// <param name="name">The name of the category.</param>
+        public CategoryModel(string name)
+        {
+            this.Name = name;
+            this.Products = new List<ProductModel>();
+        }
+
+        /// <summary>
         /// Gets or sets the unique identifier for the category.
         /// </summary>
         [Key]

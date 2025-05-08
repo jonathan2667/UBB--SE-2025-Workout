@@ -15,6 +15,26 @@ namespace Workout.Core.Models
     public class OrderModel
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="OrderModel"/> class.
+        /// </summary>
+        public OrderModel()
+        {
+            this.OrderItems = new List<OrderItemModel>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderModel"/> class with specified user and date.
+        /// </summary>
+        /// <param name="userID">The ID of the user placing the order.</param>
+        /// <param name="orderDate">The date of the order.</param>
+        public OrderModel(int userID, DateTime orderDate)
+        {
+            this.UserID = userID;
+            this.OrderDate = orderDate;
+            this.OrderItems = new List<OrderItemModel>();
+        }
+
+        /// <summary>
         /// Gets or sets the unique identifier for the order.
         /// </summary>
         [Key]

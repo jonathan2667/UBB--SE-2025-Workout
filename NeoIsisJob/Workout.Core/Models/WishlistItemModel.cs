@@ -15,6 +15,24 @@ namespace Workout.Core.Models
     public class WishlistItemModel
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="WishlistItemModel"/> class.
+        /// </summary>
+        public WishlistItemModel()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WishlistItemModel"/> class with specified user and product.
+        /// </summary>
+        /// <param name="userID">The ID of the user.</param>
+        /// <param name="productID">The ID of the product.</param>
+        public WishlistItemModel(int userID, int productID)
+        {
+            this.UserID = userID;
+            this.ProductID = productID;
+        }
+
+        /// <summary>
         /// Gets or sets the unique identifier for the wishlist item.
         /// </summary>
         [Key]
