@@ -2,101 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
+
 using Workout.Core.Services;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-
-/// <summary>
-/// DTO for creating a new cart item
-/// </summary>
-public class CreateCartItemDto
-{
-    /// <summary>
-    /// Gets or sets the product ID
-    /// </summary>
-    [Required]
-    public int ProductID { get; set; }
-
-    /// <summary>
-    /// Gets or sets the user ID
-    /// </summary>
-    [Required]
-    public int UserID { get; set; }
-}
-
-/// <summary>
-/// Model binder provider for CartItemModel
-/// </summary>
-public class CartItemModelBinderProvider : IModelBinderProvider
-{
-    public IModelBinder GetBinder(ModelBinderProviderContext context)
-    {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (context.Metadata.ModelType == typeof(CartItemModel))
-        {
-            return new CartItemModelBinder();
-        }
-
-        return null;
-    }
-}
-
-/// <summary>
-/// Custom model binder for CartItemModel
-/// </summary>
-public class CartItemModelBinder : IModelBinder
-{
-    public Task BindModelAsync(ModelBindingContext bindingContext)
-    {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
-
-        var productIdValue = bindingContext.ValueProvider.GetValue("productID");
-        var userIdValue = bindingContext.ValueProvider.GetValue("userID");
-
-        if (productIdValue == ValueProviderResult.None || userIdValue == ValueProviderResult.None)
-        {
-            bindingContext.ModelState.AddModelError("productID", "ProductID is required");
-            bindingContext.ModelState.AddModelError("userID", "UserID is required");
-            bindingContext.Result = ModelBindingResult.Failed();
-            return Task.CompletedTask;
-        }
-
-        if (!int.TryParse(productIdValue.FirstValue, out int productId))
-        {
-            bindingContext.ModelState.AddModelError("productID", "ProductID must be a valid integer");
-            bindingContext.Result = ModelBindingResult.Failed();
-            return Task.CompletedTask;
-        }
-
-        if (!int.TryParse(userIdValue.FirstValue, out int userId))
-        {
-            bindingContext.ModelState.AddModelError("userID", "UserID must be a valid integer");
-            bindingContext.Result = ModelBindingResult.Failed();
-            return Task.CompletedTask;
-        }
-
-        var model = new CartItemModel
-        {
-            ProductID = productId,
-            UserID = userId
-        };
-
-        bindingContext.Result = ModelBindingResult.Success(model);
-        return Task.CompletedTask;
-    }
-}
 
 /// <summary>
 /// API controller for managing shopping cart operations.
@@ -107,14 +17,17 @@ public class CartItemModelBinder : IModelBinder
 public class CartController : ControllerBase
 {
     private readonly IService<CartItemModel> cartService;
+    private readonly ILogger<CartController> logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CartController"/> class.
     /// </summary>
     /// <param name="cartService">The service for managing cart items.</param>
-    public CartController(IService<CartItemModel> cartService)
+    /// <param name="logger">The logger for logging errors.</param>
+    public CartController(IService<CartItemModel> cartService, ILogger<CartController> logger)
     {
         this.cartService = cartService;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -122,7 +35,7 @@ public class CartController : ControllerBase
     /// </summary>
     /// <returns>An <see cref="IActionResult"/> containing the list of cart items.</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAllCartItems()
+    public async Task<ActionResult<IEnumerable<CartItemModel>>> GetAllCartItems()
     {
         try
         {
@@ -131,80 +44,124 @@ public class CartController : ControllerBase
         }
         catch (Exception ex)
         {
-            return this.BadRequest($"Error fetching cart items: {ex.Message}");
+            this.logger.LogError(ex, "Error retrieving cart items");
+            return this.StatusCode(500, "An error occurred while retrieving cart items");
         }
     }
 
     /// <summary>
     /// Retrieves a specific cart item by its ID.
     /// </summary>
-    /// <param name="cartItemId">The ID of the cart item to retrieve.</param>
+    /// <param name="id">The ID of the cart item to retrieve.</param>
     /// <returns>An <see cref="IActionResult"/> containing the cart item if found.</returns>
-    [HttpGet("{cartItemId}")]
-    public async Task<IActionResult> GetCartItemById(int cartItemId)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CartItemModel>> GetCartItem(int id)
     {
         try
         {
-            var cartItem = await this.cartService.GetByIdAsync(cartItemId);
+            var cartItem = await this.cartService.GetByIdAsync(id);
             if (cartItem == null)
             {
-                return this.NotFound($"Cart item with ID {cartItemId} not found.");
+                return this.NotFound($"Cart item with ID {id} not found");
             }
+
             return this.Ok(cartItem);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return this.NotFound(ex.Message);
         }
         catch (Exception ex)
         {
-            return this.BadRequest("An error occurred while fetching the cart item.");
+            this.logger.LogError(ex, "Error retrieving cart item {Id}", id);
+            return this.StatusCode(500, "An error occurred while retrieving the cart item");
         }
     }
 
     /// <summary>
     /// Adds a new item to the shopping cart.
     /// </summary>
-    /// <param name="productID">The ID of the product to add.</param>
-    /// <param name="userID">The ID of the user adding the item.</param>
+    /// <param name="cartItem">The cart item to add.</param>
     /// <returns>An <see cref="IActionResult"/> containing the added cart item.</returns>
     [HttpPost]
-    public async Task<IActionResult> AddCartItem([FromBody] CartItemRequest request)
+    public async Task<ActionResult<CartItemModel>> AddCartItem([FromBody] CartItemModel cartItem)
     {
+        if (cartItem == null)
+        {
+            return this.BadRequest("Invalid request data");
+        }
+
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
         try
         {
-            if (request == null)
-            {
-                return this.BadRequest("Invalid request data.");
-            }
-
-            var cartItem = new CartItemModel
-            {
-                ProductID = request.ProductID,
-                UserID = request.UserID
-            };
-
-            var addedItem = await this.cartService.CreateAsync(cartItem);
-            return this.CreatedAtAction(nameof(this.GetCartItemById), new { cartItemId = addedItem.ID }, addedItem);
+            var result = await this.cartService.CreateAsync(cartItem);
+            return this.CreatedAtAction(nameof(this.GetCartItem), new { id = result.ID }, result);
         }
         catch (Exception ex)
         {
-            return this.BadRequest("An error occurred while adding the item to cart.");
+            this.logger.LogError(ex, "Error adding cart item");
+            return this.StatusCode(500, "An error occurred while adding the cart item");
+        }
+    }
+
+    /// <summary>
+    /// Updates a specific cart item by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the cart item to update.</param>
+    /// <param name="cartItem">The updated cart item.</param>
+    /// <returns>An <see cref="IActionResult"/> containing the updated cart item.</returns>
+    [HttpPut("{id}")]
+    public async Task<ActionResult<CartItemModel>> UpdateCartItem(int id, [FromBody] CartItemModel cartItem)
+    {
+        if (cartItem == null)
+        {
+            return this.BadRequest("Invalid request data");
+        }
+
+        if (!this.ModelState.IsValid)
+        {
+            return this.BadRequest(this.ModelState);
+        }
+
+        try
+        {
+            cartItem.ID = id;
+            var result = await this.cartService.UpdateAsync(cartItem);
+            return this.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Error updating cart item {Id}", id);
+            return this.StatusCode(500, "An error occurred while updating the cart item");
         }
     }
 
     /// <summary>
     /// Deletes a specific cart item by its ID.
     /// </summary>
-    /// <param name="cartItemId">The ID of the cart item to delete.</param>
+    /// <param name="id">The ID of the cart item to delete.</param>
     /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.</returns>
-    [HttpDelete("{cartItemId}")]
-    public async Task<IActionResult> DeleteCartItem(int cartItemId)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> RemoveCartItem(int id)
     {
         try
         {
-            var result = await this.cartService.DeleteAsync(cartItemId);
-            return result ? this.Ok() : this.NotFound($"Cart item with ID {cartItemId} not found.");
+            var result = await this.cartService.DeleteAsync(id);
+            if (!result)
+            {
+                return this.NotFound($"Cart item with ID {id} not found");
+            }
+
+            return this.NoContent();
         }
         catch (Exception ex)
         {
-            return this.BadRequest($"Error deleting cart item: {ex.Message}");
+            this.logger.LogError(ex, "Error removing cart item {Id}", id);
+            return this.StatusCode(500, "An error occurred while removing the cart item");
         }
     }
 
@@ -218,29 +175,12 @@ public class CartController : ControllerBase
         try
         {
             await ((CartService)this.cartService).ResetCart();
-            return this.Ok("Cart has been reset.");
+            return this.Ok("Cart has been reset");
         }
         catch (Exception ex)
         {
-            return this.BadRequest($"Error resetting cart: {ex.Message}");
+            this.logger.LogError(ex, "Error resetting cart");
+            return this.StatusCode(500, "An error occurred while resetting the cart");
         }
     }
-}
-
-/// <summary>
-/// Request model for adding items to cart
-/// </summary>
-public class CartItemRequest
-{
-    /// <summary>
-    /// Gets or sets the product ID
-    /// </summary>
-    [Required]
-    public int ProductID { get; set; }
-
-    /// <summary>
-    /// Gets or sets the user ID
-    /// </summary>
-    [Required]
-    public int UserID { get; set; }
 }
