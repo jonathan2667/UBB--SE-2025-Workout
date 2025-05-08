@@ -244,7 +244,36 @@ namespace Workout.Core.Data
 
             modelBuilder.Entity<UserClassModel>().HasData();
             // (Optional) seed user-class associations if needed
+
+            // Shop seed data
+            modelBuilder.Entity<CategoryModel>().HasData(
+                new CategoryModel { ID = 1, Name = "Supplements" },
+                new CategoryModel { ID = 2, Name = "Equipment" });
+
+            modelBuilder.Entity<ProductModel>().HasData(
+                new ProductModel { ID = 1, Name = "Protein Powder", Price = 29.99m, CategoryID = 1 },
+                new ProductModel { ID = 2, Name = "Yoga Mat", Price = 19.99m, CategoryID = 2 });
+
+            modelBuilder.Entity<CartItemModel>().HasData(
+                new CartItemModel { ID = 1, UserID = 1, ProductID = 1 },
+                new CartItemModel { ID = 2, UserID = 1, ProductID = 2 },
+                new CartItemModel { ID = 3, UserID = 2, ProductID = 2 });
+
+            modelBuilder.Entity<WishlistItemModel>().HasData(
+                new WishlistItemModel { ID = 1, UserID = 1, ProductID = 1 },
+                new WishlistItemModel { ID = 2, UserID = 2, ProductID = 1 });
+
+            modelBuilder.Entity<OrderModel>().HasData(
+                new OrderModel
+                {
+                    ID = 1,
+                    UserID = 1,
+                    OrderDate = new DateTime(2025, 5, 1)
+                });
+
+            modelBuilder.Entity<OrderItemModel>().HasData(
+                new OrderItemModel { ID = 1, OrderID = 1, ProductID = 1, Quantity = 1 },
+                new OrderItemModel { ID = 2, OrderID = 1, ProductID = 2, Quantity = 1 });
         }
     }
 }
-
