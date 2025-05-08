@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="WorkoutApp.View.AddProductFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WorkoutApp.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="using:WorkoutApp.ViewModel"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="10" Padding="20">
+        <TextBox Header="Name" Text="{Binding Name, Mode=TwoWay}" />
+        <TextBox Header="Price" Text="{Binding Price, Mode=TwoWay}" />
+        <TextBox Header="Stock" Text="{Binding Stock, Mode=TwoWay}" />
+        <TextBox Header="Size" Text="{Binding Size, Mode=TwoWay}" />
+        <TextBox Header="Color" Text="{Binding Color, Mode=TwoWay}" />
+        <TextBox Header="Description" Text="{Binding Description, Mode=TwoWay}" />
+        <TextBox Header="Photo URL" Text="{Binding PhotoURL, Mode=TwoWay}" />
+        <ComboBox Header="Category"
+          ItemsSource="{Binding Categories}"
+          SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+          DisplayMemberPath="Name"
+          Width="200"/>
+        <Button Content="Add Product" Click="OnAddProductClick" />
+    </StackPanel>
+</UserControl>
