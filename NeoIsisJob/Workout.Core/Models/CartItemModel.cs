@@ -6,6 +6,7 @@ namespace Workout.Core.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text.Json.Serialization;
     using Workout.Core.Models;
 
     /// <summary>
@@ -46,7 +47,7 @@ namespace Workout.Core.Models
 
         /// <summary>
         /// Gets or sets the unique identifier of the associated user.
-        /// </summary
+        /// </summary>
         [Required]
         public int UserID { get; set; }
 
@@ -54,12 +55,14 @@ namespace Workout.Core.Models
         /// Gets or sets the product associated with this cart item.
         /// </summary>
         [ForeignKey("ProductID")]
-        public ProductModel Product { get; set; }
+        [JsonIgnore]
+        public ProductModel? Product { get; set; }
 
         /// <summary>
         /// Gets or sets the user associated with this cart item.
         /// </summary>
         [ForeignKey("UserID")]
-        public UserModel User { get; set; }
+        [JsonIgnore]
+        public UserModel? User { get; set; }
     }
 }

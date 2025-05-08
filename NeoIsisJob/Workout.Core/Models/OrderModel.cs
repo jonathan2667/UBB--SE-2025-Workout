@@ -7,6 +7,7 @@ namespace Workout.Core.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Represents an order in the system.
@@ -56,11 +57,13 @@ namespace Workout.Core.Models
         /// Gets or sets the user of the order.
         /// </summary>
         [ForeignKey("UserID")]
-        public UserModel User { get; set; }
+        [JsonIgnore]
+        public UserModel? User { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of order items associated with this order.
         /// </summary>
-        public ICollection<OrderItemModel> OrderItems { get; set; }
+        [JsonIgnore]
+        public ICollection<OrderItemModel>? OrderItems { get; set; }
     }
 }

@@ -10,7 +10,11 @@ using Workout.Core.Utils.Converters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 
 // Configure DbContext
 builder.Services.AddDbContext<WorkoutDbContext>(options =>
@@ -30,13 +34,7 @@ builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 
-builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
-builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepository>();
-builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
-builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
-builder.Services.AddScoped<IRepository<OrderModel>, OrderRepository>();
-
-// Register repositories
+// Add corresponding services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
@@ -51,11 +49,19 @@ builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 
+builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
+builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();
+builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
+builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
+builder.Services.AddScoped<IRepository<OrderModel>, OrderRepository>();
+
 builder.Services.AddScoped<IService<ProductModel>, ProductService>();
 builder.Services.AddScoped<IService<CategoryModel>, CategoryService>();
 builder.Services.AddScoped<IService<CartItemModel>, CartService>();
 builder.Services.AddScoped<IService<WishlistItemModel>, WishlistService>();
 builder.Services.AddScoped<IService<OrderModel>, OrderService>();
+
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

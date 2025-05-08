@@ -6,7 +6,7 @@ namespace Workout.Core.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Represents a product in the system.
@@ -56,14 +56,13 @@ namespace Workout.Core.Models
         /// Gets or sets the name of the product.
         /// </summary>
         [Required]
-        [MaxLength(100)]
+        [StringLength(100)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the price of the product.
         /// </summary>
         [Required]
-        [Precision(18, 2)]
         public decimal Price { get; set; }
 
         /// <summary>
@@ -93,34 +92,38 @@ namespace Workout.Core.Models
         /// <summary>
         /// Gets or sets the description of the product.
         /// </summary>
-        [MaxLength(255)]
-        public string Description { get; set; } = string.Empty;
+        [StringLength(500)]
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the URL of the product's photo.
         /// </summary>
-        [MaxLength(255)]
-        public string PhotoURL { get; set; }
+        [StringLength(500)]
+        public string? PhotoURL { get; set; }
 
         /// <summary>
         /// Gets or sets the category to which the product belongs.
         /// </summary>
         [ForeignKey("CategoryID")]
-        public CategoryModel Category { get; set; }
+        [JsonIgnore]
+        public CategoryModel? Category { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of cart items associated with this product.
         /// </summary>
-        public ICollection<CartItemModel> CartItems { get; set; }
+        [JsonIgnore]
+        public ICollection<CartItemModel>? CartItems { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of wishlist items associated with this product.
         /// </summary>
-        public ICollection<WishlistItemModel> WishlistItems { get; set; }
+        [JsonIgnore]
+        public ICollection<WishlistItemModel>? WishlistItems { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of order items associated with this product.
         /// </summary>
-        public ICollection<OrderItemModel> OrderItems { get; set; }
+        [JsonIgnore]
+        public ICollection<OrderItemModel>? OrderItems { get; set; }
     }
 }

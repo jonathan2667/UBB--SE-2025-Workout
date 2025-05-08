@@ -5,6 +5,7 @@
 namespace Workout.Server.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
     using Workout.Core.IServices;
     using Workout.Core.Models;
     using Workout.Core.Services;
@@ -17,18 +18,17 @@ namespace Workout.Server.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IService<OrderModel> orderService;
-        private readonly OrderService orderServiceTyped;
+        private readonly ILogger<OrderController> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OrderController"/> class.
         /// </summary>
         /// <param name="orderService">The order service instance.</param>
-        /// <exception cref="ArgumentException">Thrown if service is not of type OrderService.</exception>
-        public OrderController(IService<OrderModel> orderService)
+        /// <param name="logger">The logger instance.</param>
+        public OrderController(IService<OrderModel> orderService, ILogger<OrderController> logger)
         {
             this.orderService = orderService;
-            this.orderServiceTyped = orderService as OrderService
-                ?? throw new ArgumentException("Service must be of type OrderService", nameof(orderService));
+            this.logger = logger;
         }
 
         /// <summary>
@@ -37,10 +37,18 @@ namespace Workout.Server.Controllers
         /// <returns>A list of all orders.</returns>
         /// <remarks>GET: api/order.</remarks>
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<IEnumerable<OrderModel>>> GetAllOrders()
         {
-            IEnumerable<OrderModel> orders = await this.orderService.GetAllAsync();
-            return this.Ok(orders);
+            try
+            {
+                var orders = await this.orderService.GetAllAsync();
+                return this.Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error retrieving orders");
+                return this.StatusCode(500, "An error occurred while retrieving orders");
+            }
         }
 
         /// <summary>
@@ -50,10 +58,27 @@ namespace Workout.Server.Controllers
         /// <returns>The order with the specified ID.</returns>
         /// <remarks>GET: api/order/{id}.</remarks>
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetById(int id)
+        public async Task<ActionResult<OrderModel>> GetOrder(int id)
         {
-            OrderModel order = await this.orderService.GetByIdAsync(id);
-            return order != null ? this.Ok(order) : this.NotFound();
+            try
+            {
+                var order = await this.orderService.GetByIdAsync(id);
+                if (order == null)
+                {
+                    return this.NotFound($"Order with ID {id} not found");
+                }
+
+                return this.Ok(order);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return this.NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error retrieving order {Id}", id);
+                return this.StatusCode(500, "An error occurred while retrieving the order");
+            }
         }
 
         /// <summary>
@@ -63,10 +88,54 @@ namespace Workout.Server.Controllers
         /// <returns>The created order.</returns>
         /// <remarks>POST: api/order.</remarks>
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] OrderModel order)
+        public async Task<ActionResult<OrderModel>> AddOrder([FromBody] OrderModel order)
         {
-            OrderModel created = await this.orderService.CreateAsync(order);
-            return this.CreatedAtAction(nameof(this.GetById), new { id = created.ID }, created);
+            if (order == null)
+            {
+                return this.BadRequest("Invalid request data");
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            try
+            {
+                var result = await this.orderService.CreateAsync(order);
+                return this.CreatedAtAction(nameof(this.GetOrder), new { id = result.ID }, result);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error adding order");
+                return this.StatusCode(500, "An error occurred while adding the order");
+            }
+        }
+
+        /// <summary>
+        /// Creates a new order from the current cart items.
+        /// </summary>
+        /// <param name="userID">The ID of the user creating the order.</param>
+        /// <returns>The created order.</returns>
+        /// <remarks>POST: api/order/from-cart/{userID}.</remarks>
+        [HttpPost("from-cart/{userID}")]
+        public async Task<ActionResult<OrderModel>> CreateOrderFromCart(int userID)
+        {
+            try
+            {
+                var orderService = (OrderService)this.orderService;
+                var result = await orderService.CreateOrderFromCart(userID);
+                return this.CreatedAtAction(nameof(this.GetOrder), new { id = result.ID }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error creating order from cart for user {UserId}", userID);
+                return this.StatusCode(500, "An error occurred while creating the order from cart");
+            }
         }
 
         /// <summary>
@@ -77,15 +146,29 @@ namespace Workout.Server.Controllers
         /// <returns>The updated order.</returns>
         /// <remarks>PUT: api/order/{id}.</remarks>
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] OrderModel order)
+        public async Task<ActionResult<OrderModel>> UpdateOrder(int id, [FromBody] OrderModel order)
         {
-            if (id != order.ID)
+            if (order == null)
             {
-                return this.BadRequest("ID mismatch");
+                return this.BadRequest("Invalid request data");
             }
 
-            OrderModel updated = await this.orderService.UpdateAsync(order);
-            return this.Ok(updated);
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            try
+            {
+                order.ID = id;
+                var result = await this.orderService.UpdateAsync(order);
+                return this.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error updating order {Id}", id);
+                return this.StatusCode(500, "An error occurred while updating the order");
+            }
         }
 
         /// <summary>
@@ -95,22 +178,23 @@ namespace Workout.Server.Controllers
         /// <returns>No content if deleted, NotFound otherwise.</returns>
         /// <remarks>DELETE: api/order/{id}.</remarks>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> RemoveOrder(int id)
         {
-            bool deleted = await this.orderService.DeleteAsync(id);
-            return deleted ? this.NoContent() : this.NotFound();
-        }
+            try
+            {
+                var result = await this.orderService.DeleteAsync(id);
+                if (!result)
+                {
+                    return this.NotFound($"Order with ID {id} not found");
+                }
 
-        /// <summary>
-        /// Creates an order from the current items in the cart.
-        /// </summary>
-        /// <returns>A confirmation message on success.</returns>
-        /// <remarks>POST: api/order/from-cart.</remarks>
-        [HttpPost("from-cart")]
-        public async Task<IActionResult> CreateOrderFromCart()
-        {
-            await this.orderServiceTyped.CreateOrderFromCart();
-            return this.Ok(new { Message = "Order created from cart." });
+                return this.NoContent();
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error removing order {Id}", id);
+                return this.StatusCode(500, "An error occurred while removing the order");
+            }
         }
     }
 }
