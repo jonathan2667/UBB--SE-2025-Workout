@@ -17,15 +17,51 @@ namespace Workout.Core.Utils.Converters
         /// <inheritdoc/>
         public override IFilter Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            // Deserialize into ProductFilter
-            ProductFilter filter = JsonSerializer.Deserialize<ProductFilter>(ref reader, options)!;
-            return filter;
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException();
+            }
+
+            using var jsonDocument = JsonDocument.ParseValue(ref reader);
+            var rootElement = jsonDocument.RootElement;
+
+            if (rootElement.TryGetProperty("$type", out var typeElement))
+            {
+                var type = typeElement.GetString();
+                return type switch
+                {
+                    nameof(CategoryFilter) => JsonSerializer.Deserialize<CategoryFilter>(rootElement.GetRawText(), options)!,
+                    nameof(ProductFilter) => JsonSerializer.Deserialize<ProductFilter>(rootElement.GetRawText(), options)!,
+                    nameof(CartItemFilter) => JsonSerializer.Deserialize<CartItemFilter>(rootElement.GetRawText(), options)!,
+                    _ => throw new JsonException($"Unknown filter type: {type}")
+                };
+            }
+
+            throw new JsonException("Filter type not specified");
         }
 
         /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, IFilter value, JsonSerializerOptions options)
         {
-            JsonSerializer.Serialize(writer, (ProductFilter)value, options);
+            writer.WriteStartObject();
+            writer.WriteString("$type", value.GetType().Name);
+
+            switch (value)
+            {
+                case CategoryFilter categoryFilter:
+                    JsonSerializer.Serialize(writer, categoryFilter, options);
+                    break;
+                case ProductFilter productFilter:
+                    JsonSerializer.Serialize(writer, productFilter, options);
+                    break;
+                case CartItemFilter cartItemFilter:
+                    JsonSerializer.Serialize(writer, cartItemFilter, options);
+                    break;
+                default:
+                    throw new JsonException($"Unknown filter type: {value.GetType().Name}");
+            }
+
+            writer.WriteEndObject();
         }
     }
 }

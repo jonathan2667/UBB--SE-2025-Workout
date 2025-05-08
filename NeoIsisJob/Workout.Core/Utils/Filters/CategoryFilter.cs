@@ -1,4 +1,4 @@
-﻿// <copyright file="CartItemFilter.cs" company="PlaceholderCompany">
+// <copyright file="CategoryFilter.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -13,38 +13,39 @@ namespace Workout.Core.Utils.Filters
     using Workout.Core.Models;
 
     /// <summary>
-    /// Represents a filter for cart items.
+    /// Represents a filter for filtering products by category.
     /// </summary>
-    public class CartItemFilter : IFilter
+    public class CategoryFilter : IFilter
     {
         private readonly WorkoutDbContext context;
-        private readonly int userId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CartItemFilter"/> class.
+        /// Initializes a new instance of the <see cref="CategoryFilter"/> class.
         /// </summary>
         /// <param name="context">The database context.</param>
-        /// <param name="userId">The user ID to filter cart items by.</param>
-        public CartItemFilter(WorkoutDbContext context, int userId)
+        /// <param name="categoryId">The category ID to filter by.</param>
+        public CategoryFilter(WorkoutDbContext context, int categoryId)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.userId = userId;
+            this.CategoryID = categoryId;
         }
 
         /// <summary>
-        /// Applies the filter to a collection of products asynchronously.
+        /// Gets or sets the category ID to filter by.
+        /// </summary>
+        public int CategoryID { get; set; }
+
+        /// <summary>
+        /// Applies the filter to a collection of products.
         /// </summary>
         /// <param name="items">The collection of products to filter.</param>
-        /// <returns>A task representing the asynchronous operation, containing the filtered collection of products.</returns>
+        /// <returns>The filtered collection of products.</returns>
         public async Task<IEnumerable<ProductModel>> ApplyAsync(IEnumerable<ProductModel> items)
         {
-            var cartItems = await this.context.CartItems
-                .Where(ci => ci.UserID == this.userId)
-                .Include(ci => ci.Product)
-                .ThenInclude(p => p.Category)
+            return await this.context.Products
+                .Include(p => p.Category)
+                .Where(p => p.CategoryID == this.CategoryID)
                 .ToListAsync();
-
-            return cartItems.Select(ci => ci.Product);
         }
     }
-}
+} 

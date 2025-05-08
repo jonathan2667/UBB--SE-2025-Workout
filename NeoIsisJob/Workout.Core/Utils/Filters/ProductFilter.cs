@@ -4,39 +4,49 @@
 
 namespace Workout.Core.Utils.Filters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using Workout.Core.Data;
+    using Workout.Core.Models;
+
     /// <summary>
-    /// Filter criteria for querying products.
+    /// Represents a filter for products.
     /// </summary>
-    public class ProductFilter(int? categoryId, int? excludeProductId, int? count, string? color, string? size, string? searchTerm) : IFilter
+    public class ProductFilter : IFilter
     {
-        /// <summary>
-        /// Gets or sets the category ID to filter products by.
-        /// </summary>
-        public int? CategoryId { get; set; } = categoryId; // Initialize from constructor
+        private readonly WorkoutDbContext context;
+        private readonly string searchTerm;
 
         /// <summary>
-        /// Gets or sets the product ID to exclude from the results.
+        /// Initializes a new instance of the <see cref="ProductFilter"/> class.
         /// </summary>
-        public int? ExcludeProductId { get; set; } = excludeProductId; // Initialize from constructor
+        /// <param name="context">The database context.</param>
+        /// <param name="searchTerm">The search term to filter products by.</param>
+        public ProductFilter(WorkoutDbContext context, string searchTerm)
+        {
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.searchTerm = searchTerm;
+        }
 
         /// <summary>
-        /// Gets or sets the maximum number of products to return.
+        /// Applies the filter to a collection of products asynchronously.
         /// </summary>
-        public int? Count { get; set; } = count; // Initialize from constructor
+        /// <param name="items">The collection of products to filter.</param>
+        /// <returns>A task representing the asynchronous operation, containing the filtered collection of products.</returns>
+        public async Task<IEnumerable<ProductModel>> ApplyAsync(IEnumerable<ProductModel> items)
+        {
+            if (string.IsNullOrWhiteSpace(this.searchTerm))
+            {
+                return items;
+            }
 
-        /// <summary>
-        /// Gets or sets the color to filter products by.
-        /// </summary>
-        public string? Color { get; set; } = color; // Initialize from constructor
-
-        /// <summary>
-        /// Gets or sets the size to filter products by.
-        /// </summary>
-        public string? Size { get; set; } = size; // Initialize from constructor
-
-        /// <summary>
-        /// Gets or sets the search term to filter products by.
-        /// </summary>
-        public string? SearchTerm { get; set; } = searchTerm; // Initialize from constructor
+            return await this.context.Products
+                .Where(p => p.Name.Contains(this.searchTerm) || p.Description.Contains(this.searchTerm))
+                .Include(p => p.Category)
+                .ToListAsync();
+        }
     }
 }
