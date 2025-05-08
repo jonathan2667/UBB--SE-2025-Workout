@@ -5,6 +5,7 @@ using Workout.Core.IServices;
 using Workout.Core.Services;
 using Workout.Core.Data;
 using Workout.Core.Models;
+using Workout.Core.Utils.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,13 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new IFilterConverter());
     });
 
 var app = builder.Build();
