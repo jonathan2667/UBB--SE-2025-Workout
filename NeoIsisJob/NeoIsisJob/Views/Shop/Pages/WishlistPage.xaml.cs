@@ -2,14 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Pages
+namespace NeoIsisJob.Views.Shop.Pages
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using global::Workout.Core.Models;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using WorkoutApp.Models;
-    using WorkoutApp.ViewModel;
+    using NeoIsisJob.ViewModels.Shop;
 
     /// <summary>
     /// A page that displays the user's wishlist.
@@ -51,13 +51,13 @@ namespace WorkoutApp.View.Pages
         /// <returns>A task that represents the asynchronous operation.</returns>
         private async Task LoadProducts()
         {
-            IEnumerable<WishlistItem> products = await this.wishlistViewModel.GetAllProductsFromWishlistAsync();
+            IEnumerable<WishlistItemModel> products = await this.wishlistViewModel.GetAllProductsFromWishlistAsync();
             this.WishlistItemListControl.SetProducts(products);
         }
 
         private void VerticalWishlistItemListControl_WishlistItemClicked(object sender, int productID)
         {
-            MainWindow.AppFrame.Navigate(typeof(ProductDetailPage), productID);
+            this.Frame.Navigate(typeof(ProductDetailPage), productID);
         }
 
         private async void VerticalWishlistItemListControl_WishlistItemRemoved(object sender, int wishlistItemID)
