@@ -2,41 +2,26 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Workout.Core.ViewModel
+namespace NeoIsisJob.ViewModels.Shop
 {
-    using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Threading.Tasks;
-    using Workout.Core.Data.Database;
-    using Workout.Core.Infrastructure.Session;
-    using Workout.Core.Models;
-    using Workout.Core.Repository;
-    using Workout.Core.Service;
+    using global::Workout.Core.Models;
+    using NeoIsisJob.Proxy;
 
     /// <summary>
     /// ViewModel responsible for managing wishlist operations.
     /// </summary>
     public class WishlistViewModel
     {
-        private readonly IService<WishlistItemModel> wishlistService;
+        private readonly WishlistServiceProxy wishlistServiceProxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WishlistViewModel"/> class.
         /// </summary>
         public WishlistViewModel()
         {
-            string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
-            }
-
-            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
-            DbService dbService = new DbService(dbConnectionFactory);
-            SessionManager sessionManager = new SessionManager();
-            IRepository<WishlistItemModel> wishlistRepository = new WishlistItemRepository(dbService, sessionManager);
-            this.wishlistService = new WishlistService(wishlistRepository);
+            this.wishlistServiceProxy = new WishlistServiceProxy();
         }
 
         /// <summary>
@@ -45,7 +30,7 @@ namespace Workout.Core.ViewModel
         /// <returns>A collection of wishlist items.</returns>
         public async Task<IEnumerable<WishlistItemModel>> GetAllProductsFromWishlistAsync()
         {
-            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistService.GetAllAsync();
+            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistServiceProxy.GetAllAsync();
             return wishlistItems;
         }
 
@@ -56,7 +41,12 @@ namespace Workout.Core.ViewModel
         /// <returns>The created wishlist item.</returns>
         public async Task<WishlistItemModel> AddProductToWishlist(ProductModel product)
         {
-            return await this.wishlistService.CreateAsync(new WishlistItemModel(null, product, 1));
+            return await this.wishlistServiceProxy.CreateAsync(new WishlistItemModel
+            {
+                UserID = 1,
+                ProductID = product.ID,
+                Product = product,
+            });
         }
 
         /// <summary>
@@ -66,7 +56,7 @@ namespace Workout.Core.ViewModel
         /// <returns>True if the item was removed successfully.</returns>
         public async Task<bool> RemoveProductFromWishlist(int wishlistItemID)
         {
-            return await this.wishlistService.DeleteAsync(wishlistItemID);
+            return await this.wishlistServiceProxy.DeleteAsync(wishlistItemID);
         }
 
         /// <summary>
@@ -76,7 +66,7 @@ namespace Workout.Core.ViewModel
         /// <returns>The wishlist item, or <c>null</c> if not found.</returns>
         public async Task<WishlistItemModel?> GetProductFromWishlist(int productId)
         {
-            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistService.GetAllAsync();
+            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistServiceProxy.GetAllAsync();
             foreach (WishlistItemModel item in wishlistItems)
             {
                 if (item.Product.ID == productId)
