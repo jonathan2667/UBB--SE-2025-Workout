@@ -251,8 +251,30 @@ namespace Workout.Core.Data
                 new CategoryModel { ID = 2, Name = "Equipment" });
 
             modelBuilder.Entity<ProductModel>().HasData(
-                new ProductModel { ID = 1, Name = "Protein Powder", Price = 29.99m, CategoryID = 1 },
-                new ProductModel { ID = 2, Name = "Yoga Mat", Price = 19.99m, CategoryID = 2 });
+                new ProductModel
+                {
+                    ID = 1,
+                    Name = "Protein Powder",
+                    Price = 29.99m,
+                    Stock = 50,
+                    CategoryID = 1,
+                    Size = "2 lb",
+                    Color = "N/A",
+                    Description = "High-quality whey protein for muscle building.",
+                    PhotoURL = "https://example.com/images/protein-powder.jpg",
+                },
+                new ProductModel
+                {
+                    ID = 2,
+                    Name = "Yoga Mat",
+                    Price = 19.99m,
+                    Stock = 120,
+                    CategoryID = 2,
+                    Size = "Standard",
+                    Color = "Purple",
+                    Description = "Non-slip yoga mat for all levels.",
+                    PhotoURL = "https://example.com/images/yoga-mat.jpg",
+                });
 
             modelBuilder.Entity<CartItemModel>().HasData(
                 new CartItemModel { ID = 1, UserID = 1, ProductID = 1 },
