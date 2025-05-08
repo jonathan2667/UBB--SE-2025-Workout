@@ -5,6 +5,7 @@ using Workout.Core.IServices;
 using Workout.Core.Services;
 using Workout.Core.Data;
 using Workout.Core.Models;
+using Workout.Core.Utils.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,20 @@ builder.Services.AddScoped<IService<OrderModel>, OrderService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Remove circular reference
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new IFilterConverter());
+    });
 
 var app = builder.Build();
 
