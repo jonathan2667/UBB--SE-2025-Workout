@@ -2,14 +2,16 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Pages
+using Workout.Core.Models;
+using NeoIsisJob.ViewModels.Shop;
+
+namespace NeoIsisJob.Views.Shop.Pages
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using WorkoutApp.Models;
-    using WorkoutApp.ViewModel;
+
 
     /// <summary>
     /// A page that displays current items in the cart.
@@ -39,10 +41,7 @@ namespace WorkoutApp.View.Pages
 
         private void VerticalProductListControl_ProductClicked(object sender, int productID)
         {
-            if (MainWindow.AppFrame != null)
-            {
-                MainWindow.AppFrame.Navigate(typeof(ProductDetailPage), productID);
-            }
+            this.Frame.Navigate(typeof(ProductDetailPage), productID);
         }
 
         private async void VerticalProductListControl_CartItemRemoved(object sender, int cartItemID)
@@ -53,12 +52,12 @@ namespace WorkoutApp.View.Pages
 
         private void CheckoutButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            MainWindow.AppFrame?.Navigate(typeof(PaymentPage));
+            this.Frame.Navigate(typeof(PaymentPage));
         }
 
         private async Task LoadProducts()
         {
-            IEnumerable<CartItem> products = await this.cartViewModel.GetAllProductsFromCartAsync();
+            IEnumerable<CartItemModel> products = await this.cartViewModel.GetAllProductsFromCartAsync();
             this.ProductListViewControl.SetProducts(products);
             this.TotalPriceTextBlock.Text = this.cartViewModel.TotalPrice.ToString("C2");
         }
