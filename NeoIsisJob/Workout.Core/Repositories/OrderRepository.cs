@@ -4,6 +4,7 @@
 
 namespace Workout.Core.Repositories
 {
+    using Microsoft.EntityFrameworkCore;
     using Workout.Core.Data;
     using Workout.Core.IRepositories;
     using Workout.Core.Models;
@@ -35,25 +36,53 @@ namespace Workout.Core.Repositories
         /// <inheritdoc/>
         public async Task<bool> DeleteAsync(int id)
         {
-            return await Task.FromResult(true);
+            OrderModel? order = await this.context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return false;
+            }
+
+            this.context.Orders.Remove(order);
+            int affectedRows = await this.context.SaveChangesAsync();
+            return affectedRows > 0;
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<OrderModel>> GetAllAsync()
         {
-            return await Task.FromResult(new List<OrderModel>());
+            return await this.context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                .ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task<OrderModel?> GetByIdAsync(int id)
         {
-            return await Task.FromResult(new OrderModel());
+            return await this.context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.ID == id);
         }
 
         /// <inheritdoc/>
         public async Task<OrderModel> UpdateAsync(OrderModel entity)
         {
-            return await Task.FromResult(entity);
+            OrderModel? order = await this.context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.ID == entity.ID);
+
+            if (order == null)
+            {
+                throw new ArgumentException("Order not found", nameof(entity));
+            }
+
+            this.context.Entry(order).CurrentValues.SetValues(entity);
+            await this.context.SaveChangesAsync();
+            await this.context.Entry(order).ReloadAsync();
+            return order;
         }
     }
 }
