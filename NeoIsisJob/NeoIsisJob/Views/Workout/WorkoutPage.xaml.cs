@@ -18,6 +18,7 @@ using NeoIsisJob.ViewModels.Workout;
 using NeoIsisJob.Views.Workout;
 using Microsoft.Extensions.DependencyInjection;
 using Workout.Core.Models;
+using NeoIsisJob.Views.Shop.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -63,6 +64,21 @@ namespace NeoIsisJob.Views
         public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
         }
 
         public async void GoToSelectedWorkoutPage_Click(object sender, ItemClickEventArgs e)
