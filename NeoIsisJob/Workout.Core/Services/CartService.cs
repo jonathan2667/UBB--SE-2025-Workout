@@ -53,8 +53,7 @@ namespace Workout.Core.Services
         {
             try
             {
-                CartItemModel item = await this.cartRepository.GetByIdAsync(id)
-                                 ?? throw new KeyNotFoundException($"Cart item with ID {id} not found.");
+                CartItemModel item = await this.cartRepository.GetByIdAsync(id);
                 return item;
             }
             catch (Exception ex)
