@@ -2,8 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as per your structure
+namespace NeoIsisJob.ViewModels // Using the singular 'ViewModel' namespace as per your structure
 {
+    using global::Workout.Core.Models;
+    using global::Workout.Core.Utils.Filters;
+    using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+    using NeoIsisJob.Proxy;
     using System;
     using System.Collections.Generic; // Required for EqualityComparer
     using System.Collections.ObjectModel; // Required for ObservableCollection
@@ -14,11 +18,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
     using System.Runtime.CompilerServices; // Required for CallerMemberName
     using System.Threading.Tasks;
     using System.Windows.Input; // Required for ICommand
-    using WorkoutApp.Data.Database; // Required for DbConnectionFactory, DbService
-    using WorkoutApp.Models; // Assuming Product and Category models are here
-    using WorkoutApp.Repository; // Required for ProductRepository
-    using WorkoutApp.Service; // Assuming ProductService and IService<Product> are here
-    using WorkoutApp.Utils.Filters; // Required for ProductFilter
+
 
     /// <summary>
     /// ViewModel for a single product, designed for UI data binding.
@@ -27,9 +27,9 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
     public class ProductViewModel : INotifyPropertyChanged // Implement INotifyPropertyChanged for UI updates
     {
         // The type is ProductService because GetFilteredAsync is not in IService<Product>
-        private readonly ProductService productService;
+        private readonly ProductServiceProxy productService;
         private int productId; // Store the product ID internally once loaded
-        private Product? product; // Hold the underlying Product model
+        private ProductModel? product; // Hold the underlying Product model
 
         // Properties to expose Product data for binding
         private string name = "Loading...";
@@ -43,7 +43,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
         private string? photoUrl = null; // Use string? for nullable PhotoURL
 
         // New property for related products
-        private ObservableCollection<Product> relatedProducts = new ObservableCollection<Product>();
+        private ObservableCollection<ProductModel> relatedProducts = new ObservableCollection<ProductModel>();
 
         /// <summary>
         /// Gets the command for saving product changes.
@@ -97,11 +97,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             Debug.WriteLine("ProductViewModel parameterless constructor called.");
 
             // Initialize dependencies with default/placeholder values.
-            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            var connectionFactory = new DbConnectionFactory(connectionString);
-            var dbService = new DbService(connectionFactory);
-            var productRepository = new ProductRepository(dbService);
-            this.productService = new ProductService(productRepository);
+            this.productService = new ProductServiceProxy();
 
             // Initialize Commands
             this.SaveCommand = new RelayCommand(async _ => await this.ExecuteSaveAsync());
@@ -109,23 +105,6 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             this.DeleteCommand = new RelayCommand(async _ => await this.ExecuteDeleteAsync());
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProductViewModel"/> class with a product service.
-        /// This constructor is typically used when the ViewModel is created programmatically,
-        /// allowing for dependency injection of the service.
-        /// </summary>
-        /// <param name="productService">The product service to fetch product data.</param>
-        public ProductViewModel(ProductService productService)
-        {
-            Debug.WriteLine("ProductViewModel constructor with ProductService called.");
-            this.productService = productService ?? throw new ArgumentNullException(nameof(productService));
-            // Initial values are set, data will be loaded when LoadProductAsync is called
-
-            // Initialize Commands
-            this.SaveCommand = new RelayCommand(async _ => await this.ExecuteSaveAsync());
-            this.CancelEditCommand = new RelayCommand(async _ => await this.ExecuteCancelEditAsync());
-            this.DeleteCommand = new RelayCommand(async _ => await this.ExecuteDeleteAsync()); // Initialize the DeleteCommand
-        }
 
         /// <summary>
         /// Gets the unique identifier of the product.
@@ -228,7 +207,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
         /// <summary>
         /// Gets the collection of related products for UI binding.
         /// </summary>
-        public ObservableCollection<Product> RelatedProducts
+        public ObservableCollection<ProductModel> RelatedProducts
         {
             get => this.relatedProducts;
             private set => this.SetProperty(ref this.relatedProducts, value); // Use SetProperty to notify UI
@@ -276,7 +255,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
                     // Load related products after the main product is loaded
                     if (this.product.Category != null)
                     {
-                        await this.LoadRelatedProductsAsync(this.product.Category.ID ?? 0, this.product.ID.Value, 3); // Get 3 related products
+                        await this.LoadRelatedProductsAsync(this.product.Category.ID, this.product.ID, 3); // Get 3 related products
                     }
                     else
                     {
@@ -424,14 +403,13 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             }
 
             // Create an updated Product model from the ViewModel properties
-            var updatedProduct = new Product(
-                id: this.product.ID, // Use the existing ID
+            var updatedProduct = new ProductModel(
                 name: this.Name,
                 price:this.Price,
                 stock: this.Stock,
                 // Need to create a Category object from ViewModel properties
                 // Assuming CategoryName is just for display and CategoryID is used for saving
-                category: new Category(this.CategoryID, this.CategoryName), // Pass both ID and Name
+                categoryId: this.CategoryID, // Pass both ID and Name
                 size: this.Size,
                 color: this.Color,
                 description: this.Description,
@@ -443,8 +421,8 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             try
             {
                 // Call the service to update the product
-                Debug.WriteLine($"ProductViewModel: Calling productService.UpdateAsync({this.product.ID.Value})..."); // Added logging
-                Product resultProduct = await this.productService.UpdateAsync(updatedProduct);
+                Debug.WriteLine($"ProductViewModel: Calling productService.UpdateAsync({this.product.ID})..."); // Added logging
+                ProductModel resultProduct = await this.productService.UpdateAsync(updatedProduct);
                 Debug.WriteLine($"ProductViewModel: productService.UpdateAsync returned."); // Added logging
 
                 // Update the underlying product model in the ViewModel
@@ -492,7 +470,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             // Re-load the product data from the service to discard changes
             if (this.product != null)
             {
-                await this.LoadProductAsync(this.product.ID.Value); // This will reset all ViewModel properties
+                await this.LoadProductAsync(this.product.ID); // This will reset all ViewModel properties
                 Debug.WriteLine($"ProductViewModel: Properties reverted after cancel: Name={this.Name}, Price={this.Price}, Stock={this.Stock}, CategoryID={this.CategoryID}, CategoryName={this.CategoryName}"); // Added logging
             }
             else
@@ -513,8 +491,6 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             }
 
             this.IsUpdateModalOpen = false; // Close the modal
-            Debug.WriteLine("ProductViewModel: IsUpdateModalOpen set to false."); // Added logging
-            Debug.WriteLine($"ProductViewModel: Editing cancelled for product ID {(this.product?.ID.HasValue == true ? this.product.ID.Value : "N/A")}."); // Added logging
         }
 
         /// <summary>
@@ -545,8 +521,8 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
             try
             {
                 // Call the service to delete the product
-                Debug.WriteLine($"ProductViewModel: Calling productService.DeleteAsync({this.product.ID.Value})..."); // Added logging
-                bool success = await this.productService.DeleteAsync(this.product.ID.Value);
+                Debug.WriteLine($"ProductViewModel: Calling productService.DeleteAsync({this.product.ID})..."); // Added logging
+                bool success = await this.productService.DeleteAsync(this.product.ID);
                 Debug.WriteLine($"ProductViewModel: productService.DeleteAsync returned: {success}"); // Added logging
 
                 if (success)
@@ -627,7 +603,7 @@ namespace WorkoutApp.ViewModel // Using the singular 'ViewModel' namespace as pe
         /// Gets the selected product.
         /// </summary>
         /// <returns>The selected product.</returns>
-        public Product GetSelectedProduct()
+        public ProductModel GetSelectedProduct()
         {
             return this.product ?? throw new InvalidOperationException("No product is selected.");
         }

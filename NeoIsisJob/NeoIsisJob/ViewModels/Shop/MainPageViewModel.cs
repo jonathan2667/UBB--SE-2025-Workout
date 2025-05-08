@@ -2,24 +2,23 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+using Workout.Core.Models;
+
+namespace NeoIsisJob.ViewModels.Shop
 {
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
-    using WorkoutApp.Utils.Filters;
+    using global::Workout.Core.Utils.Filters;
+    using NeoIsisJob.Proxy;
 
     /// <summary>
     /// The view model for the main page, responsible for loading and providing product data.
     /// </summary>
     public class MainPageViewModel
     {
-        private readonly IService<Product> productService;
+        private readonly ProductServiceProxy productService;
         private ProductFilter filter;
 
         /// <summary>
@@ -31,17 +30,7 @@ namespace WorkoutApp.ViewModel
         /// </exception>
         public MainPageViewModel()
         {
-            string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
-            }
-
-            var dbConnectionFactory = new DbConnectionFactory(connectionString);
-            var dbService = new DbService(dbConnectionFactory);
-            IRepository<Product> productRepository = new ProductRepository(dbService);
-            this.productService = new ProductService(productRepository);
+            this.productService = new ProductServiceProxy();
             this.filter = new ProductFilter(null, null, null, null, null, null);
         }
 
@@ -49,7 +38,7 @@ namespace WorkoutApp.ViewModel
         /// Retrieves all products asynchronously.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of products.</returns>
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductModel>> GetAllProductsAsync()
         {
             return await this.productService.GetFilteredAsync(this.filter);
         }

@@ -4,48 +4,37 @@
 
 namespace WorkoutApp.ViewModel
 {
+    using NeoIsisJob.Proxy;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Infrastructure.Session;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+    using Windows.Security.Authentication.OnlineId;
+    using Workout.Core.Models;
 
     /// <summary>
     /// ViewModel responsible for managing wishlist operations.
     /// </summary>
     public class WishlistViewModel
     {
-        private readonly IService<WishlistItem> wishlistService;
+        private readonly WishlistServiceProxy wishlistServiceProxy;
+        private readonly int userId = 1; // This should be replaced with the actual user ID from the session or authentication context.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WishlistViewModel"/> class.
         /// </summary>
         public WishlistViewModel()
         {
-            string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
-            }
-
-            DbConnectionFactory dbConnectionFactory = new DbConnectionFactory(connectionString);
-            DbService dbService = new DbService(dbConnectionFactory);
-            SessionManager sessionManager = new SessionManager();
-            IRepository<WishlistItem> wishlistRepository = new WishlistItemRepository(dbService, sessionManager);
-            this.wishlistService = new WishlistService(wishlistRepository);
+            this.wishlistServiceProxy = new WishlistServiceProxy();
         }
 
         /// <summary>
         /// Retrieves all products from the wishlist asynchronously.
         /// </summary>
         /// <returns>A collection of wishlist items.</returns>
-        public async Task<IEnumerable<WishlistItem>> GetAllProductsFromWishlistAsync()
+        public async Task<IEnumerable<WishlistItemModel>> GetAllProductsFromWishlistAsync()
         {
-            IEnumerable<WishlistItem> wishlistItems = await this.wishlistService.GetAllAsync();
+            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistServiceProxy.GetAllAsync();
             return wishlistItems;
         }
 
@@ -54,9 +43,9 @@ namespace WorkoutApp.ViewModel
         /// </summary>
         /// <param name="product">The product to add.</param>
         /// <returns>The created wishlist item.</returns>
-        public async Task<WishlistItem> AddProductToWishlist(Product product)
+        public async Task<WishlistItemModel> AddProductToWishlist(ProductModel product)
         {
-            return await this.wishlistService.CreateAsync(new WishlistItem(null, product, 1));
+            return await this.wishlistServiceProxy.CreateAsync(new WishlistItemModel(userId, product.ID));
         }
 
         /// <summary>
@@ -66,7 +55,7 @@ namespace WorkoutApp.ViewModel
         /// <returns>True if the item was removed successfully.</returns>
         public async Task<bool> RemoveProductFromWishlist(int wishlistItemID)
         {
-            return await this.wishlistService.DeleteAsync(wishlistItemID);
+            return await this.wishlistServiceProxy.DeleteAsync(wishlistItemID);
         }
 
         /// <summary>
@@ -74,10 +63,10 @@ namespace WorkoutApp.ViewModel
         /// </summary>
         /// <param name="productId">The product ID to find.</param>
         /// <returns>The wishlist item, or <c>null</c> if not found.</returns>
-        public async Task<WishlistItem?> GetProductFromWishlist(int productId)
+        public async Task<WishlistItemModel?> GetProductFromWishlist(int productId)
         {
-            IEnumerable<WishlistItem> wishlistItems = await this.wishlistService.GetAllAsync();
-            foreach (WishlistItem item in wishlistItems)
+            IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistServiceProxy.GetAllAsync();
+            foreach (WishlistItemModel item in wishlistItems)
             {
                 if (item.Product.ID == productId)
                 {

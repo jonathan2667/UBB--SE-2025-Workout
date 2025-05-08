@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace NeoIsisJob.ViewModels.Shop
 {
     using System.ComponentModel;
 

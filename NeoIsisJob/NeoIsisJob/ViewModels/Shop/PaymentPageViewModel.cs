@@ -2,8 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace NeoIsisJob.ViewModels.Shop
 {
+    using NeoIsisJob.Proxy;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -11,37 +12,21 @@ namespace WorkoutApp.ViewModel
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Infrastructure.Session;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+
 
     /// <summary>
     /// Represents the view model for the payment page.
     /// </summary>
     public class PaymentPageViewModel
     {
-        private readonly IService<Order> orderService;
+        private readonly OrderServiceProxy orderServiceProxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentPageViewModel"/> class.
         /// </summary>
         public PaymentPageViewModel()
         {
-            string? connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString;
-
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException("The connection string 'DefaultConnection' is not configured or is null.");
-            }
-
-            DbConnectionFactory dbConnectionFactory = new (connectionString);
-            DbService dbService = new (dbConnectionFactory);
-            SessionManager sessionManager = new ();
-            IRepository<CartItem> cartRepository = new CartRepository(dbService, sessionManager);
-            IRepository<Order> orderRepository = new OrderRepository(dbService, sessionManager);
-            this.orderService = new OrderService(orderRepository, cartRepository);
+            this.orderServiceProxy = new OrderServiceProxy();
         }
 
         /// <summary>
@@ -52,7 +37,7 @@ namespace WorkoutApp.ViewModel
         {
             try
             {
-                await ((OrderService)this.orderService).CreateOrderFromCartAsync();
+                await ((OrderServiceProxy)this.orderServiceProxy).CreateOrderFromCartAsync();
                 return true;
             }
             catch (Exception exception)
