@@ -1,16 +1,16 @@
 ﻿// <copyright file="AddProductViewModel.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
+using Workout.Core.Models;
 
-namespace WorkoutApp.ViewModel
+namespace NeoIsisJob.ViewModels.Shop
 {
+    using NeoIsisJob.Proxy;
     using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
-    using WorkoutApp.Models;
-    using WorkoutApp.Service;
 
     /// <summary>
     /// ViewModel for adding a new product.
@@ -20,7 +20,7 @@ namespace WorkoutApp.ViewModel
         /// <summary>
         /// The service used for product operations.
         /// </summary>
-        private readonly ProductService productService;
+        private readonly ProductServiceProxy productServiceProxy;
 
         /// <summary>
         /// Backing field for validation message.
@@ -31,10 +31,10 @@ namespace WorkoutApp.ViewModel
         /// Initializes a new instance of the <see cref="AddProductViewModel"/> class.
         /// </summary>
         /// <param name="productService">The product service used to add the product.</param>
-        public AddProductViewModel(ProductService productService)
+        public AddProductViewModel()
         {
-            this.productService = productService;
-            this.Categories = new ObservableCollection<Category>();
+            this.productServiceProxy = new ProductServiceProxy();
+            this.Categories = new ObservableCollection<CategoryModel>();
         }
 
         /// <inheritdoc/>
@@ -43,7 +43,7 @@ namespace WorkoutApp.ViewModel
         /// <summary>
         /// Gets the list of available categories.
         /// </summary>
-        public ObservableCollection<Category> Categories { get; }
+        public ObservableCollection<CategoryModel> Categories { get; }
 
         /// <summary>
         /// Gets or sets the product name.
@@ -83,7 +83,7 @@ namespace WorkoutApp.ViewModel
         /// <summary>
         /// Gets or sets the selected category.
         /// </summary>
-        public Category? SelectedCategory { get; set; }
+        public CategoryModel? SelectedCategory { get; set; }
 
         /// <summary>
         /// Gets or sets the validation message for the UI.
@@ -99,7 +99,7 @@ namespace WorkoutApp.ViewModel
         /// </summary>
         /// <param name="categoryService">The category service.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task LoadCategoriesAsync(CategoryService categoryService)
+        public async Task LoadCategoriesAsync(CategoryServiceProxy categoryService)
         {
             var categories = await categoryService.GetAllAsync();
             this.Categories.Clear();
@@ -135,12 +135,11 @@ namespace WorkoutApp.ViewModel
                 return false;
             }
 
-            var newProduct = new Product(
-                id: null,
+            var newProduct = new ProductModel(
                 name: this.Name,
                 price: parsedPrice,
                 stock: parsedStock,
-                category: this.SelectedCategory!,
+                categoryId: this.SelectedCategory!.ID,
                 size: this.Size,
                 color: this.Color,
                 description: this.Description,
@@ -148,7 +147,7 @@ namespace WorkoutApp.ViewModel
 
             try
             {
-                var createdProduct = await this.productService.CreateAsync(newProduct);
+                var createdProduct = await this.productServiceProxy.CreateAsync(newProduct);
                 System.Diagnostics.Debug.WriteLine($"[AddProductViewModel] Product created with ID: {createdProduct.ID}");
                 return true;
             }
