@@ -202,6 +202,8 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
             set => this.SetProperty(ref this.photoUrl, value);
         }
 
+        private CategoryModel category;
+
         /// <summary>
         /// Gets the collection of related products for UI binding.
         /// </summary>
@@ -232,6 +234,8 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
                 if (this.product != null)
                 {
                     Debug.WriteLine($"ProductViewModel: Product ID {id} loaded successfully."); // Added logging
+
+                    this.category = this.product.Category; // Store the category for later use
 
                     // Update ViewModel properties based on the loaded Product model
                     // SetProperty will raise PropertyChanged event for UI updates
@@ -393,7 +397,7 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
         public async Task ExecuteSaveAsync() // Made public
         {
             Debug.WriteLine("ProductViewModel: ExecuteSaveAsync called. Attempting to save product."); // Added logging
-            if (this.product == null || this.product.ID == null)
+            if (this.product == null)
             {
                 Debug.WriteLine("ProductViewModel: Attempted to save a product that was not loaded correctly."); // Added logging
                 this.IsUpdateModalOpen = false; // Close the modal
@@ -414,7 +418,10 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
                 photoURL: this.PhotoURL
             );
 
-            Debug.WriteLine($"ProductViewModel: Attempting to save with values: Name={updatedProduct.Name}, Price={updatedProduct.Price}, Stock={updatedProduct.Stock}, CategoryID={updatedProduct.Category?.ID}"); // Added logging
+            updatedProduct.ID = this.ID; // Set the ID of the updated product to the current product ID
+            updatedProduct.Category = this.category;
+
+            Debug.WriteLine($"ProductViewModel: Attempting to save with values: Name={updatedProduct.Name}, Price={updatedProduct.Price}, Stock={updatedProduct.Stock}, CategoryID={updatedProduct.CategoryID}"); // Added logging
 
             try
             {
@@ -431,7 +438,7 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
                 this.Name = this.product.Name;
                 this.Price = this.product.Price;
                 this.Stock = this.product.Stock;
-                this.CategoryID = this.product.Category?.ID ?? 0;
+                this.CategoryID = this.product.CategoryID;
                 this.CategoryName = this.product.Category?.Name ?? "Unknown Category";
                 this.Size = this.product.Size;
                 this.Color = this.product.Color;

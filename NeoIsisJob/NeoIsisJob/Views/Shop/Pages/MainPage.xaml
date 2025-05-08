@@ -43,6 +43,8 @@
                             TextChanged="SearchBox_TextChanged"/>
             </StackPanel>
 
+            <component:AddProductButton HorizontalAlignment="Right" Margin="0,0,15,0"/>
+
             <!-- MAIN CONTENT AREA -->
             <Grid Grid.Row="1" Background="Black">
                 <Grid.ColumnDefinitions>

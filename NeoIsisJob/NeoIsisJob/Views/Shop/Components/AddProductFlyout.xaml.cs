@@ -8,7 +8,6 @@ namespace NeoIsisJob.Views.Shop.Components
     using System.Threading.Tasks;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using Windows.Media.Capture;
     using NeoIsisJob.ViewModels.Shop;
     using NeoIsisJob.Proxy;
 
@@ -65,7 +64,7 @@ namespace NeoIsisJob.Views.Shop.Components
                 };
 
                 await dialog.ShowAsync();
-                MainWindow.AppMainFrame.Navigate(typeof(MainPage));
+                NeoIsisJob.MainWindow.AppMainFrame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
             }
 
             System.Diagnostics.Debug.WriteLine("[AddProductFlyout] Add Product button clicked.");

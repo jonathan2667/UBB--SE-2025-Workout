@@ -92,7 +92,6 @@ namespace Workout.Core.Models
         /// Gets or sets the category to which the product belongs.
         /// </summary>
         [ForeignKey("CategoryID")]
-        [JsonIgnore]
         public CategoryModel? Category { get; set; }
 
         /// <summary>
