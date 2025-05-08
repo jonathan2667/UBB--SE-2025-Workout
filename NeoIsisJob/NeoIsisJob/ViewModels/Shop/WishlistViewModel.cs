@@ -65,7 +65,7 @@ namespace NeoIsisJob.ViewModels.Shop
             IEnumerable<WishlistItemModel> wishlistItems = await this.wishlistServiceProxy.GetAllAsync();
             foreach (WishlistItemModel item in wishlistItems)
             {
-                if (item.Product.ID == productId)
+                if (item.ProductID == productId)
                 {
                     return item;
                 }

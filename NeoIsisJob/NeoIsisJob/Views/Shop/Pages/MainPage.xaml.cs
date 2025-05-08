@@ -7,7 +7,6 @@ using NeoIsisJob.ViewModels.Shop;
 
 namespace NeoIsisJob.Views.Shop.Pages
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.UI.Xaml;
@@ -133,6 +132,47 @@ namespace NeoIsisJob.Views.Shop.Pages
                     await this.LoadProducts();
                 }
             }
+        }
+
+        // Navigation methods - you already have these implemented
+        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.MainPage));
+        }
+
+        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WorkoutPage));
+        }
+
+        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CalendarPage));
+        }
+
+        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ClassPage));
+        }
+
+        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            // this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
         }
     }
 }

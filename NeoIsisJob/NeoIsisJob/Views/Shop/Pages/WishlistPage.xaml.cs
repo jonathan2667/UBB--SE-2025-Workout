@@ -7,6 +7,7 @@ namespace NeoIsisJob.Views.Shop.Pages
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using global::Workout.Core.Models;
+    using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
     using NeoIsisJob.ViewModels.Shop;
@@ -64,6 +65,47 @@ namespace NeoIsisJob.Views.Shop.Pages
         {
             await this.wishlistViewModel.RemoveProductFromWishlist(wishlistItemID);
             await this.LoadProducts();
+        }
+
+        // Navigation methods - you already have these implemented
+        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.MainPage));
+        }
+
+        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WorkoutPage));
+        }
+
+        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CalendarPage));
+        }
+
+        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ClassPage));
+        }
+
+        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            //this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
         }
     }
 }
