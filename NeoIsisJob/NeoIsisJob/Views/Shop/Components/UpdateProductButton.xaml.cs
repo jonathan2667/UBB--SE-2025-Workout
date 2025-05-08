@@ -2,13 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components // Your specified namespace
+namespace NeoIsisJob.Views.Shop // Your specified namespace
 {
     using System;
     using System.Diagnostics; // Required for Debug.WriteLine
     using Microsoft.UI.Xaml; // Required for DependencyProperty, DependencyPropertyChangedEventArgs
     using Microsoft.UI.Xaml.Controls; // Required for UserControl, Button
-    using WorkoutApp.ViewModel; // Assuming ProductViewModel is here
+    using NeoIsisJob.ViewModels;
 
     /// <summary>
     /// A custom button component specifically for Update actions, receiving its ViewModel externally.

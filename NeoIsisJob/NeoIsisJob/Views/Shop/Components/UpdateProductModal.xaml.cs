@@ -2,11 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System.Diagnostics;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using NeoIsisJob.ViewModels;
 
     /// <summary>
     /// Interaction logic for UpdateProductModal.xaml.
@@ -36,7 +37,7 @@ namespace WorkoutApp.View.Components
             string contextType = args.NewValue?.GetType().Name ?? "null";
             Debug.WriteLine($"UpdateProductModal: DataContextChanged event fired. New DataContext is {contextType}.");
 
-            if (args.NewValue is ViewModel.ProductViewModel vm)
+            if (args.NewValue is ViewModels.ProductViewModel vm)
             {
                 Debug.WriteLine($"UpdateProductModal: DataContext set to ProductViewModel. Name: {vm.Name}, Price: {vm.Price}, Stock: {vm.Stock}");
             }
@@ -52,7 +53,7 @@ namespace WorkoutApp.View.Components
             string contextType = this.DataContext?.GetType().Name ?? "null";
             Debug.WriteLine($"UpdateProductModal: Loaded event fired. Current DataContext is {contextType}.");
 
-            if (this.DataContext is ViewModel.ProductViewModel vm)
+            if (this.DataContext is ViewModels.ProductViewModel vm)
             {
                 Debug.WriteLine($"UpdateProductModal: DataContext is ProductViewModel on Loaded. Name: {vm.Name}, Price: {vm.Price}, Stock: {vm.Stock}");
             }

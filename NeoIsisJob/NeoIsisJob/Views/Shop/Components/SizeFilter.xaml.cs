@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using Microsoft.UI.Xaml.Controls;
