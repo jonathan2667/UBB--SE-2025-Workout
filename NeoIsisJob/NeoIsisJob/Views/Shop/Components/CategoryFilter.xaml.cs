@@ -56,9 +56,9 @@ namespace NeoIsisJob.Views.Shop.Components
         /// </summary>
         private void CategoryListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ComboBox comboBox && comboBox.SelectedItem is CategoryModel selectedCategory && selectedCategory.ID.HasValue)
+            if (sender is ComboBox comboBox && comboBox.SelectedItem is CategoryModel selectedCategory)
             {
-                this.CategoryChanged?.Invoke(this, selectedCategory.ID.Value);
+                this.CategoryChanged?.Invoke(this, selectedCategory.ID);
             }
         }
     }

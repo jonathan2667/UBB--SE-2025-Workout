@@ -2,13 +2,13 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using System.Diagnostics;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.ViewModel;
+    using NeoIsisJob.ViewModels;
 
     /// <summary>
     /// A custom button component specifically for Delete actions, receiving its ViewModel externally.

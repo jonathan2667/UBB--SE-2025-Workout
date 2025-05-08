@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using System.Collections.Generic;
+    using global::Workout.Core.Models;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Models;
 
     /// <summary>
     /// Component that displays a vertical list of wishlist items.
@@ -35,13 +35,13 @@ namespace WorkoutApp.View.Components
         /// <summary>
         /// Gets or sets the list of wishlist items to display.
         /// </summary>
-        public IEnumerable<WishlistItem> WishlistItemList { get; set; } = new List<WishlistItem>();
+        public IEnumerable<WishlistItemModel> WishlistItemList { get; set; } = new List<WishlistItemModel>();
 
         /// <summary>
         /// Sets the product list and refreshes the view.
         /// </summary>
         /// <param name="wishlistItems">The list of wishlist items to display.</param>
-        public void SetProducts(IEnumerable<WishlistItem> wishlistItems)
+        public void SetProducts(IEnumerable<WishlistItemModel> wishlistItems)
         {
             this.WishlistItemList = wishlistItems;
             this.ProductListView.ItemsSource = this.WishlistItemList;
@@ -54,9 +54,9 @@ namespace WorkoutApp.View.Components
         /// <param name="e">The event data associated with the item click.</param>
         public void ProductList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is WishlistItem wishlistItem && wishlistItem.Product.ID.HasValue)
+            if (e.ClickedItem is WishlistItemModel wishlistItem)
             {
-                this.WishlistItemClicked?.Invoke(this, wishlistItem.Product.ID.Value);
+                this.WishlistItemClicked?.Invoke(this, wishlistItem.ProductID);
             }
         }
 
