@@ -1,9 +1,9 @@
 ﻿namespace NeoIsisJob.Proxy
 {
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Configuration;
     using Workout.Core.IServices;
     using Workout.Core.Models;
 
@@ -85,16 +85,15 @@
 
         public async Task CreateOrderFromCartAsync()
         {
-            /*
             try
             {
-                var result = await PostAsync<string>($"{BaseRoute}/from-cart", null);
-                return result;
+                await PostAsync($"{BaseRoute}/from-cart", null);
             }
             catch (System.Exception ex)
             {
                 Console.WriteLine($"Error creating order from cart: {ex.Message}");
-                return string.Empty;
-            }*/
+                throw;
+            }
         }
     }
+}
