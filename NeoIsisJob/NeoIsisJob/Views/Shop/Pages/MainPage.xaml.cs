@@ -2,7 +2,10 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View
+using Workout.Core.Models;
+using NeoIsisJob.ViewModels.Shop;
+
+namespace NeoIsisJob.Views.Shop.Pages
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +13,6 @@ namespace WorkoutApp.View
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using WorkoutApp.Models;
-    using WorkoutApp.ViewModel;
 
     /// <summary>
     /// A page that displays the main list of products and allows category filtering.
@@ -38,21 +39,13 @@ namespace WorkoutApp.View
 
         private async Task LoadProducts()
         {
-            IEnumerable<Product> products = await this.mainPageViewModel.GetAllProductsAsync();
+            IEnumerable<ProductModel> products = await this.mainPageViewModel.GetAllProductsAsync();
             this.ProductListViewControl.SetProducts(products);
         }
 
         private void VerticalProductListControl_ProductClicked(object sender, int productID)
         {
-            if (MainWindow.AppFrame != null)
-            {
-                MainWindow.AppFrame.Navigate(typeof(ProductDetailPage), productID);
-            }
-            else
-            {
-                // Handle the case where AppFrame is null, e.g., log an error or show a message.
-                throw new InvalidOperationException("Navigation frame is not initialized.");
-            }
+            this.Frame.Navigate(typeof(ProductDetailPage), productID);
         }
 
         private async void CategorySelector_SelectionChanged(object sender, int selectedCategoryID)
