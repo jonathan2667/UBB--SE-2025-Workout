@@ -33,10 +33,11 @@ namespace Workout.Server.Controllers
         /// Gets all products.
         /// </summary>
         /// <returns>A list of all products.</returns>
+        /// <remarks>GET: api/product.</remarks>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductModel>>> GetAll()
         {
-            var products = await this.productService.GetAllAsync();
+            IEnumerable<ProductModel> products = await this.productService.GetAllAsync();
             return this.Ok(products);
         }
 
@@ -45,10 +46,11 @@ namespace Workout.Server.Controllers
         /// </summary>
         /// <param name="id">The ID of the product.</param>
         /// <returns>The product with the specified ID.</returns>
+        /// <remarks>GET: api/product/{id}.</remarks>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> GetById(int id)
         {
-            var product = await this.productService.GetByIdAsync(id);
+            ProductModel product = await this.productService.GetByIdAsync(id);
             if (product == null)
             {
                 return this.NotFound();
@@ -62,10 +64,11 @@ namespace Workout.Server.Controllers
         /// </summary>
         /// <param name="model">The product model.</param>
         /// <returns>The created product.</returns>
+        /// <remarks>POST: api/product.</remarks>
         [HttpPost]
         public async Task<ActionResult<ProductModel>> Create([FromBody] ProductModel model)
         {
-            var created = await this.productService.CreateAsync(model);
+            ProductModel created = await this.productService.CreateAsync(model);
             return this.CreatedAtAction(nameof(this.GetById), new { id = created.ID }, created);
         }
 
@@ -75,6 +78,7 @@ namespace Workout.Server.Controllers
         /// <param name="id">The ID of the product.</param>
         /// <param name="model">The updated product model.</param>
         /// <returns>The updated product.</returns>
+        /// <remarks>PUT: api/product/{id}.</remarks>
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductModel>> Update(int id, [FromBody] ProductModel model)
         {
@@ -83,7 +87,7 @@ namespace Workout.Server.Controllers
                 return this.BadRequest("Product ID mismatch.");
             }
 
-            var updated = await this.productService.UpdateAsync(model);
+            ProductModel updated = await this.productService.UpdateAsync(model);
             return this.Ok(updated);
         }
 
@@ -92,10 +96,11 @@ namespace Workout.Server.Controllers
         /// </summary>
         /// <param name="id">The ID of the product.</param>
         /// <returns>No content if successful, or NotFound if not.</returns>
+        /// <remarks>DELETE: api/product/{id}.</remarks>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var success = await this.productService.DeleteAsync(id);
+            bool success = await this.productService.DeleteAsync(id);
             if (!success)
             {
                 return this.NotFound();
@@ -109,10 +114,11 @@ namespace Workout.Server.Controllers
         /// </summary>
         /// <param name="filter">The filter to apply.</param>
         /// <returns>A filtered list of products.</returns>
+        /// <remarks>POST: api/product/filter.</remarks>
         [HttpPost("filter")]
         public async Task<ActionResult<IEnumerable<ProductModel>>> GetFiltered([FromBody] IFilter filter)
         {
-            var products = await this.productService.GetFilteredAsync(filter);
+            IEnumerable<ProductModel> products = await this.productService.GetFilteredAsync(filter);
             return this.Ok(products);
         }
     }
