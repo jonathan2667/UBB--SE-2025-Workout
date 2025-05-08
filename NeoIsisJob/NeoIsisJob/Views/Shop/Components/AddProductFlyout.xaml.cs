@@ -2,17 +2,15 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using System.Threading.Tasks;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Windows.Media.Capture;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
-    using WorkoutApp.ViewModel;
+    using NeoIsisJob.ViewModels.Shop;
+    using NeoIsisJob.Proxy;
 
     /// <summary>
     /// Represents the flyout control for adding a product in the WorkoutApp.
@@ -26,11 +24,11 @@ namespace WorkoutApp.View
         /// </summary>
         /// <param name="productService">The service for managing products.</param>
         /// <param name="categoryService">The service for managing categories.</param>
-        public AddProductFlyout(ProductService productService, CategoryService categoryService)
+        public AddProductFlyout(ProductServiceProxy productService, CategoryServiceProxy categoryService)
         {
             this.InitializeComponent();
 
-            this.viewModel = new AddProductViewModel(productService);
+            this.viewModel = new AddProductViewModel();
             this.DataContext = this.viewModel;
 
             _ = this.LoadCategories(categoryService);
@@ -41,7 +39,7 @@ namespace WorkoutApp.View
         /// </summary>
         /// <param name="categoryService">The service for managing categories.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        private async Task LoadCategories(CategoryService categoryService)
+        private async Task LoadCategories(CategoryServiceProxy categoryService)
         {
             await this.viewModel.LoadCategoriesAsync(categoryService);
         }
@@ -67,7 +65,7 @@ namespace WorkoutApp.View
                 };
 
                 await dialog.ShowAsync();
-                MainWindow.AppFrame?.Navigate(typeof(MainPage));
+                MainWindow.AppMainFrame.Navigate(typeof(MainPage));
             }
 
             System.Diagnostics.Debug.WriteLine("[AddProductFlyout] Add Product button clicked.");

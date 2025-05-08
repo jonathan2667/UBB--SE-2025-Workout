@@ -2,15 +2,14 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using System.Configuration;
+    using global::Workout.Core.Models;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Data.Database;
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository;
-    using WorkoutApp.Service;
+    using NeoIsisJob.Proxy;
+    using NeoIsisJob.ViewModels.Shop;
     using WorkoutApp.ViewModel;
 
     /// <summary>
@@ -27,14 +26,7 @@ namespace WorkoutApp.View.Components
         {
             this.InitializeComponent();
 
-            var connectionFactory = new DbConnectionFactory(ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing."));
-
-            var dbService = new DbService(connectionFactory);
-            var categoryRepository = new CategoryRepository(dbService);
-            var categoryService = new CategoryService(categoryRepository);
-
-            this.viewModel = new CategoryFilterViewModel(categoryService);
+            this.viewModel = new CategoryFilterViewModel();
             this.DataContext = this.viewModel;
 
             this.Loaded += (_, __) =>
@@ -64,7 +56,7 @@ namespace WorkoutApp.View.Components
         /// </summary>
         private void CategoryListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is ComboBox comboBox && comboBox.SelectedItem is Category selectedCategory && selectedCategory.ID.HasValue)
+            if (sender is ComboBox comboBox && comboBox.SelectedItem is CategoryModel selectedCategory && selectedCategory.ID.HasValue)
             {
                 this.CategoryChanged?.Invoke(this, selectedCategory.ID.Value);
             }
