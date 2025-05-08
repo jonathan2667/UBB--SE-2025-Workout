@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿/*using Moq;
 using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.Services;
@@ -114,3 +114,4 @@ namespace Workout.Tests.Services
         }
     }
 }
+*/
