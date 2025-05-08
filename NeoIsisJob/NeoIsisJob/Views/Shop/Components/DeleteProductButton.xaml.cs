@@ -4,11 +4,10 @@
 
 namespace NeoIsisJob.Views.Shop.Components
 {
-    using System;
     using System.Diagnostics;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using NeoIsisJob.ViewModels;
+    using NeoIsisJob.ViewModels.Shop;
 
     /// <summary>
     /// A custom button component specifically for Delete actions, receiving its ViewModel externally.

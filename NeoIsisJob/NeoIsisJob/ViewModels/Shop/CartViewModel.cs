@@ -7,12 +7,8 @@ using Workout.Core.Models;
 namespace NeoIsisJob.ViewModels.Shop
 {
     using NeoIsisJob.Proxy;
-    using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Threading.Tasks;
-
-
 
     /// <summary>
     /// ViewModel responsible for managing cart operations such as adding, retrieving, and removing cart items.

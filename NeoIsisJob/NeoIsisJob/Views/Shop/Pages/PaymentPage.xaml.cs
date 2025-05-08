@@ -2,23 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Pages
+namespace NeoIsisJob.Views.Shop.Pages
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.InteropServices.WindowsRuntime;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using Microsoft.UI.Xaml.Controls.Primitives;
-    using Microsoft.UI.Xaml.Data;
-    using Microsoft.UI.Xaml.Input;
-    using Microsoft.UI.Xaml.Media;
-    using Microsoft.UI.Xaml.Navigation;
-    using Windows.Foundation;
-    using Windows.Foundation.Collections;
-    using WorkoutApp.ViewModel;
+    using NeoIsisJob.ViewModels.Shop;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -51,7 +40,7 @@ namespace WorkoutApp.View.Pages
 
             if (successFlag)
             {
-                MainWindow.AppFrame?.Navigate(typeof(MainPage));
+                this.Frame.Navigate(typeof(MainPage));
             }
         }
     }

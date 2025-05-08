@@ -1,13 +1,14 @@
 <Page
-    x:Class="WorkoutApp.View.ProductDetailPage"
+    x:Class="NeoIsisJob.Views.Shop.Pages.ProductDetailPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WorkoutApp.View"
+    xmlns:local="using:NeoIsisJob.Views.Shop.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodel="using:WorkoutApp.ViewModel"
-    xmlns:models="using:WorkoutApp.Models"
-    xmlns:components="using:WorkoutApp.View.Components"  mc:Ignorable="d"
+    xmlns:viewmodel="using:NeoIsisJob.ViewModels.Shop"
+    xmlns:models="using:Workout.Core.Models"
+    xmlns:components="using:NeoIsisJob.Views.Shop.Components" 
+    mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <d:DesignData.DataContext>
@@ -89,7 +90,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:Product">
+                        <DataTemplate x:DataType="models:ProductModel">
                             <StackPanel Orientation="Vertical" Padding="10" Background="LightGray" CornerRadius="10" Margin="5">
                                 <Image Source="{Binding PhotoURL}" Height="80" Width="80" Stretch="Uniform"/>
                                 <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center"/>

@@ -2,13 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace NeoIsisJob.Views.Shop // Your specified namespace
+namespace NeoIsisJob.Views.Shop.Components // Your specified namespace
 {
-    using System;
     using System.Diagnostics; // Required for Debug.WriteLine
     using Microsoft.UI.Xaml; // Required for DependencyProperty, DependencyPropertyChangedEventArgs
     using Microsoft.UI.Xaml.Controls; // Required for UserControl, Button
-    using NeoIsisJob.ViewModels;
+    using NeoIsisJob.ViewModels.Shop;
 
     /// <summary>
     /// A custom button component specifically for Update actions, receiving its ViewModel externally.

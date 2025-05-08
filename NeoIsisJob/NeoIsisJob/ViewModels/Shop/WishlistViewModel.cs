@@ -2,15 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.ViewModel
+namespace NeoIsisJob.ViewModels.Shop
 {
+    using global::Workout.Core.Models;
     using NeoIsisJob.Proxy;
-    using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Threading.Tasks;
-    using Windows.Security.Authentication.OnlineId;
-    using Workout.Core.Models;
 
     /// <summary>
     /// ViewModel responsible for managing wishlist operations.

@@ -2,21 +2,17 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View // Using the 'View' namespace as in your provided code
+namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your provided code
 {
     using System;
-    using System.Configuration;
     using System.Diagnostics; // Required for Debug.WriteLine
     using System.Threading.Tasks;
-    using Microsoft.UI.Dispatching; // Required for DispatcherQueue
+    using global::Workout.Core.Models;
     using Microsoft.UI.Xaml; // Required for RoutedEventArgs, FrameworkElement
     using Microsoft.UI.Xaml.Controls; // For WinUI Page, ContentDialog
     using Microsoft.UI.Xaml.Navigation; // For NavigationEventArgs
-    using WorkoutApp.Data.Database; // Assuming DbConnectionFactory and DbService are here
-    using WorkoutApp.Models;
-    using WorkoutApp.Repository; // Assuming ProductRepository and IRepository are here
-    using WorkoutApp.Service; // Assuming ProductService and IService are here
-    using WorkoutApp.ViewModel; // Corrected: Using the singular 'ViewModel' namespace for ProductViewModel
+    using NeoIsisJob.ViewModels.Shop;
+
 
     /// <summary>
     /// Code-behind for the ProductDetailPage.xaml.
@@ -40,17 +36,9 @@ namespace WorkoutApp.View // Using the 'View' namespace as in your provided code
             Debug.WriteLine("ProductDetailPage: Constructor called."); // Added logging
             this.InitializeComponent();
 
-            // Initialize dependencies for the ProductService.
-            // This should ideally be done via Dependency Injection in a real app,
-            // but we'll new them up here for simplicity based on your structure.
-            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            var connectionFactory = new DbConnectionFactory(connectionString);
-            var dbService = new DbService(connectionFactory);
-            var productRepository = new ProductRepository(dbService);
-            var productService = new ProductService(productRepository);
 
             // Initialize the ViewModel with the necessary service
-            this.ViewModel = new ProductViewModel(productService);
+            this.ViewModel = new ProductViewModel();
             Debug.WriteLine($"ProductDetailPage: ViewModel created. Initial ViewModel.ID: {this.ViewModel.ID}"); // Added logging
 
             // Set the DataContext of the page to the ViewModel
@@ -199,10 +187,10 @@ namespace WorkoutApp.View // Using the 'View' namespace as in your provided code
         {
             if (sender is Button clickedButton)
             {
-                Product selectedProduct = this.ViewModel.GetSelectedProduct();
+                ProductModel selectedProduct = this.ViewModel.GetSelectedProduct();
                 if (selectedProduct != null)
                 {
-                    CartItem addedItem = await this.cartViewModel.AddProductToCart(selectedProduct);
+                    CartItemModel addedItem = await this.cartViewModel.AddProductToCart(selectedProduct);
 
                     if (addedItem != null)
                     {
@@ -234,15 +222,15 @@ namespace WorkoutApp.View // Using the 'View' namespace as in your provided code
         {
             if (sender is Button clickedButton)
             {
-                Product selectedProduct = this.ViewModel.GetSelectedProduct();
-                if (selectedProduct != null && selectedProduct.ID.HasValue)
+                ProductModel selectedProduct = this.ViewModel.GetSelectedProduct();
+                if (selectedProduct != null)
                 {
                     // Check if the product is already in the wishlist
-                    WishlistItem item = await this.wishlistViewModel.GetProductFromWishlist(selectedProduct.ID.Value);
-                    if (item != null && item.ID.HasValue)
+                    WishlistItemModel item = await this.wishlistViewModel.GetProductFromWishlist(selectedProduct.ID);
+                    if (item != null)
                     {
                         // Remove from wishlist
-                        bool removed = await this.wishlistViewModel.RemoveProductFromWishlist(item.ID.Value);
+                        bool removed = await this.wishlistViewModel.RemoveProductFromWishlist(item.ID);
                         if (removed)
                         {
                             this.AddToWishlistButton.Content = "Add to Wishlist";
@@ -269,11 +257,11 @@ namespace WorkoutApp.View // Using the 'View' namespace as in your provided code
                     else
                     {
                         // Add to wishlist
-                        WishlistItem addedItem = await this.wishlistViewModel.AddProductToWishlist(selectedProduct);
+                        WishlistItemModel addedItem = await this.wishlistViewModel.AddProductToWishlist(selectedProduct);
                         if (addedItem != null)
                         {
                             this.AddToWishlistButton.Content = "Remove from Wishlist";
-                            
+
                             // Success feedback
                             await new ContentDialog
                             {
@@ -324,10 +312,10 @@ namespace WorkoutApp.View // Using the 'View' namespace as in your provided code
 
         private async Task CheckProductExistanceInWishlist()
         {
-            Product selectedProduct = this.ViewModel.GetSelectedProduct();
-            if (selectedProduct != null && selectedProduct.ID.HasValue)
+            ProductModel selectedProduct = this.ViewModel.GetSelectedProduct();
+            if (selectedProduct != null)
             {
-                WishlistItem item = await this.wishlistViewModel.GetProductFromWishlist(selectedProduct.ID.Value);
+                WishlistItemModel item = await this.wishlistViewModel.GetProductFromWishlist(selectedProduct.ID);
                 if (item != null)
                 {
                     this.AddToWishlistButton.Content = "Remove from Wishlist";

@@ -2,17 +2,15 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace NeoIsisJob.ViewModels // Using the singular 'ViewModel' namespace as per your structure
+namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace as per your structure
 {
     using global::Workout.Core.Models;
     using global::Workout.Core.Utils.Filters;
-    using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
     using NeoIsisJob.Proxy;
     using System;
     using System.Collections.Generic; // Required for EqualityComparer
     using System.Collections.ObjectModel; // Required for ObservableCollection
     using System.ComponentModel; // Required for INotifyPropertyChanged
-    using System.Configuration; // Required for ConfigurationManager
     using System.Diagnostics; // Required for Debug.WriteLine
     using System.Globalization; // Required for CultureInfo
     using System.Runtime.CompilerServices; // Required for CallerMemberName
@@ -382,7 +380,7 @@ namespace NeoIsisJob.ViewModels // Using the singular 'ViewModel' namespace as p
             }
             else
             {
-                Debug.WriteLine("ProductViewModel: Cannot enter edit mode, product is null after load attempt."); 
+                Debug.WriteLine("ProductViewModel: Cannot enter edit mode, product is null after load attempt.");
             }
         }
 
@@ -405,7 +403,7 @@ namespace NeoIsisJob.ViewModels // Using the singular 'ViewModel' namespace as p
             // Create an updated Product model from the ViewModel properties
             var updatedProduct = new ProductModel(
                 name: this.Name,
-                price:this.Price,
+                price: this.Price,
                 stock: this.Stock,
                 // Need to create a Category object from ViewModel properties
                 // Assuming CategoryName is just for display and CategoryID is used for saving
@@ -511,11 +509,11 @@ namespace NeoIsisJob.ViewModels // Using the singular 'ViewModel' namespace as p
             // In a real app, you would show a confirmation dialog here.
             // For this example, we'll assume the user confirmed.
             Debug.WriteLine($"ProductViewModel: Attempting to delete product ID {this.product.ID}. (Assuming user confirmation)");
-            
-                                                                                                                                   
+
+
             // bool confirmed = await ShowConfirmationDialogAsync($"Are you sure you want to delete {Name}?");
             // if (!confirmed) return;
-            
+
             // --- End Placeholder ---
 
             try
