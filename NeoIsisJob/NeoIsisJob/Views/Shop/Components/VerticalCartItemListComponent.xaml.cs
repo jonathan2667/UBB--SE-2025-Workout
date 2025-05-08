@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace WorkoutApp.View.Components
+namespace NeoIsisJob.Views.Shop.Components
 {
     using System;
     using System.Collections.Generic;
+    using global::Workout.Core.Models;
     using Microsoft.UI.Xaml.Controls;
-    using WorkoutApp.Models;
 
     /// <summary>
     /// A reusable component that displays a vertical list of products.
@@ -35,13 +35,13 @@ namespace WorkoutApp.View.Components
         /// <summary>
         /// Gets or sets the list of products to display.
         /// </summary>
-        public IEnumerable<CartItem> CartItemList { get; set; } = new List<CartItem>();
+        public IEnumerable<CartItemModel> CartItemList { get; set; } = new List<CartItemModel>();
 
         /// <summary>
         /// Sets the product list and refreshes the view.
         /// </summary>
         /// <param name="cartItems">The list of products to display.</param>
-        public void SetProducts(IEnumerable<CartItem> cartItems)
+        public void SetProducts(IEnumerable<CartItemModel> cartItems)
         {
             this.CartItemList = cartItems;
             this.ProductListView.ItemsSource = this.CartItemList;
@@ -54,9 +54,9 @@ namespace WorkoutApp.View.Components
         /// <param name="e">Event data for the item click event.</param>
         public void ProductList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (e.ClickedItem is CartItem cartItem && cartItem.Product.ID.HasValue)
+            if (e.ClickedItem is CartItemModel cartItem)
             {
-                this.CartItemClicked?.Invoke(this, cartItem.Product.ID.Value);
+                this.CartItemClicked?.Invoke(this, cartItem.ProductID);
             }
         }
 

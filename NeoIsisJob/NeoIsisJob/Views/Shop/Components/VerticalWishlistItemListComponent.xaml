@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl
-    x:Class="WorkoutApp.View.Components.VerticalWishlistItemListComponent"
+    x:Class="NeoIsisJob.Views.Shop.Components.VerticalWishlistItemListComponent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WorkoutApp.View.Components"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:model="using:WorkoutApp.Models"
+    xmlns:model="using:Workout.Core.Models"
     mc:Ignorable="d">
 
     <StackPanel Background="Gray">
@@ -21,7 +20,7 @@
 
             <ListView.ItemTemplate>
                 <!-- Inside ListView.ItemTemplate -->
-                <DataTemplate x:DataType="model:WishlistItem">
+                <DataTemplate x:DataType="model:WishlistItemModel">
                     <Grid Padding="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
