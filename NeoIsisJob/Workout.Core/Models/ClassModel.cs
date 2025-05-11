@@ -1,38 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("Classes")]
     public class ClassModel
     {
-        private int id;
-        private string name;
-        private string description;
-        private int classTypeId;
-        private int personalTrainerId;
-
-        public int Id { get => id; set => id = value; }
-        public string Name { get => name; set => name = value; }
-        public string Description { get => description; set => description = value; }
-        public int ClassTypeId { get => classTypeId; set => classTypeId = value; }
-        public int PersonalTrainerId { get => personalTrainerId; set => personalTrainerId = value; }
-        public PersonalTrainerModel PersonalTrainer { get; set; }
-
+        [Key]
+        [Column("CID")]
+        public int CID { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; }
+        [Column(TypeName = "VARCHAR(MAX)")]
+        public string Description { get; set; }
+        [Column("CTID")]
+        public int CTID { get; set; }
+        [Column("PTID")]
+        public int PTID { get; set; }
+        [NotMapped]
         public string TrainerFullName => PersonalTrainer != null ? $"{PersonalTrainer.LastName} {PersonalTrainer.FirstName}" : "No Trainer Assigned";
         public ClassModel()
         {
+            UserClasses = new List<UserClassModel>();
         }
 
         public ClassModel(int id, string name, string description, int classTypeId, int personalTrainerId)
         {
-            Id = id;
+            CID = id;
             Name = name;
             Description = description;
-            ClassTypeId = classTypeId;
-            PersonalTrainerId = personalTrainerId;
+            CTID = classTypeId;
+            PTID = personalTrainerId;
+            UserClasses = new List<UserClassModel>();
         }
+        // Navigation properties
+        [ForeignKey("CTID")]
+        public virtual ClassTypeModel ClassType { get; set; }
+        [ForeignKey("PTID")]
+        public virtual PersonalTrainerModel PersonalTrainer { get; set; }
+        public virtual ICollection<UserClassModel> UserClasses { get; set; }
     }
 }

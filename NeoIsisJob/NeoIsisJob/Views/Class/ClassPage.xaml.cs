@@ -12,10 +12,11 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using NeoIsisJob.Models;
+// using NeoIsisJob.Models;
 using NeoIsisJob.ViewModels.Classes;
 using NeoIsisJob.ViewModels.Workout;
 using Microsoft.Extensions.DependencyInjection;
+using NeoIsisJob.Views.Shop.Pages;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,6 +55,21 @@ namespace NeoIsisJob.Views
         public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
         {
             // this.Frame.Navigate(typeof(ClassPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
         }
 
         public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)

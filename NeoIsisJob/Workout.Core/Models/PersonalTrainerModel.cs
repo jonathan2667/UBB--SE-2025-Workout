@@ -1,35 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("PersonalTrainers")]
     public class PersonalTrainerModel
     {
-        private int id;
-        private string firstName;
-        private string lastName;
-        private DateTime workStartDateTime;
-
-        public int Id { get => id; set => id = value; }
-        public string FirstName { get => firstName; set => firstName = value; }
-        public string LastName { get => lastName; set => lastName = value; }
-        public DateTime WorkStartDateTime { get => workStartDateTime; set => workStartDateTime = value; }
+        [Key]
+        [Column("PTID")]
+        public int PTID { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string FirstName { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; }
+        [Column("WorksSince")]
+        public DateTime WorksSince { get; set; }
+        [NotMapped]
+        public string Name => $"{FirstName} {LastName}";
 
         public PersonalTrainerModel()
         {
         }
 
-        public string Name => $"{FirstName} {LastName}";
-
-        public PersonalTrainerModel(int id, string firstName, string lastName, DateTime workStartDateTime)
+        public PersonalTrainerModel(int id, string firstName, string lastName, DateTime worksSince)
         {
-            Id = id;
+            PTID = id;
             FirstName = firstName;
             LastName = lastName;
-            WorkStartDateTime = workStartDateTime;
+            WorksSince = worksSince;
         }
     }
 }

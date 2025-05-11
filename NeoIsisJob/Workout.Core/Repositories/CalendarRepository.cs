@@ -1,77 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
-using Workout.Core.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
     public class CalendarRepository : ICalendarRepository
     {
-        private readonly IDatabaseHelper databaseHelper;
+        private readonly WorkoutDbContext context;
         private const int FirstDayOfMonth = 1;
         private const int StartEndMonthDifference = 1;
         private const int StartEndDayDifference = -1;
 
-        public CalendarRepository() : this(new DatabaseHelper()) { }
-
-        public CalendarRepository(IDatabaseHelper databaseHelper)
+        public CalendarRepository(WorkoutDbContext context)
         {
-            this.databaseHelper = databaseHelper;
+            this.context = context;
         }
 
-        public async Task<List<CalendarDay>> GetCalendarDaysForMonthAsync(int userId, DateTime month)
+        public async Task<List<CalendarDayModel>> GetCalendarDaysForMonthAsync(int userId, DateTime month)
         {
-            var calendarDays = new List<CalendarDay>();
+            var calendarDays = new List<CalendarDayModel>();
             DateTime firstDay = new DateTime(month.Year, month.Month, FirstDayOfMonth);
             DateTime lastDay = firstDay.AddMonths(StartEndMonthDifference).AddDays(StartEndDayDifference);
             int daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
 
-            var workoutDays = new Dictionary<DateTime, (bool HasWorkout, bool Completed)>();
-            var classDays = new Dictionary<DateTime, bool>();
+            // Get user workouts for this month
+            var userWorkouts = await context.UserWorkouts
+                .Where(uw => uw.UID == userId && uw.Date >= firstDay && uw.Date <= lastDay)
+                .ToListAsync();
 
-            var workoutParams = new[]
-            {
-                new SqlParameter("@UserId", userId),
-                new SqlParameter("@StartDate", firstDay),
-                new SqlParameter("@EndDate", lastDay)
-            };
+            // Get user classes for this month
+            var userClasses = await context.UserClasses
+                .Where(uc => uc.UID == userId && uc.Date >= firstDay && uc.Date <= lastDay)
+                .ToListAsync();
 
-            var workoutQuery = @"
-                SELECT Date, Completed 
-                FROM UserWorkouts 
-                WHERE UID = @UserId AND Date >= @StartDate AND Date <= @EndDate";
+            // Prepare dictionaries for quick lookup
+            var workoutDays = userWorkouts
+                .ToDictionary(
+                    uw => uw.Date.Date,
+                    uw => (HasWorkout: true, Completed: uw.Completed));
 
-            var workoutTable = await databaseHelper.ExecuteReaderAsync(workoutQuery, workoutParams);
-            foreach (DataRow row in workoutTable.Rows)
-            {
-                var date = Convert.ToDateTime(row["Date"]);
-                var completed = Convert.ToBoolean(row["Completed"]);
-                workoutDays[date] = (true, completed);
-            }
-
-            var classParams = new[]
-            {
-                new SqlParameter("@UserId", userId),
-                new SqlParameter("@StartDate", firstDay),
-                new SqlParameter("@EndDate", lastDay)
-            };
-
-            var classQuery = @"
-                SELECT Date 
-                FROM UserClasses 
-                WHERE UID = @UserId AND Date >= @StartDate AND Date <= @EndDate";
-
-            var classTable = await databaseHelper.ExecuteReaderAsync(classQuery, classParams);
-            foreach (DataRow row in classTable.Rows)
-            {
-                var date = Convert.ToDateTime(row["Date"]);
-                classDays[date] = true;
-            }
+            var classDays = userClasses
+                .ToDictionary(
+                    uc => uc.Date.Date,
+                    _ => true);
 
             for (int day = FirstDayOfMonth; day <= daysInMonth; day++)
             {
@@ -80,7 +56,7 @@ namespace Workout.Core.Repositories
                 bool isCompleted = hasWorkout && workoutDays[currentDate].Completed;
                 bool hasClass = classDays.ContainsKey(currentDate);
 
-                calendarDays.Add(new CalendarDay
+                calendarDays.Add(new CalendarDayModel
                 {
                     DayNumber = day,
                     Date = currentDate,
@@ -96,65 +72,23 @@ namespace Workout.Core.Repositories
 
         public async Task<UserWorkoutModel?> GetUserWorkoutAsync(int userId, DateTime date)
         {
-            string query = @"
-                SELECT WID, Completed 
-                FROM UserWorkouts 
-                WHERE UID = @UserId AND Date = @Date";
-
-            var parameters = new[]
-            {
-                new SqlParameter("@UserId", userId),
-                new SqlParameter("@Date", date.Date)
-            };
-
-            var table = await databaseHelper.ExecuteReaderAsync(query, parameters);
-            if (table.Rows.Count == 0) return null;
-
-            var row = table.Rows[0];
-            return new UserWorkoutModel(
-                userId: userId,
-                workoutId: Convert.ToInt32(row["WID"]),
-                date: date,
-                completed: Convert.ToBoolean(row["Completed"]));
+            return await context.UserWorkouts
+                .Include(uw => uw.Workout)
+                .FirstOrDefaultAsync(uw => uw.UID == userId && uw.Date.Date == date.Date);
         }
 
         public async Task<string?> GetUserClassAsync(int userId, DateTime date)
         {
-            string classIdQuery = "SELECT CID FROM UserClasses WHERE UID = @UserId AND Date = @Date";
-            var parameters = new[]
-            {
-                new SqlParameter("@UserId", userId),
-                new SqlParameter("@Date", date.Date)
-            };
+            var userClass = await context.UserClasses
+                .Include(uc => uc.Class)
+                .FirstOrDefaultAsync(uc => uc.UID == userId && uc.Date.Date == date.Date);
 
-            var classIdTable = await databaseHelper.ExecuteReaderAsync(classIdQuery, parameters);
-            if (classIdTable.Rows.Count == 0) return null;
-
-            int classId = Convert.ToInt32(classIdTable.Rows[0]["CID"]);
-
-            string classNameQuery = "SELECT Name FROM Classes WHERE CID = @ClassId";
-            var nameParams = new[] { new SqlParameter("@ClassId", classId) };
-
-            var classNameTable = await databaseHelper.ExecuteReaderAsync(classNameQuery, nameParams);
-            return classNameTable.Rows.Count > 0 ? classNameTable.Rows[0]["Name"].ToString() : null;
+            return userClass?.Class?.Name;
         }
 
         public async Task<List<WorkoutModel>> GetWorkoutsAsync()
         {
-            string query = "SELECT WID, Name FROM Workouts";
-            var table = await databaseHelper.ExecuteReaderAsync(query, Array.Empty<SqlParameter>());
-
-            var workouts = new List<WorkoutModel>();
-            foreach (DataRow row in table.Rows)
-            {
-                workouts.Add(new WorkoutModel
-                {
-                    Id = Convert.ToInt32(row["WID"]),
-                    Name = row["Name"].ToString()
-                });
-            }
-
-            return workouts;
+            return await context.Workouts.ToListAsync();
         }
     }
 }

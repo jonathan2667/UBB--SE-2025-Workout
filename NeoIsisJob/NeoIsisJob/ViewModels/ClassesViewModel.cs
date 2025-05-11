@@ -1,18 +1,23 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-
-// using NeoIsisJob.Services.Interfaces;
-using Workout.Core.Services.Interfaces;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels
 {
     public class ClassesViewModel
     {
-        private readonly IClassService classService;
+        private readonly ClassServiceProxy classService;
 
-        public ClassesViewModel(IClassService classService)
+        public ClassesViewModel()
         {
-            this.classService = classService;
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(ServerHelpers.SERVER_BASE_URL)
+            };
+
+            this.classService = new ClassServiceProxy();
         }
 
         public async Task<string> ConfirmRegistration(int userId, int classId, DateTime date)

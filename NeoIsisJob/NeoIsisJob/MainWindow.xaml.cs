@@ -1,12 +1,6 @@
-using System;
-using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
-using NeoIsisJob.Repositories;
-using NeoIsisJob.Services;
-using NeoIsisJob.Data;
-using NeoIsisJob.ViewModels;
-using NeoIsisJob.Views;
 using Microsoft.UI.Xaml.Controls;
+using NeoIsisJob.Views;
 
 namespace NeoIsisJob
 {
@@ -15,10 +9,13 @@ namespace NeoIsisJob
         // instance for singleton
         public static MainWindow Instance { get; private set; }
 
+        public static Frame AppMainFrame { get; private set; }
+
         public MainWindow()
         {
             this.InitializeComponent();
             Instance = this;
+            AppMainFrame = this.MainFrame;
 
             // go directly to the main page
             MainFrame.Navigate(typeof(MainPage));

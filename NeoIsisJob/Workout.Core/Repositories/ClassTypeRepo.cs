@@ -1,121 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
-using Workout.Core.Data;
+using Microsoft.EntityFrameworkCore;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
-using Workout.Core.Data.Interfaces;
+using Workout.Core.Data;
 
 namespace Workout.Core.Repositories
 {
     public class ClassTypeRepo
     {
-        private readonly DatabaseHelper databaseHelper;
-        public ClassTypeRepo()
+        private readonly WorkoutDbContext context;
+        public ClassTypeRepo(WorkoutDbContext context)
         {
-            this.databaseHelper = new DatabaseHelper();
+            this.context = context;
         }
 
-        public ClassTypeModel GetClassTypeModelById(int classTypeId)
+        public async Task<ClassTypeModel> GetClassTypeModelByIdAsync(int classTypeId)
         {
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
-            {
-                // open the connection
-                connection.Open();
-
-                // create the query
-                string query = "SELECT CTID, Name FROM ClassTypes WHERE CTID=@ctid";
-
-                // create the command now
-                SqlCommand command = new SqlCommand(query, connection);
-
-                // add the parameter
-                command.Parameters.AddWithValue("@ctid", classTypeId);
-
-                // read the data
-                SqlDataReader reader = command.ExecuteReader();
-
-                // now check if the type exists -> if yes return it
-                if (reader.Read())
-                {
-                    return new ClassTypeModel(Convert.ToInt32(reader["WTID"]), Convert.ToString(reader["Name"]) ?? string.Empty);
-                }
-
-                // otherwise return empty instance
-                return new ClassTypeModel();
-            }
+            var classType = await context.ClassTypes
+                .FirstOrDefaultAsync(ct => ct.CTID == classTypeId);
+            return classType ?? new ClassTypeModel();
         }
 
-        public List<ClassTypeModel> GetAllClassTypeModel()
+        public async Task<List<ClassTypeModel>> GetAllClassTypeModelAsync()
         {
-            List<ClassTypeModel> classTypes = new List<ClassTypeModel>();
-
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
-            {
-                // open the connection
-                connection.Open();
-
-                // create the query
-                string query = "SELECT CTID, Name from ClassTypes";
-
-                // create the command now
-                SqlCommand command = new SqlCommand(query, connection);
-
-                // read the data
-                SqlDataReader reader = command.ExecuteReader();
-
-                // now check if the type exists -> if yes return it
-                while (reader.Read())
-                {
-                    classTypes.Add(new ClassTypeModel(Convert.ToInt32(reader["CTID"]), Convert.ToString(reader["Name"]) ?? string.Empty));
-                }
-            }
-
-            return classTypes;
+            return await context.ClassTypes.ToListAsync();
         }
 
-        public void AddClassTypeModel(ClassTypeModel classType)
+        public async Task AddClassTypeModelAsync(ClassTypeModel classType)
         {
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
-            {
-                // open the connection
-                connection.Open();
-
-                // create the query
-                string query = "INSERT INTO ClassTypes (Name) VALUES (@name)";
-
-                // create the command now
-                SqlCommand command = new SqlCommand(query, connection);
-
-                // add the parameter
-                command.Parameters.AddWithValue("@name", classType.Name);
-
-                // execute the query
-                command.ExecuteNonQuery();
-            }
+            context.ClassTypes.Add(classType);
+            await context.SaveChangesAsync();
         }
 
-        public void DeleteClassTypeModel(int classTypeId)
+        public async Task DeleteClassTypeModelAsync(int classTypeId)
         {
-            using (SqlConnection connection = this.databaseHelper.GetConnection())
+            var classType = await context.ClassTypes.FindAsync(classTypeId);
+            if (classType != null)
             {
-                // open the connection
-                connection.Open();
-
-                // create the query
-                string query = "DELETE FROM ClassTypes WHERE CTID=@ctid";
-
-                // create the command now
-                SqlCommand command = new SqlCommand(query, connection);
-
-                // add the parameter
-                command.Parameters.AddWithValue("@ctid", classTypeId);
-
-                // execute the query
-                command.ExecuteNonQuery();
+                context.ClassTypes.Remove(classType);
+                await context.SaveChangesAsync();
             }
         }
     }

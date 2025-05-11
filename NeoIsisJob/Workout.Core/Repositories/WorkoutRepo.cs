@@ -1,94 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Data;
-using Workout.Core.Data.Interfaces;
 
 namespace Workout.Core.Repositories
 {
     public class WorkoutRepo : IWorkoutRepository
     {
-        private readonly IDatabaseHelper databaseHelper;
+        private readonly WorkoutDbContext context;
 
-        public WorkoutRepo()
+        public WorkoutRepo(WorkoutDbContext context)
         {
-            databaseHelper = new DatabaseHelper();
-        }
-
-        public WorkoutRepo(IDatabaseHelper databaseHelper)
-        {
-            this.databaseHelper = databaseHelper;
+            this.context = context;
         }
 
         public async Task<WorkoutModel> GetWorkoutByIdAsync(int workoutId)
         {
-            string query = "SELECT * FROM Workouts WHERE WID = @wid";
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@wid", workoutId)
-            };
+            var workout = await context.Workouts
+                .Include(w => w.WorkoutType)
+                .FirstOrDefaultAsync(w => w.WID == workoutId);
 
-            DataTable table = await databaseHelper.ExecuteReaderAsync(query, parameters);
-
-            if (table.Rows.Count > 0)
-            {
-                DataRow row = table.Rows[0];
-                return new WorkoutModel(
-                    Convert.ToInt32(row["WID"]),
-                    row["Name"].ToString(),
-                    Convert.ToInt32(row["WTID"]));
-            }
-
-            return new WorkoutModel(); // return empty object if not found
+            return workout ?? new WorkoutModel();
         }
 
         public async Task<WorkoutModel> GetWorkoutByNameAsync(string workoutName)
         {
-            string query = "SELECT * FROM Workouts WHERE Name = @name";
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@name", workoutName)
-            };
+            var workout = await context.Workouts
+                .Include(w => w.WorkoutType)
+                .FirstOrDefaultAsync(w => w.Name == workoutName);
 
-            DataTable table = await databaseHelper.ExecuteReaderAsync(query, parameters);
-
-            if (table.Rows.Count > 0)
-            {
-                DataRow row = table.Rows[0];
-                return new WorkoutModel(
-                    Convert.ToInt32(row["WID"]),
-                    row["Name"].ToString(),
-                    Convert.ToInt32(row["WTID"]));
-            }
-
-            return new WorkoutModel();
+            return workout ?? new WorkoutModel();
         }
 
         public async Task InsertWorkoutAsync(string workoutName, int workoutTypeId)
         {
-            string query = "INSERT INTO Workouts (Name, WTID) VALUES (@name, @wtid)";
-            SqlParameter[] parameters =
+            // supply a default non-null description if none
+            var w = new WorkoutModel
             {
-                new SqlParameter("@name", workoutName),
-                new SqlParameter("@wtid", workoutTypeId)
+                Name = workoutName,
+                WTID = workoutTypeId,
+                Description = string.Empty
             };
+            context.Workouts.Add(w);
+            await context.SaveChangesAsync();
+        }
 
-            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
+        public async Task InsertWorkoutAsync(string workoutName, int workoutTypeId, string description)
+        {
+            var w = new WorkoutModel
+            {
+                Name = workoutName,
+                WTID = workoutTypeId,
+                Description = description ?? string.Empty
+            };
+            context.Workouts.Add(w);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteWorkoutAsync(int workoutId)
         {
-            string query = "DELETE FROM Workouts WHERE WID = @wid";
-            SqlParameter[] parameters =
+            var workout = await context.Workouts.FindAsync(workoutId);
+            if (workout != null)
             {
-                new SqlParameter("@wid", workoutId)
-            };
-
-            await databaseHelper.ExecuteNonQueryAsync(query, parameters);
+                context.Workouts.Remove(workout);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task UpdateWorkoutAsync(WorkoutModel workout)
@@ -99,50 +78,32 @@ namespace Workout.Core.Repositories
             }
 
             // Check for duplicates
-            string checkQuery = "SELECT COUNT(*) FROM Workouts WHERE Name = @Name AND WID != @Id";
-            SqlParameter[] checkParams =
-            {
-                new SqlParameter("@Name", workout.Name),
-                new SqlParameter("@Id", workout.Id)
-            };
+            bool duplicateExists = await context.Workouts
+                .AnyAsync(w => w.Name == workout.Name && w.WID != workout.WID);
 
-            int duplicateCount = await databaseHelper.ExecuteScalarAsync<int>(checkQuery, checkParams);
-            if (duplicateCount > 0)
+            if (duplicateExists)
             {
                 throw new Exception("A workout with this name already exists.");
             }
 
             // Perform the update
-            string updateQuery = "UPDATE Workouts SET Name = @Name WHERE WID = @Id";
-            SqlParameter[] updateParams =
-            {
-                new SqlParameter("@Name", workout.Name),
-                new SqlParameter("@Id", workout.Id)
-            };
-
-            int rowsAffected = await databaseHelper.ExecuteNonQueryAsync(updateQuery, updateParams);
-            if (rowsAffected == 0)
+            var existingWorkout = await context.Workouts.FindAsync(workout.WID);
+            if (existingWorkout == null)
             {
                 throw new Exception("No workout was updated. Ensure the workout ID exists.");
             }
+
+            existingWorkout.Name = workout.Name;
+            existingWorkout.WTID = workout.WTID;
+
+            await context.SaveChangesAsync();
         }
 
         public async Task<IList<WorkoutModel>> GetAllWorkoutsAsync()
         {
-            string query = "SELECT * FROM Workouts";
-
-            DataTable table = await databaseHelper.ExecuteReaderAsync(query, null);
-            var workouts = new List<WorkoutModel>();
-
-            foreach (DataRow row in table.Rows)
-            {
-                workouts.Add(new WorkoutModel(
-                    Convert.ToInt32(row["WID"]),
-                    row["Name"].ToString(),
-                    Convert.ToInt32(row["WTID"])));
-            }
-
-            return workouts;
+            return await context.Workouts
+                .Include(w => w.WorkoutType)
+                .ToListAsync();
         }
     }
 }

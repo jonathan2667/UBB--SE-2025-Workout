@@ -1,0 +1,103 @@
+<Page
+    x:Class="NeoIsisJob.Views.Shop.Pages.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NeoIsisJob.Views.Shop.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:component="using:NeoIsisJob.Views.Shop.Components"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel>
+        <!-- Top Navigation -->
+        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
+                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
+                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
+                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
+                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
+                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
+                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
+                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
+            </NavigationView.MenuItems>
+            <Frame x:Name="contentFrame"/>
+        </NavigationView>
+        
+        <Grid Background="Red">
+            <!-- Define 2 rows: SearchBar on top, main content below -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Search bar row -->
+                <RowDefinition Height="*"/>
+                <!-- Main content -->
+            </Grid.RowDefinitions>
+
+            <!-- SEARCH BAR -->
+            <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,10,0,10">
+                <AutoSuggestBox x:Name="SearchBoxControl"
+                            PlaceholderText="Cauta produs..."
+                            Width="300"
+                            QueryIcon="Find"
+                            TextChanged="SearchBox_TextChanged"/>
+            </StackPanel>
+
+            <component:AddProductButton HorizontalAlignment="Right" Margin="0,0,15,0"/>
+
+            <!-- MAIN CONTENT AREA -->
+            <Grid Grid.Row="1" Background="Black">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT SIDE -->
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="FilterOptionsPanel"
+                            Background="Red"
+                            Margin="10"
+                            Padding="10"
+                            Width="250">
+                        <component:CategoryFilter x:Name="CategoryFilterControl"
+                                              Margin="0,0,0,10"
+                                              CategoryChanged="CategorySelector_SelectionChanged"/>
+                        <component:ColorFilter x:Name="ColorFilterControl"
+                                           Margin="0,0,0,10"
+                                           ColorChanged="ColorSelector_SelectionChanged"/>
+                        <component:SizeFilter x:Name="SizeFilterControl"
+                                          Margin="0,0,0,10"
+                                          SizeFilterChanged="SizeSelector_SelectionChanged"/>
+                        <Button x:Name="ResetFiltersButton"
+                            Content="Reset Filters"
+                            Click="ResetFiltersButton_Click"
+                            Margin="0,0,0,10"/>
+                    </StackPanel>
+
+                    <component:VerticalProductListComponent x:Name="ProductListViewControl"
+                                                        ProductClicked="VerticalProductListControl_ProductClicked"
+                                                        Margin="10"
+                                                        Padding="10"/>
+                </StackPanel>
+
+                <!-- RIGHT SIDE: Offers -->
+                <StackPanel Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Margin="0,10,0,10"
+                        Background="DarkGray">
+                    <StackPanel Padding="10">
+                        <TextBlock Text="Special Offer!" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <Image Source="https://example.com/offer1.jpg" Height="150" Width="150"/>
+                        <TextBlock Text="Discount on Protein Powder!" FontSize="14" Foreground="Yellow" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="Limited Time Deal!" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <Image Source="https://example.com/offer2.jpg" Height="150" Width="150"/>
+                        <TextBlock Text="Get 2 for 1 on Sports Equipment!" FontSize="14" Foreground="Yellow" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </StackPanel>
+</Page>

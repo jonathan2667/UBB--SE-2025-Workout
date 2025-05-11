@@ -1,30 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;    // ← add this
 
 namespace Workout.Core.Models
 {
+    [Table("UserClasses")]
     public class UserClassModel
     {
-        private int userId;
-        private int classId;
-        private DateTime enrollmentDate;
+        [Column("UID")]
+        public int UID { get; set; }
 
-        public int UserId { get => userId; set => userId = value; }
-        public int ClassId { get => classId; set => classId = value; }
-        public DateTime EnrollmentDate { get => enrollmentDate; set => enrollmentDate = value; }
+        [Column("CID")]
+        public int CID { get; set; }
 
-        public UserClassModel()
+        [Column("Date")]
+        public DateTime Date { get; set; }
+
+        public UserClassModel() { }
+
+        public UserClassModel(int userId, int classId, DateTime date)
         {
+            UID = userId;
+            CID = classId;
+            Date = date;
         }
 
-        public UserClassModel(int userId, int classId, DateTime enrollmentDate)
-        {
-            UserId = userId;
-            ClassId = classId;
-            EnrollmentDate = enrollmentDate;
-        }
+        // navigation props must be ignored & nullable:
+        [JsonIgnore]
+        [ForeignKey("UID")]
+        public virtual UserModel? User { get; set; }
+
+        [JsonIgnore]
+        [ForeignKey("CID")]
+        public virtual ClassModel? Class { get; set; }
     }
 }

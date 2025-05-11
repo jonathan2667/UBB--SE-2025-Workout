@@ -4,24 +4,22 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Services;
-// using NeoIsisJob.Services.Interfaces;
+using System.Net.Http;
+using System;
 using NeoIsisJob.Commands;
 using Workout.Core.Models;
-using Workout.Core.Services;
-using Workout.Core.Services.Interfaces;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
     public class WorkoutViewModel : INotifyPropertyChanged
     {
-        // Use interfaces instead of concrete implementations
-        private readonly IWorkoutService workoutService;
-        private readonly IWorkoutTypeService workoutTypeService;
-        private readonly ICompleteWorkoutService completeWorkoutService;
-        private readonly IExerciseService exerciseService;
+        // Use concrete proxy implementations
+        private readonly WorkoutServiceProxy workoutService;
+        private readonly WorkoutTypeServiceProxy workoutTypeService;
+        private readonly CompleteWorkoutServiceProxy completeWorkoutService;
+        private readonly ExerciseServiceProxy exerciseService;
         private ObservableCollection<WorkoutModel> workouts;
         private ObservableCollection<WorkoutTypeModel> workoutTypes;
         private WorkoutTypeModel selectedWorkoutType;
@@ -34,35 +32,19 @@ namespace NeoIsisJob.ViewModels.Workout
         public ICommand UpdateWorkoutCommand { get; }
         public ICommand CloseEditPopupCommand { get; }
 
-        // Default constructor for backward compatibility
-        public WorkoutViewModel() : this(
-            new WorkoutService(),
-            new WorkoutTypeService(),
-            new CompleteWorkoutService(),
-            new ExerciseService())
+        // Default constructor
+        public WorkoutViewModel()
         {
-        }
-
-        // Constructor with dependency injection
-        public WorkoutViewModel(
-            IWorkoutService workoutService,
-            IWorkoutTypeService workoutTypeService,
-            ICompleteWorkoutService completeWorkoutService,
-            IExerciseService exerciseService)
-        {
-            this.workoutService = workoutService;
-            this.workoutTypeService = workoutTypeService;
-            this.completeWorkoutService = completeWorkoutService;
-            this.exerciseService = exerciseService;
+            this.workoutTypeService = new WorkoutTypeServiceProxy();
+            this.exerciseService = new ExerciseServiceProxy();
+            this.workoutService = new WorkoutServiceProxy();
+            this.completeWorkoutService = new CompleteWorkoutServiceProxy();
 
             Workouts = new ObservableCollection<WorkoutModel>();
             WorkoutTypes = new ObservableCollection<WorkoutTypeModel>();
 
             // Initialize SelectedWorkoutViewModel with dependencies
-            SelectedWorkoutViewModel = new SelectedWorkoutViewModel(
-                workoutService,
-                exerciseService,
-                completeWorkoutService);
+            SelectedWorkoutViewModel = new SelectedWorkoutViewModel();
 
             // Initialize commands
             DeleteWorkoutCommand = new RelayCommand<int>(DeleteWorkout);
@@ -110,7 +92,6 @@ namespace NeoIsisJob.ViewModels.Workout
         public WorkoutModel SelectedWorkout
         {
             get => SelectedWorkoutViewModel.SelectedWorkout;
-            // set => SelectedWorkoutViewModel.SelectedWorkout = value;
         }
 
         private bool isEditPopupOpen;
@@ -150,7 +131,7 @@ namespace NeoIsisJob.ViewModels.Workout
 
             if (SelectedWorkoutType != null)
             {
-                foreach (WorkoutModel workout in allWorkouts.Where(w => w.WorkoutTypeId == SelectedWorkoutType.Id))
+                foreach (WorkoutModel workout in allWorkouts.Where(w => w.WTID == SelectedWorkoutType.WTID))
                 {
                     Workouts.Add(workout);
                 }

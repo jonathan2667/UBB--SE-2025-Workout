@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Workout.Core.Data;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.Repositories;
-using Workout.Core.Repositories.Interfaces;
-using Workout.Core.Services.Interfaces;
+using Workout.Core.IServices;
 
 namespace Workout.Core.Services
 {
@@ -18,22 +18,24 @@ namespace Workout.Core.Services
         private readonly IUserWorkoutRepository userWorkoutRepo;
 
         public CalendarService(
-            ICalendarRepository calendarRepository = null,
-            IUserWorkoutRepository userWorkoutRepo = null)
+            ICalendarRepository calendarRepository,
+            IUserWorkoutRepository userWorkoutRepo)
         {
-            this.calendarRepository = calendarRepository ?? new CalendarRepository();
-            this.userWorkoutRepo = userWorkoutRepo ?? new UserWorkoutRepo(new DatabaseHelper());
+            this.calendarRepository = calendarRepository
+                ?? throw new ArgumentNullException(nameof(calendarRepository));
+            this.userWorkoutRepo = userWorkoutRepo
+                ?? throw new ArgumentNullException(nameof(userWorkoutRepo));
         }
 
-        public async Task<List<CalendarDay>> GetCalendarDaysForMonthAsync(int userId, DateTime date)
+        public async Task<List<CalendarDayModel>> GetCalendarDaysForMonthAsync(int userId, DateTime date)
         {
             return await calendarRepository
                 .GetCalendarDaysForMonthAsync(userId, date);
         }
 
-        public async Task<ObservableCollection<CalendarDay>> GetCalendarDaysAsync(int userId, DateTime currentDate)
+        public async Task<ObservableCollection<CalendarDayModel>> GetCalendarDaysAsync(int userId, DateTime currentDate)
         {
-            var calendarDays = new ObservableCollection<CalendarDay>();
+            var calendarDays = new ObservableCollection<CalendarDayModel>();
             var monthDays = await GetCalendarDaysForMonthAsync(userId, currentDate);
 
             // build grid
@@ -42,9 +44,13 @@ namespace Workout.Core.Services
             int row = 0, col = 0;
             for (int i = 0; i < startDow; i++)
             {
-                calendarDays.Add(new CalendarDay { IsEnabled = false, GridRow = row, GridColumn = col });
+                calendarDays.Add(new CalendarDayModel { IsEnabled = false, GridRow = row, GridColumn = col });
                 col++;
-                if (col > 6) { col = 0; row++; }
+                if (col > 6)
+                {
+                    col = 0;
+                    row++;
+                }
             }
 
             DateTime today = DateTime.Now.Date;
@@ -69,25 +75,29 @@ namespace Workout.Core.Services
             return calendarDays;
         }
 
-        public async Task RemoveWorkoutAsync(int userId, CalendarDay day)
+        public async Task RemoveWorkoutAsync(int userId, CalendarDayModel day)
         {
             var w = await GetUserWorkoutAsync(userId, day.Date);
             if (w != null)
-                await DeleteUserWorkoutAsync(userId, w.WorkoutId, day.Date);
+            {
+                await DeleteUserWorkoutAsync(userId, w.WID, day.Date);
+            }
         }
 
-        public async Task ChangeWorkoutAsync(int userId, CalendarDay day)
+        public async Task ChangeWorkoutAsync(int userId, CalendarDayModel day)
         {
             // same logic as Remove; you can extend to Add afterward
             var w = await GetUserWorkoutAsync(userId, day.Date);
             if (w != null)
-                await DeleteUserWorkoutAsync(userId, w.WorkoutId, day.Date);
+            {
+                await DeleteUserWorkoutAsync(userId, w.WID, day.Date);
+            }
         }
 
-        public string GetWorkoutDaysCountText(ObservableCollection<CalendarDay> calendarDays)
+        public string GetWorkoutDaysCountText(ObservableCollection<CalendarDayModel> calendarDays)
             => $"Workout Days: {calendarDays.Count(d => d.HasWorkout)}";
 
-        public string GetDaysCountText(ObservableCollection<CalendarDay> calendarDays)
+        public string GetDaysCountText(ObservableCollection<CalendarDayModel> calendarDays)
             => $"Days Count: {calendarDays.Count}";
 
         public async Task AddUserWorkoutAsync(UserWorkoutModel userWorkout)

@@ -1,24 +1,24 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Services;
+using NeoIsisJob.Helpers;
+using NeoIsisJob.Proxy;
 using Workout.Core.Models;
-using Workout.Core.Services;
 
 namespace NeoIsisJob.ViewModels
 {
     public class UserViewModel
     {
-        private readonly UserService userService;
+        private readonly UserServiceProxy userService;
 
         public ObservableCollection<UserModel> Users { get; set; }
         public UserModel? SelectedUser { get; set; } // Make SelectedUser nullable
 
-        public UserViewModel(UserService userService)
+        public UserViewModel()
         {
-            this.userService = userService;
+            this.userService = new UserServiceProxy();
             // Users = new ObservableCollection<UserModel>(this.userService.GetAllUsers());
             // SelectedUser = null; // Initialize SelectedUser to null
             _ = InitializeAsync();
@@ -45,7 +45,7 @@ namespace NeoIsisJob.ViewModels
         {
             if (await userService.RemoveUserAsync(userId))
             {
-                var userToRemove = Users.FirstOrDefault(user => user.Id == userId);
+                var userToRemove = Users.FirstOrDefault(user => user.ID == userId);
                 if (userToRemove != null)
                 {
                     Users.Remove(userToRemove);

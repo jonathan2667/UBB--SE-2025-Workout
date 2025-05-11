@@ -3,57 +3,86 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Collections.Generic;
 using System.Linq;
 using System;
-using System.Security.Claims;
 using System.Diagnostics;
+using System.Net.Http;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
-using NeoIsisJob.Repositories;
-using NeoIsisJob.ViewModels.Classes;
 using NeoIsisJob.Commands;
-using NeoIsisJob.ViewModels.Workout;
-using NeoIsisJob.Data;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml;
-
 using Workout.Core.Models;
 using Workout.Core.Services;
+using Workout.Core.IServices;
+using NeoIsisJob.Helpers;
+using Refit;
+using NeoIsisJob.Proxy;
 
 namespace NeoIsisJob.ViewModels.Classes
 {
     public class ClassesViewModel : INotifyPropertyChanged
     {
-        private readonly ClassService classService;
-        private readonly ClassTypeService classTypeService;
-        private readonly PersonalTrainerService personalTrainerService;
-        private readonly UserClassService userClassService;
+        private readonly ClassServiceProxy classService;
+        private readonly ClassTypeServiceProxy classTypeService;
+        private readonly PersonalTrainerServiceProxy personalTrainerService;
+        private readonly UserClassServiceProxy userClassService;
         private ObservableCollection<ClassModel> classes;
         private ObservableCollection<ClassTypeModel> classTypes;
         private ObservableCollection<PersonalTrainerModel> personalTrainers;
         private DateTimeOffset selectedDate = DateTimeOffset.Now;
         private ClassTypeModel selectedClassType;
+        private bool isLoading;
+        private string errorMessage;
+
         public bool HasClasses => Classes?.Count > 0;
+        public bool IsLoading
+        {
+            get => isLoading;
+            set
+            {
+                isLoading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get => errorMessage;
+            set
+            {
+                errorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public SelectedClassViewModel SelectedClassViewModel { get; }
         public ICommand CloseRegisterPopupCommand { get; }
         public ICommand OpenRegisterPopupCommand { get; }
         public ICommand ConfirmRegistrationCommand { get; }
+        public ICommand RefreshCommand { get; }
+
         public ClassesViewModel()
         {
-            this.classService = new ClassService();
-            this.classTypeService = new ClassTypeService();
-            this.personalTrainerService = new PersonalTrainerService();
-            this.userClassService = new UserClassService();
+            Debug.WriteLine("[ClassesViewModel] Initializing");
+
+            // Initialize proxies
+            this.classService = new ClassServiceProxy();
+            this.classTypeService = new ClassTypeServiceProxy();
+            this.personalTrainerService = new PersonalTrainerServiceProxy();
+            this.userClassService = new UserClassServiceProxy();
+
+            // Initialize collections
             Classes = new ObservableCollection<ClassModel>();
             ClassTypes = new ObservableCollection<ClassTypeModel>();
             PersonalTrainers = new ObservableCollection<PersonalTrainerModel>();
 
+            // Initialize commands
             ConfirmRegistrationCommand = new RelayCommand(ConfirmRegistration);
             CloseRegisterPopupCommand = new RelayCommand(CloseRegisterPopup);
             OpenRegisterPopupCommand = new RelayCommand<ClassModel>(OpenRegisterPopup);
-            _ = LoadClasses();
-            _ = LoadClassTypes();
+            RefreshCommand = new RelayCommand(async () => await InitializeDataAsync());
+
+            // Load data
+            InitializeDataAsync().ConfigureAwait(false);
         }
 
         public ObservableCollection<ClassModel> Classes
@@ -123,33 +152,94 @@ namespace NeoIsisJob.ViewModels.Classes
             SelectedClass = classModel;
             IsRegisterPopupOpen = true;
         }
-        private async Task LoadClasses()
+        private async Task InitializeDataAsync()
         {
-            Classes.Clear();
-
-            var trainersDict = (await personalTrainerService.GetAllPersonalTrainersAsync()).ToDictionary(personalTrainer => personalTrainer.Id);
-
-            foreach (var classItem in await classService.GetAllClassesAsync())
+            try
             {
-                // Assign Personal Trainer to Class
-                if (trainersDict.TryGetValue(classItem.PersonalTrainerId, out var trainer))
+                IsLoading = true;
+                ErrorMessage = null;
+
+                Debug.WriteLine("[ClassesViewModel] Loading data...");
+
+                // Load classes and class types in parallel
+                await Task.WhenAll(
+                    LoadClassesAsync(),
+                    LoadClassTypesAsync());
+
+                Debug.WriteLine("[ClassesViewModel] Data loaded successfully");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ClassesViewModel] Error loading data: {ex.Message}");
+                ErrorMessage = $"Error loading data: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+        private async Task LoadClassesAsync()
+        {
+            try
+            {
+                Debug.WriteLine("[ClassesViewModel] Loading classes...");
+                Classes.Clear();
+
+                // Get all personal trainers first and create a lookup dictionary
+                var trainers = await personalTrainerService.GetAllPersonalTrainersAsync();
+                Debug.WriteLine($"[ClassesViewModel] Loaded {trainers.Count} trainers");
+                var trainersDict = trainers.ToDictionary(trainer => trainer.PTID);
+
+                // Load all classes
+                var allClasses = await classService.GetAllClassesAsync();
+                Debug.WriteLine($"[ClassesViewModel] Loaded {allClasses.Count} classes");
+
+                // Associate trainers with classes and add to the collection
+                foreach (var classItem in allClasses)
                 {
-                    classItem.PersonalTrainer = trainer;
+                    // Assign Personal Trainer to Class
+                    if (trainersDict.TryGetValue(classItem.PTID, out var trainer))
+                    {
+                        classItem.PersonalTrainer = trainer;
+                    }
+
+                    Classes.Add(classItem);
+                }
+                // Update HasClasses property
+                OnPropertyChanged(nameof(HasClasses));
+                Debug.WriteLine("[ClassesViewModel] Classes loaded successfully");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ClassesViewModel] Error loading classes: {ex.Message}");
+                throw; // Let the parent method handle the exception
+            }
+        }
+
+        private async Task LoadClassTypesAsync()
+        {
+            try
+            {
+                Debug.WriteLine("[ClassesViewModel] Loading class types...");
+                ClassTypes.Clear();
+
+                var classTypes = await this.classTypeService.GetAllClassTypesAsync();
+                Debug.WriteLine($"[ClassesViewModel] Loaded {classTypes.Count} class types");
+
+                foreach (var classType in classTypes)
+                {
+                    ClassTypes.Add(classType);
                 }
 
-                Classes.Add(classItem);
+                Debug.WriteLine("[ClassesViewModel] Class types loaded successfully");
             }
-            OnPropertyChanged(nameof(HasClasses));
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ClassesViewModel] Error loading class types: {ex.Message}");
+                throw; // Let the parent method handle the exception
+            }
         }
 
-        private async Task LoadClassTypes()
-        {
-            ClassTypes.Clear();
-            foreach (var classType in await this.classTypeService.GetAllClassTypesAsync())
-            {
-                ClassTypes.Add(classType);
-            }
-        }
         private string dateError;
         public string DateError
         {
@@ -165,6 +255,7 @@ namespace NeoIsisJob.ViewModels.Classes
         {
             if (SelectedClass == null)
             {
+                DateError = "No class selected.";
                 return;
             }
 
@@ -178,22 +269,24 @@ namespace NeoIsisJob.ViewModels.Classes
             try
             {
                 int currentUserId = GetCurrentUserId();
+                Debug.WriteLine($"[ClassesViewModel] Registering user {currentUserId} for class {SelectedClass.CID} on {SelectedDate.Date}");
+
                 var userClass = new UserClassModel
                 {
-                    UserId = currentUserId,
-                    ClassId = SelectedClass.Id,
-                    EnrollmentDate = SelectedDate.Date
+                    UID = currentUserId,
+                    CID = SelectedClass.CID,
+                    Date = SelectedDate.Date
                 };
 
                 await userClassService.AddUserClassAsync(userClass);
                 DateError = string.Empty; // Clear error if successful
-                Debug.WriteLine($"Successfully registered for class {SelectedClass.Name}");
+                Debug.WriteLine($"[ClassesViewModel] Successfully registered for class {SelectedClass.Name}");
                 IsRegisterPopupOpen = false;
             }
             catch (Exception ex)
             {
                 DateError = $"Registration failed: {ex.Message}";
-                Debug.WriteLine(DateError);
+                Debug.WriteLine($"[ClassesViewModel] Registration failed: {ex.Message}");
             }
         }
 

@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Controls;
 using NeoIsisJob.Commands;
-// using NeoIsisJob.Models;
-// using NeoIsisJob.Services;
+using NeoIsisJob.Proxy;
 using Workout.Core.Models;
-using Workout.Core.Services;
 
 namespace NeoIsisJob.ViewModels.Workout
 {
@@ -20,11 +14,11 @@ namespace NeoIsisJob.ViewModels.Workout
     {
         private readonly Frame frame;
 
-        private readonly WorkoutTypeService workoutTypeService;
-        private readonly ExerciseService exerciseService;
-        private readonly MuscleGroupService muscleGroupService;
-        private readonly WorkoutService workoutService;
-        private readonly CompleteWorkoutService completeWorkoutService;
+        private readonly WorkoutTypeServiceProxy workoutTypeService;
+        private readonly ExerciseServiceProxy exerciseService;
+        private readonly MuscleGroupServiceProxy muscleGroupService;
+        private readonly WorkoutServiceProxy workoutService;
+        private readonly CompleteWorkoutServiceProxy completeWorkoutService;
         private ObservableCollection<WorkoutTypeModel> workoutTypes;
         private ObservableCollection<ExercisesModel> exercises;
 
@@ -138,11 +132,11 @@ namespace NeoIsisJob.ViewModels.Workout
             // pass the frame to the viewModel
             this.frame = frame;
 
-            this.workoutTypeService = new WorkoutTypeService();
-            this.exerciseService = new ExerciseService();
-            this.muscleGroupService = new MuscleGroupService();
-            this.workoutService = new WorkoutService();
-            this.completeWorkoutService = new CompleteWorkoutService();
+            this.workoutTypeService = new WorkoutTypeServiceProxy();
+            this.exerciseService = new ExerciseServiceProxy();
+            this.muscleGroupService = new MuscleGroupServiceProxy();
+            this.workoutService = new WorkoutServiceProxy();
+            this.completeWorkoutService = new CompleteWorkoutServiceProxy();
             this.WorkoutTypes = new ObservableCollection<WorkoutTypeModel>();
             this.Exercises = new ObservableCollection<ExercisesModel>();
             this.SelectedExercises = new ObservableCollection<ExercisesModel>();
@@ -172,7 +166,7 @@ namespace NeoIsisJob.ViewModels.Workout
             foreach (ExercisesModel exercise in await this.exerciseService.GetAllExercisesAsync())
             {
                 // add the corresponding MuscleGroup object to every one
-                exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MuscleGroupId);
+                exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MGID);
                 this.Exercises.Add(exercise);
             }
         }
@@ -183,15 +177,15 @@ namespace NeoIsisJob.ViewModels.Workout
             // save the workout and then save all entries in CompleteWorkouts
 
             // here add the workout
-            await this.workoutService.InsertWorkoutAsync(SelectedWorkoutName, SelectedWorkoutType.Id);
+            await this.workoutService.InsertWorkoutAsync(SelectedWorkoutName, SelectedWorkoutType.WTID);
             // int selectedWorkoutId = await this.workoutService.GetWorkoutByNameAsync(SelectedWorkoutName).Id;
             var workout = await this.workoutService.GetWorkoutByNameAsync(SelectedWorkoutName);
-            int selectedWorkoutId = workout.Id;
+            int selectedWorkoutId = workout.WID;
 
             // here add all the entries in CompleteWorkouts
             foreach (ExercisesModel exercise in SelectedExercises)
             {
-                await this.completeWorkoutService.InsertCompleteWorkoutAsync(selectedWorkoutId, exercise.Id, SelectedNumberOfSets, SelectedNumberOfRepsPerSet);
+                await this.completeWorkoutService.InsertCompleteWorkoutAsync(selectedWorkoutId, exercise.EID, SelectedNumberOfSets, SelectedNumberOfRepsPerSet);
             }
 
             // now go to back to the prev page

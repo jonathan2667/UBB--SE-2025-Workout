@@ -68,6 +68,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
+    <PackageReference Include="Refit" Version="8.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -100,8 +101,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Repositories\" />
+    <Folder Include="ViewModels\Shop\" />
     <Folder Include="Views\Class\" />
     <Folder Include="Views\Main\" />
+    <Folder Include="Views\Shop\" />
     <Folder Include="Views\Ranking\" />
   </ItemGroup>
   <ItemGroup>
@@ -125,7 +129,7 @@
   -->
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-	  <CodeAnalysisRuleSet>SE.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <!-- Publish Properties -->

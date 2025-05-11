@@ -18,6 +18,9 @@
                 <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
                 <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
                 <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
+                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
+                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
+                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
             </NavigationView.MenuItems>
             <Frame x:Name="contentFrame"/>
         </NavigationView>
@@ -57,7 +60,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button Content="Delete" 
                                         Command="{Binding ElementName=This, Path=DataContext.DeleteWorkoutCommand}"
-                                        CommandParameter="{Binding Id}"/>           
+                                        CommandParameter="{Binding WID}"/>           
                                 <Button Content="Edit" Click="EditWorkoutButton_Click"/>
                             </StackPanel>
                         </StackPanel>

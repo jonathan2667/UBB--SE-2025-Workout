@@ -1,24 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Workout.Core.Models
 {
+    [Table("Users")]
     public class UserModel
     {
-        private int id;
-
-        public int Id { get => id; set => id = value; }
+        [Key]
+        [Column("UID")]
+        public int ID { get; set; }
 
         public UserModel()
         {
+            UserWorkouts = new List<UserWorkoutModel>();
+            UserClasses = new List<UserClassModel>();
+            Rankings = new List<RankingModel>();
         }
 
         public UserModel(int id)
         {
-            Id = id;
+            ID = id;
+            UserWorkouts = new List<UserWorkoutModel>();
+            UserClasses = new List<UserClassModel>();
+            Rankings = new List<RankingModel>();
         }
+
+        // Navigation properties
+        public virtual ICollection<UserWorkoutModel> UserWorkouts { get; set; }
+        public virtual ICollection<UserClassModel> UserClasses { get; set; }
+        public virtual ICollection<RankingModel> Rankings { get; set; }
+
+        public ICollection<CartItemModel> CartItems { get; set; }
+        public ICollection<WishlistItemModel> WishlistItems { get; set; }
+        public ICollection<OrderModel> Orders { get; set; }
     }
 }

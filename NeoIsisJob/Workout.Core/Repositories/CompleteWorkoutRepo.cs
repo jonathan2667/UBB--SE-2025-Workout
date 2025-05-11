@@ -1,60 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
-using Workout.Core.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Core.Repositories.Interfaces;
 using Workout.Core.Data;
-
 
 namespace Workout.Core.Repositories
 {
     public class CompleteWorkoutRepo : ICompleteWorkoutRepository
     {
-        private readonly IDatabaseHelper databaseHelper;
+        private readonly WorkoutDbContext context;
 
-        public CompleteWorkoutRepo(IDatabaseHelper databaseHelper)
+        public CompleteWorkoutRepo(WorkoutDbContext context)
         {
-            this.databaseHelper = databaseHelper;
+            this.context = context;
         }
 
         public async Task<IList<CompleteWorkoutModel>> GetAllCompleteWorkoutsAsync()
         {
-            IList<CompleteWorkoutModel> completeWorkouts = new List<CompleteWorkoutModel>();
-            string query = "SELECT * FROM CompleteWorkouts";
-
             try
             {
-                var dataTable = await databaseHelper.ExecuteReaderAsync(query, null);
-                foreach (System.Data.DataRow row in dataTable.Rows)
-                {
-                    completeWorkouts.Add(new CompleteWorkoutModel(
-                        Convert.ToInt32(row["WID"]),
-                        Convert.ToInt32(row["EID"]),
-                        Convert.ToInt32(row["Sets"]),
-                        Convert.ToInt32(row["RepsPerSet"])));
-                }
+                return await context.CompleteWorkouts
+                    .Include(cw => cw.Workout)
+                    .Include(cw => cw.Exercise)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("Error while fetching complete workouts: " + ex.Message);
             }
-
-            return completeWorkouts;
         }
 
         public async Task DeleteCompleteWorkoutsByWorkoutIdAsync(int workoutId)
         {
-            string deleteCommand = "DELETE FROM CompleteWorkouts WHERE WID=@wid";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@wid", workoutId)
-            };
-
             try
             {
-                await databaseHelper.ExecuteNonQueryAsync(deleteCommand, parameters);
+                var workoutsToDelete = await context.CompleteWorkouts
+                    .Where(cw => cw.WID == workoutId)
+                    .ToListAsync();
+
+                context.CompleteWorkouts.RemoveRange(workoutsToDelete);
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -64,18 +52,18 @@ namespace Workout.Core.Repositories
 
         public async Task InsertCompleteWorkoutAsync(int workoutId, int exerciseId, int sets, int repetitionsPerSet)
         {
-            string insertCommand = "INSERT INTO CompleteWorkouts(WID, EID, [Sets], RepsPerSet) VALUES (@wid, @eid, @sets, @repsPerSet)";
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@wid", workoutId),
-                new SqlParameter("@eid", exerciseId),
-                new SqlParameter("@sets", sets),
-                new SqlParameter("@repsPerSet", repetitionsPerSet)
-            };
-
             try
             {
-                await databaseHelper.ExecuteNonQueryAsync(insertCommand, parameters);
+                var completeWorkout = new CompleteWorkoutModel
+                {
+                    WID = workoutId,
+                    EID = exerciseId,
+                    Sets = sets,
+                    RepsPerSet = repetitionsPerSet
+                };
+
+                context.CompleteWorkouts.Add(completeWorkout);
+                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
