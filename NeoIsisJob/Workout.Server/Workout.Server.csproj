@@ -26,7 +26,7 @@
   </ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<CodeAnalysisRuleSet></CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSet>SE.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
 
 </Project>

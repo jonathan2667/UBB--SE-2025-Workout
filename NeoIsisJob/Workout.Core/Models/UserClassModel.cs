@@ -16,7 +16,9 @@ namespace Workout.Core.Models
         [Column("Date")]
         public DateTime Date { get; set; }
 
-        public UserClassModel() { }
+        public UserClassModel()
+        {
+        }
 
         public UserClassModel(int userId, int classId, DateTime date)
         {

@@ -84,8 +84,9 @@ namespace Workout.Core.Data
                 CloseConnection();
             }
         }
-
+#pragma warning disable SA1011   // allow no-space after ]
         public async Task<T?> ExecuteScalarAsync<T>(string storedProcedure, SqlParameter[]? sqlParameters = null)
+#pragma warning restore SA1011
         {
             try
             {
