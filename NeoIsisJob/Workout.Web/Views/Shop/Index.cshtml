@@ -8,7 +8,7 @@
 
 <!-- Search bar and Add Product button -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <input type="text" class="form-control w-50" placeholder="Search product..." id="searchBox" />
+    <input type="text" class="form-control w-50" placeholder="Search product..." id="searchBox" value="@Model.Filter.SearchTerm" />
     <a class="btn btn-primary ms-3" asp-controller="Shop" asp-action="Create">Add Product</a>
 </div>
 
@@ -16,30 +16,18 @@
     <!-- Filter panel -->
     <div class="col-md-3">
         <div class="card bg-light mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Filters</h5>
-
-                <!-- Category Filter -->
+            <form method="get" id="filterForm">
                 <div class="mb-3">
-                    <label for="categoryFilter" class="form-label fw-bold">Category</label>
-                    <select class="form-select" id="categoryFilter">
+                    <label asp-for="Filter.CategoryId" class="form-label fw-bold">Category</label>
+                    <select asp-for="Filter.CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "ID", "Name"))">
                         <option value="">-- Select Category --</option>
-                        @if (!Model.Categories.Any())
-                        {
-                            <option value="">@ViewBag.Message</option>
-                        }
-                        @foreach (var category in Model.Categories)
-                        {
-                            <option value="@category.ID">@category.Name</option>
-                        }
                     </select>
                 </div>
 
-                <!-- Color Filter -->
                 <div class="mb-3">
-                    <label for="colorFilter" class="form-label fw-bold">Color</label>
-                    <select class="form-select" id="colorFilter">
-						<option value="">-- Select Color --</option>
+                    <label asp-for="Filter.Color" class="form-label fw-bold">Color</label>
+                    <select asp-for="Filter.Color" class="form-select">
+                        <option value="">-- Select Color --</option>
                         <option>Red</option>
                         <option>Green</option>
                         <option>Blue</option>
@@ -49,11 +37,10 @@
                     </select>
                 </div>
 
-                <!-- Size Filter -->
                 <div class="mb-3">
-                    <label for="sizeFilter" class="form-label fw-bold">Size</label>
-                    <select class="form-select" id="sizeFilter">
-						<option value="">-- Select Size --</option>
+                    <label asp-for="Filter.Size" class="form-label fw-bold">Size</label>
+                    <select asp-for="Filter.Size" class="form-select">
+                        <option value="">-- Select Size --</option>
                         <option>S</option>
                         <option>M</option>
                         <option>L</option>
@@ -61,8 +48,9 @@
                     </select>
                 </div>
 
-                <button class="btn btn-outline-secondary w-100" id="resetFilters">Reset Filters</button>
-            </div>
+                <input type="hidden" asp-for="Filter.SearchTerm" id="searchTermHidden" />
+            </form>
+            <a href="@Url.Action("Index", "Shop")" class="btn btn-outline-secondary w-100 mt-2">Reset Filters</a>
         </div>
     </div>
 
@@ -95,10 +83,24 @@
 
 @section Scripts {
     <script>
-        document.getElementById('resetFilters').addEventListener('click', () => {
-            document.getElementById('categoryFilter').selectedIndex = 0;
-            document.getElementById('colorFilter').selectedIndex = 0;
-            document.getElementById('sizeFilter').selectedIndex = 0;
+        const form = document.getElementById('filterForm');
+        const searchBox = document.getElementById('searchBox');
+        const searchHidden = document.getElementById('searchTermHidden');
+
+        // Update hidden field and submit form on Enter
+        searchBox.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // prevent default form submission
+                searchHidden.value = searchBox.value;
+                form.submit();
+            }
+        });
+
+        // Submit form on other filter changes
+        form.querySelectorAll('select').forEach(el => {
+            el.addEventListener('change', () => {
+                form.submit();
+            });
         });
     </script>
 }

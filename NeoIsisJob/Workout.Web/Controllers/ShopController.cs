@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
+using Workout.Core.Utils.Filters;
 using Workout.Web.ViewModels.Shop;
 
 namespace Workout.Web.Controllers
@@ -17,17 +18,26 @@ namespace Workout.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] ProductFilter filter)
         {
-            var products = await productService.GetAllAsync();
-            var categories = await categoryService.GetAllAsync(); // Assume you injected this too
+            Console.WriteLine($"Filter: color {filter.Color}, size {filter.Size}, category {filter.CategoryId} ");
+
+            var products = await productService.GetFilteredAsync(filter);
+            var categories = await categoryService.GetAllAsync();
+
+            Console.WriteLine($"Products: {string.Join(", ", products.Select(p => p.Name))}");
+
+            if (!products.Any())
+            {
+                ViewBag.Message = "No products found for the selected filters.";
+            }
 
             var viewModel = new ShopViewModel
             {
                 Products = products,
-                Categories = categories
+                Categories = categories,
+                Filter = filter
             };
-
             return View(viewModel);
         }
     }
