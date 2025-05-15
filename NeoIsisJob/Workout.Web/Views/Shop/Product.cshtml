@@ -18,11 +18,13 @@
                 <p><strong>Color:</strong> @Model.Color</p>
                 <p><strong>Size:</strong> @Model.Size</p>
                 <p><strong>Category:</strong> @Model.CategoryName</p>
+                <p><strong>Stock:</strong> @Model.Stock</p>
             </div>
             <div class="mb-3">
                 <p>@Model.Description</p>
             </div>
             <div class="d-grid gap-2">
+                <a asp-controller="Shop" asp-action="Update" asp-route-id="@Model.ID" class="btn btn-primary mb-2">Update Product</a>
                 <a asp-controller="Shop" asp-action="Index" class="btn btn-secondary">Back to Shop</a>
             </div>
         </div>

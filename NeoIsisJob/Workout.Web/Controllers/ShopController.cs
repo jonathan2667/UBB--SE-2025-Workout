@@ -104,5 +104,61 @@ namespace Workout.Web.Controllers
             await productService.CreateAsync(product);
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int id)
+        {
+            var product = await productService.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var categories = await categoryService.GetAllAsync();
+            var viewModel = new UpdateProductViewModel
+            {
+                ID = product.ID,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Color = product.Color,
+                Size = product.Size,
+                PhotoURL = product.PhotoURL,
+                CategoryID = product.CategoryID,
+                Stock = product.Stock,
+                Categories = categories
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(UpdateProductViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Categories = await categoryService.GetAllAsync();
+                return View(model);
+            }
+
+            var product = await productService.GetByIdAsync(model.ID);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.Name = model.Name;
+            product.Description = model.Description;
+            product.Price = model.Price;
+            product.Color = model.Color;
+            product.Size = model.Size;
+            product.PhotoURL = model.PhotoURL;
+            product.CategoryID = model.CategoryID;
+            product.Stock = model.Stock;
+
+            await productService.UpdateAsync(product);
+            return RedirectToAction(nameof(Product), new { id = product.ID });
+        }
     }
 }
