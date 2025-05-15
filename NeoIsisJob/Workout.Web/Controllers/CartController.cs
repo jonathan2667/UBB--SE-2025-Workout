@@ -85,5 +85,54 @@ namespace Workout.Web.Controllers
                 return View("Error", new ErrorViewModel { RequestId = "Failed to clear cart" });
             }
         }
+
+        public async Task<IActionResult> Payment()
+        {
+            try
+            {
+                var cartItems = await _cartService.GetAllAsync();
+                decimal totalAmount = 0;
+                
+                foreach (var item in cartItems)
+                {
+                    if (item.Product != null)
+                    {
+                        totalAmount += item.Product.Price;
+                    }
+                }
+                
+                ViewData["TotalAmount"] = totalAmount;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving cart items for payment");
+                return View("Error", new ErrorViewModel { RequestId = "Failed to process payment" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPayment(string cardNumber, string cardName, string expiryDate, string cvv)
+        {
+            // This is a mock implementation - we're not actually processing payments
+            try
+            {
+                // Clear the cart after "successful" payment
+                await ((CartService)_cartService).ResetCart();
+                
+                // Redirect to a confirmation page
+                return RedirectToAction(nameof(Confirmation));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing payment");
+                return View("Error", new ErrorViewModel { RequestId = "Failed to process payment" });
+            }
+        }
+
+        public IActionResult Confirmation()
+        {
+            return View();
+        }
     }
 } 

@@ -1,0 +1,81 @@
+@{
+    ViewData["Title"] = "Payment";
+    decimal totalAmount = (decimal)ViewData["TotalAmount"];
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Payment Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> This is a mock payment page. No actual payments will be processed.
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5>Order Summary</h5>
+                        <div class="d-flex justify-content-between">
+                            <span>Total Amount:</span>
+                            <strong>$@totalAmount.ToString("F2")</strong>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <form asp-action="ProcessPayment" method="post">
+                        <div class="mb-3">
+                            <label for="cardName" class="form-label">Name on Card</label>
+                            <input type="text" class="form-control" id="cardName" name="cardName" placeholder="John Doe" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                            <small class="text-muted">Any number will work - this is a mock implementation</small>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123" required>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Return to Cart
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-lock-fill"></i> Pay $@totalAmount.ToString("F2")
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Simple client-side validation for demo purposes
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var cardNumber = document.getElementById('cardNumber').value;
+            var cardName = document.getElementById('cardName').value;
+            var expiryDate = document.getElementById('expiryDate').value;
+            var cvv = document.getElementById('cvv').value;
+            
+            if (cardNumber.length < 13 || cardName.length < 3 || expiryDate.length < 4 || cvv.length < 3) {
+                alert('Please fill in all fields correctly');
+                e.preventDefault();
+            }
+        });
+    </script>
+} 

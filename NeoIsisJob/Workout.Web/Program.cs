@@ -7,6 +7,9 @@ using Workout.Core.Repositories;
 using Workout.Core.IServices;
 using Workout.Core.Services;
 using Workout.Core.Models;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +52,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    
+    // Initialize test data in development environment
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            // Initialize test products and cart data
+            await InsertTestData.Initialize(services);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while initializing test data.");
+        }
+    }
 }
 else
 {
