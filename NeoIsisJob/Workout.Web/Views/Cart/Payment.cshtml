@@ -1,6 +1,6 @@
 @{
     ViewData["Title"] = "Payment";
-    decimal totalAmount = (decimal)ViewData["TotalAmount"];
+    var totalAmount = ViewData["TotalAmount"] ?? 0.0m;
 }
 
 <div class="container mt-4">
@@ -12,48 +12,76 @@
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <strong>Note:</strong> This is a mock payment page. No actual payments will be processed.
+                        <strong>Note:</strong> This is a mock payment page. Any values are accepted.
                     </div>
                     
                     <div class="mb-4">
                         <h5>Order Summary</h5>
                         <div class="d-flex justify-content-between">
                             <span>Total Amount:</span>
-                            <strong>$@totalAmount.ToString("F2")</strong>
+                            <strong>$@(totalAmount)</strong>
                         </div>
                     </div>
                     
                     <hr>
                     
-                    <form asp-action="ProcessPayment" method="post">
+                    <form asp-action="ProcessPayment" method="post" novalidate>
+                        <h5 class="mb-3">Customer Information</h5>
                         <div class="mb-3">
-                            <label for="cardName" class="form-label">Name on Card</label>
-                            <input type="text" class="form-control" id="cardName" name="cardName" placeholder="John Doe" required>
+                            <label for="customerName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="customerName" name="customerName">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="email" name="email">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address">
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" name="city">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="zipCode" class="form-label">Zip</label>
+                                <input type="text" class="form-control" id="zipCode" name="zipCode">
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <h5 class="mb-3">Payment Information</h5>
+                        <div class="mb-3">
+                            <label for="cardName" class="form-label">Card Name</label>
+                            <input type="text" class="form-control" id="cardName" name="cardName">
                         </div>
                         
                         <div class="mb-3">
                             <label for="cardNumber" class="form-label">Card Number</label>
-                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
-                            <small class="text-muted">Any number will work - this is a mock implementation</small>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber">
                         </div>
                         
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="expiryDate" class="form-label">Expiry Date</label>
-                                <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                                <input type="text" class="form-control" id="expiryDate" name="expiryDate">
                             </div>
                             <div class="col-md-6">
                                 <label for="cvv" class="form-label">CVV</label>
-                                <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123" required>
+                                <input type="text" class="form-control" id="cvv" name="cvv">
                             </div>
                         </div>
                         
                         <div class="d-flex justify-content-between mt-4">
                             <a asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Return to Cart
+                                <i class="bi bi-arrow-left"></i> Back to Cart
                             </a>
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-lock-fill"></i> Pay $@totalAmount.ToString("F2")
+                                Complete Payment
                             </button>
                         </div>
                     </form>
@@ -65,17 +93,5 @@
 
 @section Scripts {
     <script>
-        // Simple client-side validation for demo purposes
-        document.querySelector('form').addEventListener('submit', function(e) {
-            var cardNumber = document.getElementById('cardNumber').value;
-            var cardName = document.getElementById('cardName').value;
-            var expiryDate = document.getElementById('expiryDate').value;
-            var cvv = document.getElementById('cvv').value;
-            
-            if (cardNumber.length < 13 || cardName.length < 3 || expiryDate.length < 4 || cvv.length < 3) {
-                alert('Please fill in all fields correctly');
-                e.preventDefault();
-            }
-        });
     </script>
 } 

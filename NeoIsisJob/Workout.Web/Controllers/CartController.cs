@@ -112,15 +112,22 @@ namespace Workout.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPayment(string cardNumber, string cardName, string expiryDate, string cvv)
+        public async Task<IActionResult> ProcessPayment(
+            string cardNumber, string cardName, string expiryDate, string cvv,
+            string customerName, string email, string address, string city, string zipCode)
         {
-            // This is a mock implementation - we're not actually processing payments
             try
             {
-                // Clear the cart after "successful" payment
+                _logger.LogInformation($"Processing payment for {customerName} ({email})");
+                _logger.LogInformation($"Shipping to: {address}, {city}, {zipCode}");
+                
                 await ((CartService)_cartService).ResetCart();
                 
-                // Redirect to a confirmation page
+                TempData["CustomerName"] = customerName;
+                TempData["Email"] = email;
+                TempData["Address"] = address;
+                TempData["OrderNumber"] = new Random().Next(100000, 999999).ToString();
+                
                 return RedirectToAction(nameof(Confirmation));
             }
             catch (Exception ex)
