@@ -1,0 +1,19 @@
+﻿@model Workout.Core.Models.UserClassModel
+
+@{
+    ViewData["Title"] = "Enroll in Class";
+}
+
+<h2>Enroll in Class</h2>
+
+<form asp-action="Enroll" method="post">
+    <input type="hidden" asp-for="CID" />
+
+    <div class="form-group">
+        <label asp-for="Date" class="control-label">Select Date</label>
+        <input asp-for="Date" class="form-control" type="date" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enroll</button>
+</form>
