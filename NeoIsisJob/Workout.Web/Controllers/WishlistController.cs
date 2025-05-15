@@ -27,6 +27,15 @@ namespace Workout.Web.Controllers
             try
             {
                 var wishlistItems = await _wishlistService.GetAllAsync();
+                
+                foreach (var item in wishlistItems)
+                {
+                    if (item.Product != null)
+                    {
+                        _logger.LogInformation($"Product {item.Product.ID} - {item.Product.Name} has PhotoURL: {item.Product.PhotoURL ?? "null"}");
+                    }
+                }
+                
                 return View(wishlistItems);
             }
             catch (Exception ex)

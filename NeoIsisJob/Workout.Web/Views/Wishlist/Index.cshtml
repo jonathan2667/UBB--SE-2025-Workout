@@ -2,6 +2,26 @@
 
 @{
     ViewData["Title"] = "Wishlist";
+    
+    bool IsAbsoluteUrl(string url)
+    {
+        return !string.IsNullOrEmpty(url) && (url.StartsWith("http://") || url.StartsWith("https://") || url.StartsWith("//"));
+    }
+    
+    string GetImageUrl(string photoUrl, string productName)
+    {
+        if (string.IsNullOrEmpty(photoUrl))
+        {
+            return $"https://placehold.co/600x400/EEE/31343C?text={Uri.EscapeDataString(productName ?? "Product")}";
+        }
+        
+        if (IsAbsoluteUrl(photoUrl) && photoUrl.Contains("example.com"))
+        {
+            return $"https://placehold.co/600x400/EEE/31343C?text={Uri.EscapeDataString(productName ?? "Product")}";
+        }
+        
+        return photoUrl;
+    }
 }
 
 <div class="container mt-4">
@@ -20,16 +40,10 @@
             {
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
-                        @if (item.Product?.PhotoURL != null)
-                        {
-                            <img src="@item.Product.PhotoURL" class="card-img-top" alt="@item.Product.Name" style="height: 200px; object-fit: cover;">
+                        @{
+                            var imageUrl = GetImageUrl(item.Product?.PhotoURL, item.Product?.Name);
                         }
-                        else
-                        {
-                            <div class="bg-light text-center py-5 card-img-top">
-                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-                            </div>
-                        }
+                        <img src="@imageUrl" class="card-img-top" alt="@item.Product?.Name" style="height: 200px; object-fit: cover;">
                         <div class="card-body">
                             <h5 class="card-title">@item.Product?.Name</h5>
                             <p class="card-text">@item.Product?.Description</p>
