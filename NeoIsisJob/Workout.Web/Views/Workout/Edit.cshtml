@@ -1,0 +1,91 @@
+@model Workout.Web.Models.WorkoutModel
+
+@{
+    ViewData["Title"] = "Edit Workout";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Edit Workout</h1>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-warning">
+            <h4>Error</h4>
+            <p>@ViewBag.ErrorMessage</p>
+            @if (ViewBag.RequestContent != null)
+            {
+                <h5>Request Content (Debug):</h5>
+                <pre>@ViewBag.RequestContent</pre>
+            }
+        </div>
+    }
+
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        
+        <!-- Workout Details -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                    <label asp-for="Name" class="me-2 fs-5">Workout Name:</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter workout name..." required />
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                    <label asp-for="WorkoutTypeId" class="me-2 fs-5">Select Workout Type:</label>
+                    <select asp-for="WorkoutTypeId" class="form-control" asp-items="ViewBag.WorkoutTypes" required></select>
+                </div>
+                <span asp-validation-for="WorkoutTypeId" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <!-- Hidden fields for API compatibility -->
+        <div class="d-none">
+            <!-- Description field -->
+            <textarea asp-for="Description">@(Model.Description ?? "Default description")</textarea>
+            
+            <!-- WorkoutType fields -->
+            <input asp-for="WorkoutType.Id" id="workoutTypeId" />
+            <input asp-for="WorkoutType.Name" id="workoutTypeName" />
+            <input asp-for="WorkoutType.WTID" id="workoutTypeWTID" />
+        </div>
+        
+        <!-- Buttons -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <a asp-action="Index" class="btn btn-secondary" style="width: 120px;">Cancel</a>
+                <input type="submit" value="Save" class="btn btn-primary ms-3" style="width: 120px;" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Set default description if empty
+            if (!$("#Description").val()) {
+                $("#Description").val("Default description");
+            }
+            
+            // Sync the workout type ID to the WorkoutType.Id field
+            $("#WorkoutTypeId").change(function() {
+                const selectedId = $(this).val();
+                $("#workoutTypeId").val(selectedId);
+                $("#workoutTypeWTID").val(selectedId);
+                
+                // Also set the name from the selected option text
+                const selectedText = $("#WorkoutTypeId option:selected").text();
+                $("#workoutTypeName").val(selectedText);
+            });
+            
+            // Trigger the change event on page load to sync initial values
+            $("#WorkoutTypeId").trigger("change");
+        });
+    </script>
+} 
