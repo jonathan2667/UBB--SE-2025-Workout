@@ -13,5 +13,6 @@ namespace Workout.Web.ViewModels.Shop
         public string PhotoURL { get; set; } = string.Empty;
         public string CategoryName { get; set; } = string.Empty;
         public int Stock { get; set; }
+        public bool IsInWishlist { get; set; }
     }
 } 

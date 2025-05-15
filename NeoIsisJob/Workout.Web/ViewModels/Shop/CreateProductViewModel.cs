@@ -17,10 +17,10 @@ namespace Workout.Web.ViewModels.Shop
         [Range(0.01, 10000, ErrorMessage = "Price must be between 0.01 and 10000")]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "Color is required")]
+        [StringLength(50, ErrorMessage = "Color cannot be longer than 50 characters")]
         public string Color { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Size is required")]
+        [StringLength(10, ErrorMessage = "Size cannot be longer than 10 characters")]
         public string Size { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Photo URL is required")]

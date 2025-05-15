@@ -11,11 +11,20 @@ namespace Workout.Web.Controllers
     {
         private readonly IService<ProductModel> productService;
         private readonly IService<CategoryModel> categoryService;
+        private readonly IService<WishlistItemModel> wishlistService;
+        private readonly IService<CartItemModel> cartService;
+        private const int DefaultUserId = 1; // This should be replaced with actual user ID from authentication
 
-        public ShopController(IService<ProductModel> productService, IService<CategoryModel> categoryService)
+        public ShopController(
+            IService<ProductModel> productService, 
+            IService<CategoryModel> categoryService,
+            IService<WishlistItemModel> wishlistService,
+            IService<CartItemModel> cartService)
         {
             this.productService = productService;
             this.categoryService = categoryService;
+            this.wishlistService = wishlistService;
+            this.cartService = cartService;
         }
 
         [HttpGet]
@@ -52,6 +61,9 @@ namespace Workout.Web.Controllers
             }
 
             var category = await categoryService.GetByIdAsync(product.CategoryID);
+            var wishlistItems = await wishlistService.GetAllAsync();
+            var isInWishlist = wishlistItems.Any(w => w.ProductID == id && w.UserID == DefaultUserId);
+
             var viewModel = new ProductViewModel
             {
                 ID = product.ID,
@@ -62,10 +74,54 @@ namespace Workout.Web.Controllers
                 Size = product.Size,
                 PhotoURL = product.PhotoURL,
                 CategoryName = category?.Name ?? "Unknown",
-                Stock = product.Stock
+                Stock = product.Stock,
+                IsInWishlist = isInWishlist
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleWishlist(int productId)
+        {
+            var wishlistItems = await wishlistService.GetAllAsync();
+            var existingItem = wishlistItems.FirstOrDefault(w => w.ProductID == productId && w.UserID == DefaultUserId);
+
+            if (existingItem != null)
+            {
+                await wishlistService.DeleteAsync(existingItem.ID);
+            }
+            else
+            {
+                var newWishlistItem = new WishlistItemModel(DefaultUserId, productId);
+                await wishlistService.CreateAsync(newWishlistItem);
+            }
+
+            return RedirectToAction(nameof(Product), new { id = productId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToCart(int productId)
+        {
+            var product = await productService.GetByIdAsync(productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            if (product.Stock <= 0)
+            {
+                TempData["ErrorMessage"] = "Sorry, this product is out of stock.";
+                return RedirectToAction(nameof(Product), new { id = productId });
+            }
+
+            var cartItem = new CartItemModel(DefaultUserId, productId);
+            await cartService.CreateAsync(cartItem);
+
+            TempData["SuccessMessage"] = "Product added to cart successfully!";
+            return RedirectToAction(nameof(Product), new { id = productId });
         }
 
         [HttpGet]
@@ -94,8 +150,8 @@ namespace Workout.Web.Controllers
                 Name = model.Name,
                 Description = model.Description,
                 Price = model.Price,
-                Color = model.Color,
-                Size = model.Size,
+                Color = string.IsNullOrWhiteSpace(model.Color) ? "N/A" : model.Color,
+                Size = string.IsNullOrWhiteSpace(model.Size) ? "N/A" : model.Size,
                 PhotoURL = model.PhotoURL,
                 CategoryID = model.CategoryID,
                 Stock = model.Stock
@@ -151,14 +207,29 @@ namespace Workout.Web.Controllers
             product.Name = model.Name;
             product.Description = model.Description;
             product.Price = model.Price;
-            product.Color = model.Color;
-            product.Size = model.Size;
+            product.Color = string.IsNullOrWhiteSpace(model.Color) ? "N/A" : model.Color;
+            product.Size = string.IsNullOrWhiteSpace(model.Size) ? "N/A" : model.Size;
             product.PhotoURL = model.PhotoURL;
             product.CategoryID = model.CategoryID;
             product.Stock = model.Stock;
 
             await productService.UpdateAsync(product);
             return RedirectToAction(nameof(Product), new { id = product.ID });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var product = await productService.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            await productService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "Product deleted successfully!";
+            return RedirectToAction(nameof(Index));
         }
     }
 }
