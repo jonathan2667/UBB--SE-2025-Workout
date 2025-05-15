@@ -6,6 +6,7 @@ using Workout.Core.IRepositories;
 using Workout.Core.Repositories;
 using Workout.Core.IServices;
 using Workout.Core.Services;
+using Workout.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +24,20 @@ builder.Services.AddDbContext<WorkoutDbContext>(options =>
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IUserClassRepo, UserClassRepo>();
+builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IUserClassService, UserClassService>();
+builder.Services.AddScoped<IService<WishlistItemModel>, WishlistService>();
+
+// Configure HttpClient for API
+builder.Services.AddHttpClient("API", client =>
+{
+    var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5111/api";
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
