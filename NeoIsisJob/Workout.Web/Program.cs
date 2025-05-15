@@ -15,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Add HTTP client factory
+builder.Services.AddHttpClient();
+
 // Add WorkoutDbContext
 builder.Services.AddDbContext<WorkoutDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -23,11 +26,15 @@ builder.Services.AddDbContext<WorkoutDbContext>(options =>
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IUserClassRepo, UserClassRepo>();
+builder.Services.AddScoped<IWorkoutRepository, WorkoutRepo>();
+builder.Services.AddScoped<IWorkoutTypeRepository, WorkoutTypeRepo>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IUserClassService, UserClassService>();
+builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
