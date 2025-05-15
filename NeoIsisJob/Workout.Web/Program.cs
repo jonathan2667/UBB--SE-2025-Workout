@@ -35,13 +35,6 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IUserClassService, UserClassService>();
 builder.Services.AddScoped<IService<CartItemModel>, CartService>();
 
-// Configure HttpClient for API
-builder.Services.AddHttpClient("API", client =>
-{
-    var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5111/api";
-    client.BaseAddress = new Uri(apiBaseUrl);
-});
-
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
@@ -52,22 +45,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    
-    // Initialize test data in development environment
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        try
-        {
-            // Initialize test products and cart data
-            await InsertTestData.Initialize(services);
-        }
-        catch (Exception ex)
-        {
-            var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while initializing test data.");
-        }
-    }
 }
 else
 {
