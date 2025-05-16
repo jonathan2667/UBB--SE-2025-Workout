@@ -5,6 +5,9 @@
 }
 
 <div class="container mt-4">
+    <!-- Hidden anti-forgery token for form submissions -->
+    @Html.AntiForgeryToken()
+    
     <div class="row">
         <div class="col-12">
             <h1 class="text-center display-4 mb-4" id="yearText">@DateTime.Now.Year</h1>
@@ -25,6 +28,18 @@
             @ViewBag.ErrorMessage
         </div>
     }
+
+    <!-- Success Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Workout successfully removed!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 
     <div class="row mb-3">
         <div class="col text-center">
@@ -56,7 +71,7 @@
 </div>
 
 <!-- Workout Details Modal -->
-<div class="modal fade" id="workoutDetailsModal" tabindex="-1" aria-labelledby="workoutDetailsModalLabel" aria-hidden="true">
+<div class="modal fade" id="workoutDetailsModal" tabindex="-1" aria-labelledby="workoutDetailsModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -81,7 +96,7 @@
 </div>
 
 <!-- Class Details Modal -->
-<div class="modal fade" id="classDetailsModal" tabindex="-1" aria-labelledby="classDetailsModalLabel" aria-hidden="true">
+<div class="modal fade" id="classDetailsModal" tabindex="-1" aria-labelledby="classDetailsModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -101,7 +116,7 @@
 </div>
 
 <!-- No Workout Modal -->
-<div class="modal fade" id="noWorkoutModal" tabindex="-1" aria-labelledby="noWorkoutModalLabel" aria-hidden="true">
+<div class="modal fade" id="noWorkoutModal" tabindex="-1" aria-labelledby="noWorkoutModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -122,7 +137,7 @@
 </div>
 
 <!-- Workout Selection Modal -->
-<div class="modal fade" id="workoutSelectionModal" tabindex="-1" aria-labelledby="workoutSelectionModalLabel" aria-hidden="true">
+<div class="modal fade" id="workoutSelectionModal" tabindex="-1" aria-labelledby="workoutSelectionModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -141,12 +156,19 @@
 
 @section Scripts {
     <script>
+        // Define global variables on window object for cross-script access
+        window.selectedDate = null;
+        window.selectedDay = null;
+        window.selectedWorkout = null;
+        
         document.addEventListener('DOMContentLoaded', function() {
             let currentDate = new Date();
             let currentYear = currentDate.getFullYear();
             let currentMonth = currentDate.getMonth();
             let currentDay = currentDate.getDate();
             let workouts = [];
+            
+            // These variables are also referenced via window object
             let selectedDate = null;
             let selectedWorkout = null;
             let selectedDay = null;
@@ -155,11 +177,27 @@
             updateCalendar();
             
             // Initialize modals
-            const workoutDetailsModal = new bootstrap.Modal(document.getElementById('workoutDetailsModal'));
-            const classDetailsModal = new bootstrap.Modal(document.getElementById('classDetailsModal'));
-            const noWorkoutModal = new bootstrap.Modal(document.getElementById('noWorkoutModal'));
-            const workoutSelectionModal = new bootstrap.Modal(document.getElementById('workoutSelectionModal'));
+            const workoutDetailsModal = new bootstrap.Modal(document.getElementById('workoutDetailsModal'), {
+                backdrop: 'static' // Prevents closing by clicking outside
+            });
+            const classDetailsModal = new bootstrap.Modal(document.getElementById('classDetailsModal'), {
+                backdrop: 'static'
+            });
+            const noWorkoutModal = new bootstrap.Modal(document.getElementById('noWorkoutModal'), {
+                backdrop: 'static'
+            });
+            const workoutSelectionModal = new bootstrap.Modal(document.getElementById('workoutSelectionModal'), {
+                backdrop: 'static'
+            });
 
+            // Modal accessibility fixes for proper focus management
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    // Ensure no buttons remain focused when modal closes
+                    document.activeElement.blur();
+                });
+            });
+            
             // Set up event listeners
             document.getElementById('prevMonth').addEventListener('click', function() {
                 if (currentMonth === 0) {
@@ -185,15 +223,67 @@
                 showWorkoutSelectionModal();
             });
             
-            document.getElementById('removeWorkoutBtn').addEventListener('click', function() {
-                if (selectedDate) {
-                    const dateParts = selectedDate.split('-');
-                    const year = dateParts[0];
-                    const month = dateParts[1];
-                    const day = dateParts[2];
-                    const userId = 1; // Default user ID
-                    
-                    window.location.href = `/Calendar/Delete/${userId}/${year}/${month}/${day}`;
+            // Fixed remove workout button functionality
+            document.getElementById('removeWorkoutBtn').addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent any default action
+                
+                // Get date directly from the workoutDate span in the modal
+                const workoutDateEl = document.getElementById('workoutDate');
+                const dateString = workoutDateEl ? workoutDateEl.textContent : null;
+                
+                console.log('Remove button clicked, modal date text:', dateString);
+                
+                if (dateString) {
+                    // Parse the date from the formatted string (e.g., "2025-05-16")
+                    const dateParts = dateString.split('-');
+                    if (dateParts.length === 3) {
+                        const year = dateParts[0];
+                        const month = dateParts[1];
+                        const day = dateParts[2];
+                        const userId = 1; // Default user ID
+                        
+                        console.log(`Removing workout for date: ${year}-${month}-${day}`);
+                        
+                        // Show confirmation dialog
+                        if (confirm('Are you sure you want to remove this workout?')) {
+                            // Close modal first to avoid focus issues
+                            workoutDetailsModal.hide();
+                            
+                            // Use the DirectDelete endpoint with fetch API
+                            fetch(`/Calendar/DirectDelete/${userId}/${year}/${month}/${day}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Delete response:', data);
+                                
+                                if (data.success) {
+                                    // Update calendar display
+                                    updateCalendar();
+                                    
+                                    // Show success toast
+                                    const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+                                    successToast.show();
+                                } else {
+                                    console.error('Error deleting workout:', data.message);
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error deleting workout:', error);
+                                alert('An error occurred while deleting the workout.');
+                            });
+                        }
+                    } else {
+                        console.error('Invalid date format:', dateString);
+                        alert('Error: Invalid date format');
+                    }
+                } else {
+                    console.error('No date found in modal');
+                    alert('Error: Date information not found');
                 }
             });
             
@@ -448,8 +538,17 @@
             const dayNumber = element.getAttribute('data-day-number');
             
             // Save selected data for use in modals
+            // Use proper global variables accessed from window
             window.selectedDate = date;
             window.selectedDay = dayNumber;
+            
+            // Also update the variables in the current script scope
+            // for redundancy and better accessibility
+            selectedDate = date;
+            selectedDay = dayNumber;
+            
+            console.log('openDayDialog - Set selectedDate:', selectedDate);
+            console.log('openDayDialog - Set window.selectedDate:', window.selectedDate);
             
             // Format the date for display
             const dateObj = new Date(date);
@@ -509,6 +608,7 @@
                         
                         document.getElementById('workoutName').textContent = workoutName;
                         window.selectedWorkout = data;
+                        selectedWorkout = data; // For redundancy
                     })
                     .catch(error => {
                         console.error('Error fetching workout details:', error);

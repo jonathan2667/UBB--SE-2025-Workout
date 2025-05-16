@@ -290,6 +290,23 @@ namespace Workout.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 
+                // Check if we have a valid workoutId
+                if (workoutId <= 0)
+                {
+                    // If workoutId is not provided or is invalid, try to get it from the service
+                    var userWorkout = await _calendarService.GetUserWorkoutAsync(userId, date);
+                    if (userWorkout != null)
+                    {
+                        workoutId = userWorkout.WID;
+                    }
+                    else
+                    {
+                        // No workout found for this date
+                        _logger.LogWarning($"No workout found to delete for user {userId} on {date:yyyy-MM-dd}");
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                
                 await _calendarService.DeleteUserWorkoutAsync(userId, workoutId, date);
                 return RedirectToAction(nameof(Index));
             }
@@ -298,6 +315,43 @@ namespace Workout.Web.Controllers
                 _logger.LogError($"Error deleting workout: {ex.Message}");
                 ViewBag.ErrorMessage = "An error occurred while deleting the workout.";
                 return RedirectToAction(nameof(Index));
+            }
+        }
+
+        // Direct AJAX delete endpoint that doesn't require antiforgery token
+        [HttpPost]
+        [Route("Calendar/DirectDelete/{userId}/{year}/{month}/{day}")]
+        public async Task<IActionResult> DirectDelete(int userId, int year, int month, int day)
+        {
+            try
+            {
+                var date = new DateTime(year, month, day);
+                
+                // Validate that the date is not in the past
+                if (date.Date < DateTime.Today)
+                {
+                    _logger.LogWarning($"Attempt to delete workout for past date: {date:yyyy-MM-dd}");
+                    return Json(new { success = false, message = "Cannot delete workouts for past dates." });
+                }
+                
+                // Get the workout details
+                var userWorkout = await _calendarService.GetUserWorkoutAsync(userId, date);
+                if (userWorkout == null)
+                {
+                    _logger.LogWarning($"No workout found to delete for user {userId} on {date:yyyy-MM-dd}");
+                    return Json(new { success = false, message = "No workout found for this date." });
+                }
+                
+                // Delete the workout
+                await _calendarService.DeleteUserWorkoutAsync(userId, userWorkout.WID, date);
+                
+                _logger.LogInformation($"Workout for user {userId} on {date:yyyy-MM-dd} deleted successfully via DirectDelete");
+                return Json(new { success = true, message = "Workout deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DirectDelete: {ex.Message}");
+                return Json(new { success = false, message = "An error occurred while deleting the workout." });
             }
         }
 
@@ -453,6 +507,39 @@ namespace Workout.Web.Controllers
             {
                 _logger.LogError($"API Error fetching workout: {ex.Message}");
                 return StatusCode(500, new { error = "An error occurred while loading workout information." });
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/calendar/{userId}/{year}/{month}/{day}")]
+        public async Task<IActionResult> DeleteWorkoutApi(int userId, int year, int month, int day)
+        {
+            try
+            {
+                var date = new DateTime(year, month, day);
+                
+                // Validate that the date is not in the past
+                if (date.Date < DateTime.Today)
+                {
+                    _logger.LogWarning($"API attempt to delete workout for past date: {date:yyyy-MM-dd}");
+                    return BadRequest(new { error = "Cannot delete workouts for past dates." });
+                }
+                
+                // Get the workout details
+                var userWorkout = await _calendarService.GetUserWorkoutAsync(userId, date);
+                if (userWorkout == null)
+                {
+                    return NotFound(new { error = "No workout found for this date." });
+                }
+                
+                // Delete the workout
+                await _calendarService.DeleteUserWorkoutAsync(userId, userWorkout.WID, date);
+                return Ok(new { success = true, message = "Workout deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"API Error deleting workout: {ex.Message}");
+                return StatusCode(500, new { error = "An error occurred while deleting the workout." });
             }
         }
     }
