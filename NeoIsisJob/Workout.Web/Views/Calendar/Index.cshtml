@@ -1,0 +1,131 @@
+@{
+    ViewData["Title"] = "Calendar";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center display-4 mb-4" id="yearText">@DateTime.Now.Year</h1>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-center align-items-center">
+            <button class="btn btn-outline-primary mx-3" id="prevMonth">&lt;</button>
+            <h2 class="mx-3" id="monthText">@DateTime.Now.ToString("MMMM")</h2>
+            <button class="btn btn-outline-primary mx-3" id="nextMonth">&gt;</button>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col text-center">
+            <h4 class="fw-bold">Sun</h4>
+        </div>
+        <div class="col text-center">
+            <h4 class="fw-bold">Mon</h4>
+        </div>
+        <div class="col text-center">
+            <h4 class="fw-bold">Tue</h4>
+        </div>
+        <div class="col text-center">
+            <h4 class="fw-bold">Wed</h4>
+        </div>
+        <div class="col text-center">
+            <h4 class="fw-bold">Thu</h4>
+        </div>
+        <div class="col text-center">
+            <h4 class="fw-bold">Fri</h4>
+        </div>
+        <div class="col text-center">
+            <h4 class="fw-bold">Sat</h4>
+        </div>
+    </div>
+
+    <div class="row" id="calendarDays">
+        <!-- Calendar days will be populated by JavaScript -->
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentDate = new Date();
+            
+            function updateCalendar() {
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                
+                document.getElementById('yearText').textContent = year;
+                document.getElementById('monthText').textContent = new Date(year, month).toLocaleString('default', { month: 'long' });
+                
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startingDay = firstDay.getDay();
+                const totalDays = lastDay.getDate();
+                
+                let calendarHTML = '';
+                let dayCount = 1;
+                
+                for (let i = 0; i < 6; i++) {
+                    let rowHTML = '<div class="row mb-3">';
+                    
+                    for (let j = 0; j < 7; j++) {
+                        if (i === 0 && j < startingDay) {
+                            rowHTML += '<div class="col text-center p-2"></div>';
+                        } else if (dayCount > totalDays) {
+                            rowHTML += '<div class="col text-center p-2"></div>';
+                        } else {
+                            rowHTML += `<div class="col text-center p-2">
+                                <div class="calendar-day ${dayCount === new Date().getDate() && month === new Date().getMonth() ? 'bg-primary text-white' : ''}">
+                                    ${dayCount}
+                                </div>
+                            </div>`;
+                            dayCount++;
+                        }
+                    }
+                    
+                    rowHTML += '</div>';
+                    calendarHTML += rowHTML;
+                    
+                    if (dayCount > totalDays) break;
+                }
+                
+                document.getElementById('calendarDays').innerHTML = calendarHTML;
+            }
+            
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCalendar();
+            });
+            
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCalendar();
+            });
+            
+            updateCalendar();
+        });
+    </script>
+}
+
+<style>
+    .calendar-day {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .calendar-day:hover {
+        background-color: #e9ecef;
+    }
+    
+    .calendar-day.bg-primary:hover {
+        background-color: #0d6efd !important;
+    }
+</style>

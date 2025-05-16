@@ -29,6 +29,8 @@ builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IUserClassRepo, UserClassRepo>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepo>();
 builder.Services.AddScoped<IWorkoutTypeRepository, WorkoutTypeRepo>();
+builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -36,6 +38,7 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IUserClassService, UserClassService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
