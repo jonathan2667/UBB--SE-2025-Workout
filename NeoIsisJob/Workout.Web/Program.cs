@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 var serverSettings = Path.Combine(Directory.GetCurrentDirectory(),
-                                  "..",               // go up from Workout.Web’s folder
+                                  "..",               // go up from Workout.Web's folder
                                   "Workout.Server",   // into the server project
                                   "appsettings.json");
 
@@ -46,6 +46,9 @@ builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IUserClassRepo, UserClassRepo>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepo>();
 builder.Services.AddScoped<IWorkoutTypeRepository, WorkoutTypeRepo>();
+builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
+builder.Services.AddScoped<IExerciseRepository, ExerciseRepo>();
+builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -53,6 +56,9 @@ builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IUserClassService, UserClassService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
+builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
+builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();

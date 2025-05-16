@@ -657,5 +657,35 @@ namespace Workout.Web.Controllers
                 return StatusCode(500, $"Error: {ex.Message}");
             }
         }
+
+        // GET: Workout/GetAll - Returns JSON list of workouts for AJAX calls
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var client = _clientFactory.CreateClient();
+            
+            try
+            {
+                var response = await client.GetAsync(apiUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var content = await response.Content.ReadAsStringAsync();
+                    var workouts = JsonSerializer.Deserialize<List<WorkoutModel>>(content, options);
+                    return Json(workouts);
+                }
+                else
+                {
+                    _logger.LogError($"Error fetching workouts: {response.StatusCode}");
+                    return Json(new List<WorkoutModel>());
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"API Connection Error: {ex.Message}");
+                return Json(new List<WorkoutModel>());
+            }
+        }
     }
 } 
