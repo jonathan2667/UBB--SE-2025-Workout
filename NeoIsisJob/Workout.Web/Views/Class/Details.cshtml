@@ -70,6 +70,18 @@
 				</div>
 			</div>
 		</div>
+		<!-- Success Toast (Centered + Fade) -->
+		<div class="position-fixed top-50 start-50 translate-middle p-3" style="z-index: 1100">
+			<div id="successToast" class="toast align-items-center text-bg-success border-0 fade" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="d-flex">
+					<div class="toast-body">
+						Successfully registered for the class!
+					</div>
+					<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+			</div>
+		</div>
+
 
 
 		@* <div class="col-md-4"> *@
@@ -85,6 +97,15 @@
 
 @section Scripts {
 	<script>
-		// Add any JavaScript functionality here if needed
+		document.addEventListener("DOMContentLoaded", function () {
+			var showSuccess = '@TempData["Success"]' === 'true';
+			if (showSuccess) {
+				var toastEl = document.getElementById('successToast');
+				var toast = new bootstrap.Toast(toastEl, {
+					delay: 1000 // time in milliseconds (1000 ms = 1 seconds)
+				});
+				toast.show();
+			}
+		});
 	</script>
-} 
+}

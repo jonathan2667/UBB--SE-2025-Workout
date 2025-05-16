@@ -29,6 +29,7 @@ namespace Workout.Web.Controllers
             _userClassService = userClassService;
         }
 
+
         public async Task<IActionResult> Index()
         {
             var classes = await _classService.GetAllClassesAsync();
@@ -61,56 +62,15 @@ namespace Workout.Web.Controllers
 
 			var userClass = new UserClassModel
 			{
-				UID = GetCurrentUserId(), // Replace with your logic to get current user ID
+				UID = GetCurrentUserId(), 
 				CID = cid,
 				Date = selectedDate
 			};
 
 			await _userClassService.AddUserClassAsync(userClass);
-			TempData["Success"] = $"Successfully registered for {classModel.Name}.";
+			TempData["Success"] = "true";
 
 			return RedirectToAction("Details", new { id = cid });
 		}
-
-
-
-		//private async void ConfirmRegistration()
-		//{
-		//    if (SelectedClass == null)
-		//    {
-		//        DateError = "No class selected.";
-		//        return;
-		//    }
-
-		//    // Validate date is not in the past
-		//    if (SelectedDate.Date < DateTime.Today)
-		//    {
-		//        DateError = "Please choose a valid date (today or future)";
-		//        return;
-		//    }
-
-		//    try
-		//    {
-		//        int currentUserId = GetCurrentUserId();
-		//        Debug.WriteLine($"[ClassesViewModel] Registering user {currentUserId} for class {SelectedClass.CID} on {SelectedDate.Date}");
-
-		//        var userClass = new UserClassModel
-		//        {
-		//            UID = currentUserId,
-		//            CID = SelectedClass.CID,
-		//            Date = SelectedDate.Date
-		//        };
-
-		//        await userClassService.AddUserClassAsync(userClass);
-		//        DateError = string.Empty; // Clear error if successful
-		//        Debug.WriteLine($"[ClassesViewModel] Successfully registered for class {SelectedClass.Name}");
-		//        IsRegisterPopupOpen = false;
-		//    }
-		//    catch (Exception ex)
-		//    {
-		//        DateError = $"Registration failed: {ex.Message}";
-		//        Debug.WriteLine($"[ClassesViewModel] Registration failed: {ex.Message}");
-		//    }
-		//}
 	}
 } 
