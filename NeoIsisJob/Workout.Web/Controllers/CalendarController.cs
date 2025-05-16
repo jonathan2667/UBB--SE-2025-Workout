@@ -355,6 +355,78 @@ namespace Workout.Web.Controllers
             }
         }
 
+        // Direct AJAX update endpoint that doesn't require antiforgery token
+        [HttpPost]
+        [Route("Calendar/DirectUpdate/{userId}/{year}/{month}/{day}/{workoutId}")]
+        public async Task<IActionResult> DirectUpdate(int userId, int year, int month, int day, int workoutId)
+        {
+            try
+            {
+                var date = new DateTime(year, month, day);
+                
+                // Validate that the date is not in the past
+                if (date.Date < DateTime.Today)
+                {
+                    _logger.LogWarning($"Attempt to update workout for past date: {date:yyyy-MM-dd}");
+                    return Json(new { success = false, message = "Cannot modify workouts for past dates." });
+                }
+                
+                // Validate that the workoutId is valid
+                if (workoutId <= 0)
+                {
+                    _logger.LogWarning($"Invalid workoutId {workoutId} for date: {date:yyyy-MM-dd}");
+                    return Json(new { success = false, message = "Invalid workout selected." });
+                }
+                
+                // Check if workoutId exists
+                var workouts = await _calendarService.GetWorkoutsAsync();
+                var selectedWorkout = workouts.FirstOrDefault(w => w.WID == workoutId);
+                if (selectedWorkout == null)
+                {
+                    _logger.LogWarning($"Workout with ID {workoutId} not found");
+                    return Json(new { success = false, message = "Selected workout not found." });
+                }
+                
+                // Get the existing workout if any
+                var existingWorkout = await _calendarService.GetUserWorkoutAsync(userId, date);
+                
+                // Create or update the workout
+                var userWorkout = new UserWorkoutModel
+                {
+                    UID = userId,
+                    WID = workoutId,
+                    Date = date,
+                    // If there's an existing workout, preserve its completion status
+                    Completed = existingWorkout?.Completed ?? false
+                };
+                
+                if (existingWorkout != null)
+                {
+                    // Update existing workout
+                    await _calendarService.UpdateUserWorkoutAsync(userWorkout);
+                    _logger.LogInformation($"Workout updated for user {userId} on {date:yyyy-MM-dd} to workout {workoutId} via DirectUpdate");
+                }
+                else
+                {
+                    // Create new workout
+                    await _calendarService.AddUserWorkoutAsync(userWorkout);
+                    _logger.LogInformation($"New workout created for user {userId} on {date:yyyy-MM-dd} with workout {workoutId} via DirectUpdate");
+                }
+                
+                return Json(new { 
+                    success = true, 
+                    message = "Workout updated successfully.",
+                    workoutName = selectedWorkout.Name,
+                    workoutId = selectedWorkout.WID
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DirectUpdate: {ex.Message}");
+                return Json(new { success = false, message = "An error occurred while updating the workout." });
+            }
+        }
+
         // API Endpoints for AJAX calls
 
         [HttpGet]

@@ -33,8 +33,8 @@
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
-                <div class="toast-body">
-                    Workout successfully removed!
+                <div class="toast-body" id="toastMessage">
+                    Action completed successfully!
                 </div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -266,6 +266,7 @@
                                     
                                     // Show success toast
                                     const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+                                    document.getElementById('toastMessage').textContent = 'Workout successfully removed!';
                                     successToast.show();
                                 } else {
                                     console.error('Error deleting workout:', data.message);
@@ -478,6 +479,16 @@
             
             // Function to show workout selection modal
             function showWorkoutSelectionModal() {
+                // Get date directly from the workoutDate span in the modal
+                const workoutDateEl = document.getElementById('workoutDate');
+                const dateString = workoutDateEl ? workoutDateEl.textContent : null;
+                
+                if (!dateString) {
+                    console.error('No date found in modal');
+                    alert('Error: Date information not found');
+                    return;
+                }
+                
                 // Hide workout details modal first
                 workoutDetailsModal.hide();
                 
@@ -512,15 +523,57 @@
                         const workoutId = this.getAttribute('data-workout-id');
                         const workoutName = this.getAttribute('data-workout-name');
                         
-                        if (selectedDate) {
-                            const dateParts = selectedDate.split('-');
-                            const year = dateParts[0];
-                            const month = dateParts[1];
-                            const day = dateParts[2];
-                            const userId = 1; // Default user ID
-                            
-                            // Redirect to create or edit page with the selected workout
-                            window.location.href = `/Calendar/Create?date=${selectedDate}&userId=${userId}&workoutId=${workoutId}`;
+                        if (dateString) {
+                            const dateParts = dateString.split('-');
+                            if (dateParts.length === 3) {
+                                const year = dateParts[0];
+                                const month = dateParts[1];
+                                const day = dateParts[2];
+                                const userId = 1; // Default user ID
+                                
+                                console.log(`Updating workout for date ${dateString} to workout ${workoutName} (ID: ${workoutId})`);
+                                
+                                // Close workout selection modal
+                                workoutSelectionModal.hide();
+                                
+                                // Use DirectUpdate endpoint with fetch API
+                                fetch(`/Calendar/DirectUpdate/${userId}/${year}/${month}/${day}/${workoutId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Update response:', data);
+                                    
+                                    if (data.success) {
+                                        // Update calendar display
+                                        updateCalendar();
+                                        
+                                        // Show success toast
+                                        const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+                                        document.getElementById('toastMessage').textContent = 'Workout successfully updated!';
+                                        successToast.show();
+                                        
+                                        // Update workout name in the details modal if it's reopened
+                                        document.getElementById('workoutName').textContent = data.workoutName;
+                                    } else {
+                                        console.error('Error updating workout:', data.message);
+                                        alert('Error: ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error updating workout:', error);
+                                    alert('An error occurred while updating the workout.');
+                                });
+                            } else {
+                                console.error('Invalid date format:', dateString);
+                                alert('Error: Invalid date format');
+                            }
+                        } else {
+                            console.error('No date selected');
+                            alert('Error: No date selected');
                         }
                     });
                 });
@@ -528,6 +581,42 @@
                 // Show the modal
                 workoutSelectionModal.show();
             }
+
+            // Add event listener for the add workout button
+            document.getElementById('addWorkoutLink').addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                const dayNumber = document.getElementById('emptyDayNumber').textContent;
+                const emptyDateString = document.querySelector(`.calendar-day[data-day-number="${dayNumber}"]`)?.getAttribute('data-date');
+                
+                if (emptyDateString) {
+                    // Close the no workout modal
+                    noWorkoutModal.hide();
+                    
+                    // Set data for other functions to use
+                    selectedDate = emptyDateString;
+                    selectedDay = dayNumber;
+                    window.selectedDate = emptyDateString;
+                    window.selectedDay = dayNumber;
+                    
+                    // Format the date properly in the details modal
+                    const dateParts = emptyDateString.split('-');
+                    if (dateParts.length === 3) {
+                        const year = dateParts[0];
+                        const month = dateParts[1];
+                        const day = dateParts[2];
+                        
+                        // Set the date in the workout selection modal
+                        document.getElementById('workoutDate').textContent = `${year}-${month}-${day}`;
+                        
+                        // Show the workout selection modal to let the user choose a workout
+                        showWorkoutSelectionModal();
+                    }
+                } else {
+                    console.error('No date found for selected day');
+                    alert('Error: Could not determine the selected date');
+                }
+            });
         });
 
         // Function to handle day click and show appropriate dialog
