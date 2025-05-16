@@ -141,5 +141,26 @@ namespace Workout.Web.Controllers
         {
             return View();
         }
+        
+        // Method to add test data
+        public async Task<IActionResult> AddTestData()
+        {
+            try
+            {
+                // First clear the cart
+                await ((CartService)_cartService).ResetCart();
+                
+                // Add two test items to the cart
+                await _cartService.CreateAsync(new CartItemModel { ProductID = 1, UserID = 1 });
+                await _cartService.CreateAsync(new CartItemModel { ProductID = 2, UserID = 1 });
+                
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding test data to cart");
+                return View("Error", new ErrorViewModel { RequestId = "Failed to add test data to cart" });
+            }
+        }
     }
 } 
