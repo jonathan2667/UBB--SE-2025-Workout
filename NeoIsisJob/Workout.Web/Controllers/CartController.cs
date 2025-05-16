@@ -85,6 +85,62 @@ namespace Workout.Web.Controllers
                 return View("Error", new ErrorViewModel { RequestId = "Failed to clear cart" });
             }
         }
+
+        public async Task<IActionResult> Payment()
+        {
+            try
+            {
+                var cartItems = await _cartService.GetAllAsync();
+                decimal totalAmount = 0;
+                
+                foreach (var item in cartItems)
+                {
+                    if (item.Product != null)
+                    {
+                        totalAmount += item.Product.Price;
+                    }
+                }
+                
+                ViewData["TotalAmount"] = totalAmount;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving cart items for payment");
+                return View("Error", new ErrorViewModel { RequestId = "Failed to process payment" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPayment(
+            string cardNumber, string cardName, string expiryDate, string cvv,
+            string customerName, string email, string address, string city, string zipCode)
+        {
+            try
+            {
+                _logger.LogInformation($"Processing payment for {customerName} ({email})");
+                _logger.LogInformation($"Shipping to: {address}, {city}, {zipCode}");
+                
+                await ((CartService)_cartService).ResetCart();
+                
+                TempData["CustomerName"] = customerName;
+                TempData["Email"] = email;
+                TempData["Address"] = address;
+                TempData["OrderNumber"] = new Random().Next(100000, 999999).ToString();
+                
+                return RedirectToAction(nameof(Confirmation));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing payment");
+                return View("Error", new ErrorViewModel { RequestId = "Failed to process payment" });
+            }
+        }
+
+        public IActionResult Confirmation()
+        {
+            return View();
+        }
         
         // Method to add test data
         public async Task<IActionResult> AddTestData()

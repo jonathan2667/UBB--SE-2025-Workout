@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Order Confirmation";
+    
+    var orderNumber = TempData["OrderNumber"]?.ToString() ?? new Random().Next(10000, 99999).ToString();
+    var orderDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+    var customerName = TempData["CustomerName"]?.ToString() ?? "Valued Customer";
+    var email = TempData["Email"]?.ToString() ?? "Not provided";
+    var address = TempData["Address"]?.ToString() ?? "Not provided";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="bi bi-check-circle-fill me-2"></i> Order Confirmed!</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4 text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/889/889258.png" alt="Order Confirmed" class="img-fluid" style="max-width: 150px;">
+                    </div>
+                    
+                    <h4 class="text-center">Thank you for your purchase, @customerName!</h4>
+                    <p class="lead text-center">Your order has been confirmed and is being processed.</p>
+                    
+                    <div class="alert alert-info mt-4">
+                        <h5>Order Details</h5>
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <strong>Order Number:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                #@orderNumber
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <strong>Order Date:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @orderDate
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light mt-4">
+                        <h5>Customer Information</h5>
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <strong>Name:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @customerName
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <strong>Email:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @email
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4">
+                                <strong>Shipping Address:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @address
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="mt-4 text-center">A confirmation email has been sent to <strong>@email</strong>.</p>
+                    
+                    <div class="mt-4 text-center">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-house-fill"></i> Return to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

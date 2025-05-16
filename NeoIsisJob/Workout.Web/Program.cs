@@ -38,13 +38,6 @@ builder.Services.AddScoped<IUserClassService, UserClassService>();
 builder.Services.AddScoped<IService<CartItemModel>, CartService>();
 builder.Services.AddScoped<IService<WishlistItemModel>, WishlistService>();
 
-// Configure HttpClient for API
-builder.Services.AddHttpClient("API", client =>
-{
-    var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5111/api";
-    client.BaseAddress = new Uri(apiBaseUrl);
-});
-
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
