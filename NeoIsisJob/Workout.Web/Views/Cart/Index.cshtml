@@ -65,6 +65,12 @@
                                                 <i class="bi bi-trash"></i> Remove
                                             </button>
                                         </form>
+                                        @if (item.Product != null)
+                                        {
+                                            <a href="@Url.Action("Product", "Shop", new { id = item.Product.ID })" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-eye"></i> View Details
+                                            </a>
+                                        }
                                     </td>
                                 </tr>
                             }
