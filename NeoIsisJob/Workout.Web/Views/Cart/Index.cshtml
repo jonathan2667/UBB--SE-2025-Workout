@@ -15,7 +15,7 @@
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info">
-            Your cart is empty. Browse our <a asp-controller="Home" asp-action="Index">products</a> to add items.
+            Your cart is empty. Browse our <a asp-controller="Shop" asp-action="Index">products</a> to add items.
         </div>
     }
     else
@@ -65,6 +65,12 @@
                                                 <i class="bi bi-trash"></i> Remove
                                             </button>
                                         </form>
+                                        @if (item.Product != null)
+                                        {
+                                            <a href="@Url.Action("Product", "Shop", new { id = item.Product.ID })" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-eye"></i> View Details
+                                            </a>
+                                        }
                                     </td>
                                 </tr>
                             }
