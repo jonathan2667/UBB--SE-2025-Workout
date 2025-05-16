@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //var connectionString = "Server=(localdb)\\mssqllocaldb;Database=Workout;Trusted_Connection=True;MultipleActiveResultSets=true";
+//var connectionString = "Server=localhost\\SQLEXPRESS;Database=Workout;Trusted_Connection=True;MultipleActiveResultSets=true";
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 
@@ -25,6 +26,7 @@ builder.Configuration
     .AddJsonFile(serverSettings, optional: false, reloadOnChange: true);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 
 
 
@@ -50,6 +52,8 @@ builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepo>();
 builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
+builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -61,6 +65,7 @@ builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
