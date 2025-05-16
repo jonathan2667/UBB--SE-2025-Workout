@@ -45,8 +45,8 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label asp-for="Color" class="form-label">Color (Optional)</label>
-                            <select asp-for="Color" class="form-select">
-                                <option value="">None</option>
+                            <select asp-for="Color" class="form-select" data-val="false">
+                                <option value="N/A">None</option>
                                 <option>Red</option>
                                 <option>Green</option>
                                 <option>Blue</option>
@@ -60,8 +60,8 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label asp-for="Size" class="form-label">Size (Optional)</label>
-                            <select asp-for="Size" class="form-select">
-                                <option value="">None</option>
+                            <select asp-for="Size" class="form-select" data-val="false">
+                                <option value="N/A">None</option>
                                 <option>S</option>
                                 <option>M</option>
                                 <option>L</option>

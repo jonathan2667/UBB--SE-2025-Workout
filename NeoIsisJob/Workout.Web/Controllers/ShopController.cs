@@ -116,7 +116,7 @@ namespace Workout.Web.Controllers
                 return RedirectToAction(nameof(Product), new { id = productId });
             }
 
-            var cartItem = new CartItemModel(DefaultUserId, productId);
+            var cartItem = new CartItemModel(productId, DefaultUserId);
             await cartService.CreateAsync(cartItem);
 
             TempData["SuccessMessage"] = "Product added to cart successfully!";
