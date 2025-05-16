@@ -10,8 +10,23 @@ using Workout.Core.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = "Server=(localdb)\\mssqllocaldb;Database=Workout;Trusted_Connection=True;MultipleActiveResultSets=true";
+//var connectionString = "Server=localhost\\SQLEXPRESS;Database=Workout;Trusted_Connection=True;MultipleActiveResultSets=true";
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
+var serverSettings = Path.Combine(Directory.GetCurrentDirectory(),
+                                  "..",               // go up from Workout.Web's folder
+                                  "Workout.Server",   // into the server project
+                                  "appsettings.json");
+
+// 2. Tell the Configuration system to load it  
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())  // keep the default base
+    .AddJsonFile(serverSettings, optional: false, reloadOnChange: true);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
