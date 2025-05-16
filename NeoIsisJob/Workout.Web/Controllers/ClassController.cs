@@ -29,6 +29,7 @@ namespace Workout.Web.Controllers
             _userClassService = userClassService;
         }
 
+
         public async Task<IActionResult> Index()
         {
             var classes = await _classService.GetAllClassesAsync();
@@ -44,6 +45,10 @@ namespace Workout.Web.Controllers
             }
             return View(classModel);
         }
+
+
+
+
 
 		public async Task<IActionResult> Enroll(int cid, DateTime selectedDate)
 		{
@@ -67,7 +72,8 @@ namespace Workout.Web.Controllers
 			};
 
 			await _userClassService.AddUserClassAsync(userClass);
-			TempData["Success"] = $"Successfully registered for {classModel.Name}.";
+			TempData["Success"] = "true";
+			TempData["SuccessMessage"] = $"Successfully registered for {classModel.Name}.";
 
 			return RedirectToAction("Details", new { id = cid });
 		}
