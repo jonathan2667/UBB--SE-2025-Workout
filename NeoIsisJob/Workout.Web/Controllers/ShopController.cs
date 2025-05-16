@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Core.Utils.Filters;
@@ -16,7 +15,7 @@ namespace Workout.Web.Controllers
         private const int DefaultUserId = 1; // This should be replaced with actual user ID from authentication
 
         public ShopController(
-            IService<ProductModel> productService, 
+            IService<ProductModel> productService,
             IService<CategoryModel> categoryService,
             IService<WishlistItemModel> wishlistService,
             IService<CartItemModel> cartService)
@@ -94,7 +93,7 @@ namespace Workout.Web.Controllers
             }
             else
             {
-                var newWishlistItem = new WishlistItemModel(DefaultUserId, productId);
+                var newWishlistItem = new WishlistItemModel(productId, DefaultUserId);
                 await wishlistService.CreateAsync(newWishlistItem);
             }
 

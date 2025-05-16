@@ -30,7 +30,7 @@
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info">
-            Your wishlist is empty.
+            Your wishlist is empty. Browse our <a asp-controller="Shop" asp-action="Index">products</a> to add items.
         </div>
     }
     else
