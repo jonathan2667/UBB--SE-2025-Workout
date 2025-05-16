@@ -49,6 +49,7 @@ builder.Services.AddScoped<IWorkoutTypeRepository, WorkoutTypeRepo>();
 builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IExerciseRepository, ExerciseRepo>();
 builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
+builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IWorkoutTypeService, WorkoutTypeService>();
 builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
+builder.Services.AddScoped<IRankingsService, RankingsService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
