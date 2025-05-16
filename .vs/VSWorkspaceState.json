@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\NeoIsisJob",
+    "\\NeoIsisJob\\Workout.Core",
+    "\\NeoIsisJob\\Workout.Core\\Data"
   ],
-  "SelectedNode": "\\NeoIsisJob.sln (NeoIsisJob\\NeoIsisJob.sln)",
   "PreviewInSolutionExplorer": false
 }
