@@ -1,3 +1,5 @@
+@model List<Workout.Core.Models.CalendarDayModel>
+
 @{
     ViewData["Title"] = "Calendar";
 }
@@ -16,6 +18,13 @@
             <button class="btn btn-outline-primary mx-3" id="nextMonth">&gt;</button>
         </div>
     </div>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
 
     <div class="row mb-3">
         <div class="col text-center">
@@ -46,20 +55,287 @@
     </div>
 </div>
 
+<!-- Workout Details Modal -->
+<div class="modal fade" id="workoutDetailsModal" tabindex="-1" aria-labelledby="workoutDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="workoutDetailsModalLabel">Details - Day <span id="workoutDayNumber"></span></h5>
+      </div>
+      <div class="modal-body">
+        <p>Date: <span id="workoutDate"></span></p>
+        <p>Workout Name: <span id="workoutName"></span></p>
+        <div id="workoutPastDateHint" class="alert alert-warning" style="display: none;">
+          Past dates cannot be modified.
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <div>
+          <button type="button" id="changeWorkoutBtn" class="btn btn-outline-primary me-2">Change Workout</button>
+          <button type="button" id="removeWorkoutBtn" class="btn btn-outline-danger">Remove Workout</button>
+        </div>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Class Details Modal -->
+<div class="modal fade" id="classDetailsModal" tabindex="-1" aria-labelledby="classDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="classDetailsModalLabel">Details - Day <span id="classDayNumber"></span></h5>
+      </div>
+      <div class="modal-body">
+        <div id="classInfoContainer" class="p-3 rounded">
+          <p>Date: <span id="classDate"></span></p>
+          <p>Class Name: <span id="className"></span></p>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- No Workout Modal -->
+<div class="modal fade" id="noWorkoutModal" tabindex="-1" aria-labelledby="noWorkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="noWorkoutModalLabel">Day <span id="emptyDayNumber"></span></h5>
+      </div>
+      <div class="modal-body">
+        <p>No workout scheduled for this day.</p>
+        <div id="pastDateMessage" class="alert alert-warning" style="display: none;">
+          You cannot add workouts to past dates.
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <a href="#" id="addWorkoutLink" class="btn btn-outline-success">Add Workout</a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Workout Selection Modal -->
+<div class="modal fade" id="workoutSelectionModal" tabindex="-1" aria-labelledby="workoutSelectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="workoutSelectionModalLabel">Day <span id="selectionDayNumber"></span></h5>
+      </div>
+      <div class="modal-body" id="workoutSelectionList">
+        <!-- Workout options will be populated by JavaScript -->
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-secondary" id="backToDetailsBtn">Back</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let currentDate = new Date();
+            let currentYear = currentDate.getFullYear();
+            let currentMonth = currentDate.getMonth();
+            let currentDay = currentDate.getDate();
+            let workouts = [];
+            let selectedDate = null;
+            let selectedWorkout = null;
+            let selectedDay = null;
+
+            // Initialize calendar
+            updateCalendar();
             
+            // Initialize modals
+            const workoutDetailsModal = new bootstrap.Modal(document.getElementById('workoutDetailsModal'));
+            const classDetailsModal = new bootstrap.Modal(document.getElementById('classDetailsModal'));
+            const noWorkoutModal = new bootstrap.Modal(document.getElementById('noWorkoutModal'));
+            const workoutSelectionModal = new bootstrap.Modal(document.getElementById('workoutSelectionModal'));
+
+            // Set up event listeners
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                if (currentMonth === 0) {
+                    currentYear--;
+                    currentMonth = 11;
+                } else {
+                    currentMonth--;
+                }
+                updateCalendar();
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                if (currentMonth === 11) {
+                    currentYear++;
+                    currentMonth = 0;
+                } else {
+                    currentMonth++;
+                }
+                updateCalendar();
+            });
+            
+            document.getElementById('changeWorkoutBtn').addEventListener('click', function() {
+                showWorkoutSelectionModal();
+            });
+            
+            document.getElementById('removeWorkoutBtn').addEventListener('click', function() {
+                if (selectedDate) {
+                    const dateParts = selectedDate.split('-');
+                    const year = dateParts[0];
+                    const month = dateParts[1];
+                    const day = dateParts[2];
+                    const userId = 1; // Default user ID
+                    
+                    window.location.href = `/Calendar/Delete/${userId}/${year}/${month}/${day}`;
+                }
+            });
+            
+            document.getElementById('backToDetailsBtn').addEventListener('click', function() {
+                workoutSelectionModal.hide();
+                workoutDetailsModal.show();
+            });
+
+            // Function to fetch workouts for the selection dialog
+            function fetchWorkouts() {
+                fetch('/api/calendar/workouts')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        workouts = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching workouts:', error);
+                    });
+            }
+            
+            // Try to fetch workouts when the page loads
+            fetchWorkouts();
+
+            // Function to fetch calendar data from the server
+            function fetchCalendarData(year, month) {
+                // Using 1 as the default user ID as specified in GetCurrentUserId()
+                const userId = 1;
+                
+                fetch(`/api/calendar/${userId}/${year}/${month + 1}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        renderCalendar(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching calendar data:', error);
+                        renderCalendar([]);
+                    });
+            }
+
+            // Function to update the calendar
             function updateCalendar() {
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
+                document.getElementById('yearText').textContent = currentYear;
+                document.getElementById('monthText').textContent = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' });
                 
-                document.getElementById('yearText').textContent = year;
-                document.getElementById('monthText').textContent = new Date(year, month).toLocaleString('default', { month: 'long' });
+                // Try to fetch data from API, fall back to simple calendar rendering if not available
+                try {
+                    fetchCalendarData(currentYear, currentMonth);
+                } catch (error) {
+                    console.error('Error during fetch, falling back to simple calendar', error);
+                    renderCalendarFromScratch();
+                }
+            }
+
+            // Render calendar with data from API
+            function renderCalendar(days) {
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                const startingDay = firstDay.getDay();
+                const totalDays = lastDay.getDate();
                 
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
+                let calendarHTML = '';
+                
+                // Create a map of day number to CalendarDayModel
+                const dayMap = {};
+                days.forEach(day => {
+                    dayMap[day.dayNumber] = day;
+                    
+                    // Debug days with classes
+                    if (day.hasClass) {
+                        console.log('Day with class:', day);
+                    }
+                });
+                
+                for (let i = 0; i < 6; i++) {
+                    let rowHTML = '<div class="row mb-3">';
+                    
+                    for (let j = 0; j < 7; j++) {
+                        const cellIndex = i * 7 + j;
+                        const dayNumber = cellIndex - startingDay + 1;
+                        
+                        if (dayNumber < 1 || dayNumber > totalDays) {
+                            rowHTML += '<div class="col text-center p-2"></div>';
+                        } else {
+                            const isToday = dayNumber === currentDay && 
+                                            currentMonth === new Date().getMonth() && 
+                                            currentYear === new Date().getFullYear();
+                            
+                            // Check if this date is in the past
+                            const cellDate = new Date(currentYear, currentMonth, dayNumber);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const isPastDate = cellDate < today;
+                            
+                            const dayData = dayMap[dayNumber];
+                            const hasWorkout = dayData && dayData.hasWorkout;
+                            const hasClass = dayData && dayData.hasClass;
+                            const isCompleted = dayData && dayData.isWorkoutCompleted;
+                            
+                            let dayClasses = 'calendar-day';
+                            if (isToday) dayClasses += ' today';
+                            if (hasWorkout) dayClasses += ' has-workout';
+                            if (hasClass) dayClasses += ' has-class';
+                            if (isCompleted) dayClasses += ' completed';
+                            if (isPastDate) dayClasses += ' past-date';
+                            
+                            const dateString = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${dayNumber.toString().padStart(2, '0')}`;
+                            
+                            rowHTML += `<div class="col text-center p-2">
+                                <div class="${dayClasses}" data-date="${dateString}" 
+                                  data-has-workout="${hasWorkout}" 
+                                  data-has-class="${hasClass}" 
+                                  data-day-number="${dayNumber}"
+                                  onclick="openDayDialog(this)">
+                                    ${dayNumber}
+                                </div>
+                            </div>`;
+                        }
+                    }
+                    
+                    rowHTML += '</div>';
+                    calendarHTML += rowHTML;
+                    
+                    if ((i + 1) * 7 - startingDay >= totalDays) break;
+                }
+                
+                document.getElementById('calendarDays').innerHTML = calendarHTML;
+            }
+
+            // Fallback render method if API is not available
+            function renderCalendarFromScratch() {
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
                 const startingDay = firstDay.getDay();
                 const totalDays = lastDay.getDate();
                 
@@ -75,8 +351,25 @@
                         } else if (dayCount > totalDays) {
                             rowHTML += '<div class="col text-center p-2"></div>';
                         } else {
+                            const isToday = dayCount === currentDay && 
+                                          currentMonth === new Date().getMonth() && 
+                                          currentYear === new Date().getFullYear();
+                            
+                            // Check if this date is in the past
+                            const cellDate = new Date(currentYear, currentMonth, dayCount);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const isPastDate = cellDate < today;
+                            
+                            const dateString = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${dayCount.toString().padStart(2, '0')}`;
+                            
                             rowHTML += `<div class="col text-center p-2">
-                                <div class="calendar-day ${dayCount === new Date().getDate() && month === new Date().getMonth() ? 'bg-primary text-white' : ''}">
+                                <div class="calendar-day ${isToday ? 'today' : ''} ${isPastDate ? 'past-date' : ''}" 
+                                  data-date="${dateString}" 
+                                  data-has-workout="false" 
+                                  data-has-class="false" 
+                                  data-day-number="${dayCount}"
+                                  onclick="openDayDialog(this)">
                                     ${dayCount}
                                 </div>
                             </div>`;
@@ -93,18 +386,234 @@
                 document.getElementById('calendarDays').innerHTML = calendarHTML;
             }
             
-            document.getElementById('prevMonth').addEventListener('click', function() {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                updateCalendar();
-            });
-            
-            document.getElementById('nextMonth').addEventListener('click', function() {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                updateCalendar();
-            });
-            
-            updateCalendar();
+            // Function to show workout selection modal
+            function showWorkoutSelectionModal() {
+                // Hide workout details modal first
+                workoutDetailsModal.hide();
+                
+                // Populate workout list
+                let listHTML = '';
+                
+                if(workouts.length > 0) {
+                    workouts.forEach(workout => {
+                        listHTML += `<button class="btn btn-outline-primary w-100 mb-2 workout-option" 
+                                       data-workout-id="${workout.wid}" 
+                                       data-workout-name="${workout.name}">
+                                         ${workout.name}
+                                     </button>`;
+                    });
+                } else {
+                    // Placeholder workouts if API failed
+                    for(let i = 1; i <= 5; i++) {
+                        listHTML += `<button class="btn btn-outline-primary w-100 mb-2 workout-option" 
+                                       data-workout-id="${i}" 
+                                       data-workout-name="workout${i}">
+                                         workout${i}
+                                     </button>`;
+                    }
+                }
+                
+                document.getElementById('workoutSelectionList').innerHTML = listHTML;
+                document.getElementById('selectionDayNumber').textContent = selectedDay;
+                
+                // Add event listeners to workout options
+                document.querySelectorAll('.workout-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const workoutId = this.getAttribute('data-workout-id');
+                        const workoutName = this.getAttribute('data-workout-name');
+                        
+                        if (selectedDate) {
+                            const dateParts = selectedDate.split('-');
+                            const year = dateParts[0];
+                            const month = dateParts[1];
+                            const day = dateParts[2];
+                            const userId = 1; // Default user ID
+                            
+                            // Redirect to create or edit page with the selected workout
+                            window.location.href = `/Calendar/Create?date=${selectedDate}&userId=${userId}&workoutId=${workoutId}`;
+                        }
+                    });
+                });
+                
+                // Show the modal
+                workoutSelectionModal.show();
+            }
         });
+
+        // Function to handle day click and show appropriate dialog
+        function openDayDialog(element) {
+            const date = element.getAttribute('data-date');
+            const hasWorkout = element.getAttribute('data-has-workout') === 'true';
+            const hasClass = element.getAttribute('data-has-class') === 'true';
+            const dayNumber = element.getAttribute('data-day-number');
+            
+            // Save selected data for use in modals
+            window.selectedDate = date;
+            window.selectedDay = dayNumber;
+            
+            // Format the date for display
+            const dateObj = new Date(date);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'numeric', 
+                day: 'numeric' 
+            });
+            
+            // Set up data for API calls
+            const dateParts = date.split('-');
+            const year = dateParts[0];
+            const month = dateParts[1];
+            const day = dateParts[2];
+            const userId = 1; // Default user ID
+            
+            // Check if this date is in the past
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const isPastDate = dateObj < today;
+            
+            if (hasWorkout) {
+                // Show workout details modal
+                document.getElementById('workoutDayNumber').textContent = dayNumber;
+                document.getElementById('workoutDate').textContent = `${year}-${month}-${day}`;
+                
+                // Fetch workout details if possible, otherwise just show placeholder
+                fetch(`/api/calendar/${userId}/${year}/${month}/${day}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Workout data:', data); // Debug log
+                        
+                        // Use the workout name from the enhanced endpoint response
+                        let workoutName = 'Unknown Workout';
+                        if (data && data.workoutName) {
+                            workoutName = data.workoutName;
+                        } else if (data && data.workout && data.workout.name) {
+                            workoutName = data.workout.name;
+                        } else if (data && data.name) {
+                            workoutName = data.name;
+                        } else if (data && data.wid) {
+                            // If we only have the workout ID, attempt to fetch the workout details
+                            fetch(`/api/calendar/workouts/${data.wid}`)
+                                .then(response => response.json())
+                                .then(workoutData => {
+                                    if (workoutData && workoutData.name) {
+                                        document.getElementById('workoutName').textContent = workoutData.name;
+                                    }
+                                })
+                                .catch(err => console.error('Error fetching workout name:', err));
+                        }
+                        
+                        document.getElementById('workoutName').textContent = workoutName;
+                        window.selectedWorkout = data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching workout details:', error);
+                        document.getElementById('workoutName').textContent = 'Could not load workout';
+                    });
+                
+                // If past date, disable change workout button
+                document.getElementById('changeWorkoutBtn').disabled = isPastDate;
+                document.getElementById('removeWorkoutBtn').disabled = isPastDate;
+                
+                if (isPastDate) {
+                    document.getElementById('workoutPastDateHint').style.display = 'block';
+                } else {
+                    document.getElementById('workoutPastDateHint').style.display = 'none';
+                }
+                
+                const workoutDetailsModal = new bootstrap.Modal(document.getElementById('workoutDetailsModal'));
+                workoutDetailsModal.show();
+            } 
+            else if (hasClass) {
+                // Show class details modal
+                document.getElementById('classDayNumber').textContent = dayNumber;
+                document.getElementById('classDate').textContent = `${year}-${month}-${day}`;
+                
+                // Fetch class details
+                fetch(`/api/calendar/${userId}/${year}/${month}/${day}/class`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Class data returned from API:', data); // Debug log
+                        
+                        // Get class information with proper feedback
+                        let className = 'Unknown Class';
+                        let hasClassConfirmed = false;
+                        
+                        if (data && data.className) {
+                            className = data.className;
+                            // Check for the has_class flag first
+                            if (data.hasClass === true) {
+                                hasClassConfirmed = true;
+                            }
+                            // Also check for a meaningful class name
+                            else if (className !== 'No class found' && className !== 'Unknown Class') {
+                                hasClassConfirmed = true;
+                            }
+                        } else if (data && data.name) {
+                            className = data.name;
+                            hasClassConfirmed = true;
+                        }
+                        
+                        // Additional debugging
+                        console.log('Final class name to display:', className);
+                        console.log('Has class confirmed:', hasClassConfirmed);
+                        
+                        // Update modal content
+                        document.getElementById('className').textContent = className;
+                        
+                        // Update UI based on whether this day truly has a class
+                        if (hasClassConfirmed) {
+                            document.getElementById('classInfoContainer').classList.add('has-class-border');
+                            // When we confirm there's a class, update the class indicator on the calendar day
+                            element.setAttribute('data-has-class', 'true');
+                            element.classList.add('has-class');
+                        } else {
+                            document.getElementById('classInfoContainer').classList.remove('has-class-border');
+                            // If we determine there's no class, update the calendar UI
+                            element.setAttribute('data-has-class', 'false');
+                            element.classList.remove('has-class');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching class details:', error);
+                        document.getElementById('className').textContent = 'Could not load class';
+                    });
+                
+                // Debug what type of data we have
+                console.log('HasClass value:', hasClass, 'Type:', typeof hasClass);
+                console.log('Class details for day:', dayNumber, 'Date:', `${year}-${month}-${day}`);
+                
+                const classDetailsModal = new bootstrap.Modal(document.getElementById('classDetailsModal'));
+                classDetailsModal.show();
+            } 
+            else {
+                // Show empty day modal
+                document.getElementById('emptyDayNumber').textContent = dayNumber;
+                
+                if (isPastDate) {
+                    // If past date, disable add workout button and show message
+                    document.getElementById('addWorkoutLink').style.display = 'none';
+                    document.getElementById('pastDateMessage').style.display = 'block';
+                } else {
+                    // Otherwise show add workout button and hide message
+                    document.getElementById('addWorkoutLink').href = `/Calendar/Create?date=${date}&userId=${userId}`;
+                    document.getElementById('addWorkoutLink').style.display = 'inline-block';
+                    document.getElementById('pastDateMessage').style.display = 'none';
+                }
+                
+                const noWorkoutModal = new bootstrap.Modal(document.getElementById('noWorkoutModal'));
+                noWorkoutModal.show();
+            }
+        }
     </script>
 }
 
@@ -125,7 +634,72 @@
         background-color: #e9ecef;
     }
     
-    .calendar-day.bg-primary:hover {
-        background-color: #0d6efd !important;
+    .calendar-day.today {
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    .calendar-day.today:hover {
+        background-color: #0a58ca;
+    }
+    
+    .calendar-day.has-workout {
+        background-color: #198754;
+        color: white;
+    }
+    
+    .calendar-day.has-workout:hover {
+        background-color: #146c43;
+    }
+    
+    .calendar-day.has-class {
+        border: 3px solid #fd7e14;
+    }
+    
+    .has-class-border {
+        border: 3px solid #fd7e14;
+    }
+    
+    .calendar-day.completed {
+        background-color: #20c997;
+        color: white;
+    }
+    
+    .calendar-day.completed:hover {
+        background-color: #1aa179;
+    }
+    
+    .calendar-day.past-date {
+        opacity: 0.65;
+        color: #6c757d;
+    }
+    
+    .calendar-day.past-date:hover {
+        cursor: pointer;
+        background-color: #f8f9fa;
+    }
+    
+    /* Past dates that have workouts still show the color but dimmed */
+    .calendar-day.past-date.has-workout {
+        opacity: 0.75;
+    }
+    
+    /* Modal styling to match the original app */
+    .modal-content {
+        border-radius: 10px;
+    }
+    
+    .modal-header {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .modal-footer {
+        border-top: none;
+    }
+    
+    .workout-option {
+        text-align: left;
+        margin-bottom: 10px !important;
     }
 </style>
