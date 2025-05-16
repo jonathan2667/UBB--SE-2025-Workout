@@ -242,7 +242,7 @@ namespace Workout.Core.Data
                 new ClassModel { CID = 3, Name = "MMA", Description = "fightttt", CTID = 2, PTID = 2 },
                 new ClassModel { CID = 4, Name = "Yoga", Description = "relax", CTID = 3, PTID = 3 });
 
-            modelBuilder.Entity<UserClassModel>().HasData();
+            modelBuilder.Entity<UserClassModel>().HasData(new UserClassModel[] { });
             // (Optional) seed user-class associations if needed
 
             // Shop seed data
