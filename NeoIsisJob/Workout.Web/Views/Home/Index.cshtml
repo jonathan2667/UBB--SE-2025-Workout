@@ -1,8 +1,213 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <div class="row">
+        <!-- Left Content - Enhanced Fitness Dashboard -->
+        <div class="col-md-8 mb-4">
+            <div class="p-4 bg-light rounded shadow-sm">
+                <h2 class="display-5 mb-4 text-primary">Elevate Your Fitness Journey</h2>
+                <p class="lead mb-4">Welcome to NeoIsis - where fitness meets personalization. Track progress, crush goals, and transform your body with customized workouts tailored to your needs.</p>
+                
+                <div class="row mt-5">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                                    <i class="bi bi-calendar-check text-primary" style="font-size: 2rem;"></i>
+                                </div>
+                                <h5 class="card-title">Daily Workouts</h5>
+                                <p class="card-text text-muted">Schedule personalized routines tailored to your fitness level</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mb-3">
+                                    <i class="bi bi-graph-up-arrow text-success" style="font-size: 2rem;"></i>
+                                </div>
+                                <h5 class="card-title">Track Progress</h5>
+                                <p class="card-text text-muted">Monitor your improvements with detailed statistics</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center">
+                                <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-block mb-3">
+                                    <i class="bi bi-people text-info" style="font-size: 2rem;"></i>
+                                </div>
+                                <h5 class="card-title">Join Classes</h5>
+                                <p class="card-text text-muted">Participate in group activities with professional trainers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Navigation Links -->
+                <div class="mt-5">
+                    <h5 class="text-center mb-4">Explore More</h5>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="/Workout" class="btn btn-outline-primary">
+                            <i class="bi bi-activity me-2"></i>Workouts
+                        </a>
+                        <a href="/Class" class="btn btn-outline-success">
+                            <i class="bi bi-people-fill me-2"></i>Classes
+                        </a>
+                        <a href="/Shop" class="btn btn-outline-info">
+                            <i class="bi bi-bag me-2"></i>Shop Products
+                        </a>
+                        <a href="/Wishlist" class="btn btn-outline-danger">
+                            <i class="bi bi-heart me-2"></i>Wishlist
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="mt-5 text-center">
+                    <p class="text-muted fw-bold">YOUR FITNESS JOURNEY BEGINS TODAY</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Workout Card -->
+        <div class="col-md-4">
+            <div class="d-flex flex-column gap-4">
+                <!-- Current Date Display -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Today's Date</h5>
+                        <p class="card-text fw-semibold">@Model.CurrentDate</p>
+                    </div>
+                </div>
+
+                <!-- Workout Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Today's Workout</h5>
+                        
+                        <!-- Workout Header -->
+                        <h4 class="mt-2 mb-3">@(Model.HasActiveWorkout ? Model.CurrentWorkout.Name : "No Active Workout")</h4>
+                        <hr />
+
+                        <!-- Workout Content -->
+                        <div class="workout-details mb-3" style="max-height: 200px; overflow-y: auto;">
+                            @if (!Model.HasActiveWorkout)
+                            {
+                                <p class="text-muted">You don't have a workout scheduled for today. Add one to get started!</p>
+                            }
+                            else
+                            {
+                                <p>Today's workout plan</p>
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var exercise in Model.WorkoutExercises)
+                                    {
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <i class="bi bi-check-circle-fill me-2 text-success"></i>
+                                            <span>@exercise.ToString()</span>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+
+                        <!-- Buttons or Success Message -->
+                        <div class="d-flex gap-2">
+                            @if (Model.ShowSuccessMessage)
+                            {
+                                <div class="alert alert-success w-100 mb-0">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    @Model.SuccessMessage
+                                </div>
+                            }
+                            else if (!Model.HasActiveWorkout)
+                            {
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkoutModal">
+                                    <i class="bi bi-plus-circle me-2"></i>Add Workout
+                                </button>
+                            }
+                            else
+                            {
+                                <form asp-action="DeleteWorkout" method="post" class="ms-auto">
+                                    <input type="hidden" name="workoutId" value="@Model.CurrentWorkout.WID" />
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="bi bi-trash me-2"></i>Delete Workout
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Add Workout Modal -->
+<div class="modal fade" id="addWorkoutModal" tabindex="-1" aria-labelledby="addWorkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addWorkoutModalLabel">Select a Workout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="workoutListContainer" class="mb-3">
+                    Loading workouts...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="addSelectedWorkoutBtn" class="btn btn-primary" disabled>Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Load workouts when modal is shown
+            $('#addWorkoutModal').on('shown.bs.modal', function () {
+                $.get('/Workout/GetAll', function(data) {
+                    var workoutsHtml = '<div class="list-group">';
+                    
+                    if (data.length === 0) {
+                        $('#workoutListContainer').html('<p>No workouts available</p>');
+                        return;
+                    }
+                    
+                    $.each(data, function(i, workout) {
+                        workoutsHtml += `<button type="button" class="list-group-item list-group-item-action" 
+                                        data-workout-id="${workout.wid}">
+                                            ${workout.name}
+                                        </button>`;
+                    });
+                    
+                    workoutsHtml += '</div>';
+                    $('#workoutListContainer').html(workoutsHtml);
+                    
+                    // Handle workout selection
+                    $('.list-group-item').click(function() {
+                        $('.list-group-item').removeClass('active');
+                        $(this).addClass('active');
+                        $('#addSelectedWorkoutBtn').prop('disabled', false);
+                    });
+                });
+            });
+            
+            // Handle add workout button click
+            $('#addSelectedWorkoutBtn').click(function() {
+                var selectedWorkoutId = $('.list-group-item.active').data('workout-id');
+                
+                if (selectedWorkoutId) {
+                    $.post('/Home/AddWorkout', { workoutId: selectedWorkoutId }, function() {
+                        location.reload();
+                    });
+                }
+            });
+        });
+    </script>
+}

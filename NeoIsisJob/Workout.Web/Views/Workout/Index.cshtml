@@ -1,0 +1,178 @@
+@model IEnumerable<Workout.Web.Models.WorkoutModel>
+
+@{
+    ViewData["Title"] = "Workouts";
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-warning">
+        <h4>Connection Error</h4>
+        <p>@ViewBag.ErrorMessage</p>
+        <p>Make sure the API server is running at http://localhost:5261 before using this page.</p>
+    </div>
+}
+else
+{
+    <div class="container mt-3">
+        <!-- Create Button -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a asp-action="Create" class="btn btn-primary" style="width: 100px;">Create</a>
+            </div>
+        </div>
+
+        <!-- Workout Types as checkboxes -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="fw-bold">Select Workout Types:</h5>
+                <div class="d-flex flex-wrap" id="workoutTypeCheckboxes">
+                    @if (ViewBag.WorkoutTypes != null)
+                    {
+                        @foreach (var type in ViewBag.WorkoutTypes)
+                        {
+                            <div class="form-check me-3 mb-2">
+                                <input class="form-check-input workout-type-checkbox" type="checkbox" id="type-@type.Id" value="@type.Id" data-type-name="@type.Name">
+                                <label class="form-check-label" for="type-@type.Id">@type.Name</label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No workout types available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Workouts displayed in a grid -->
+        <div class="row" id="workouts-container">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-4 mb-4 workout-item" data-workout-type="@item.WorkoutTypeId">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Name</h5>
+                                <div class="mt-3">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                    <button type="button" class="btn btn-primary edit-workout-btn" 
+                                            data-id="@item.Id" 
+                                            data-name="@item.Name">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <p>No workouts available.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Edit Workout Modal -->
+    <div class="modal fade" id="editWorkoutModal" tabindex="-1" role="dialog" aria-labelledby="editWorkoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editWorkoutModalLabel">Edit Workout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-workout-id">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="edit-workout-name" placeholder="Enter new name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="update-workout-btn">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            $(document).ready(function() {
+                // Handle workout type checkbox filtering
+                $('.workout-type-checkbox').change(function() {
+                    var $checkedCheckboxes = $('.workout-type-checkbox:checked');
+                    var isCurrentCheckboxChecked = $(this).is(':checked');
+                    
+                    // Workout filtering logic
+                    if ($checkedCheckboxes.length === 0) {
+                        // Show all workouts if no checkbox is checked
+                        $('.workout-item').show();
+                    } else {
+                        // Hide all workouts first
+                        $('.workout-item').hide();
+                        
+                        // Show only workouts matching the selected type
+                        $checkedCheckboxes.each(function() {
+                            var typeId = $(this).val();
+                            $('.workout-item[data-workout-type="' + typeId + '"]').show();
+                        });
+                    }
+                    
+                    // Checkbox enabling/disabling logic
+                    if ($checkedCheckboxes.length === 0) {
+                        // Enable all checkboxes when none are checked
+                        $('.workout-type-checkbox').prop('disabled', false);
+                    } else if (isCurrentCheckboxChecked) {
+                        // When a checkbox is checked, disable all others
+                        $('.workout-type-checkbox').not(this).prop('disabled', true);
+                    } else {
+                        // When a checkbox is unchecked, enable all checkboxes
+                        $('.workout-type-checkbox').prop('disabled', false);
+                    }
+                });
+
+                // Edit Workout
+                $('.edit-workout-btn').click(function() {
+                    var id = $(this).data('id');
+                    var name = $(this).data('name');
+                    
+                    $('#edit-workout-id').val(id);
+                    $('#edit-workout-name').val(name);
+                    
+                    $('#editWorkoutModal').modal('show');
+                });
+                
+                // Update Workout
+                $('#update-workout-btn').click(function() {
+                    var id = $('#edit-workout-id').val();
+                    var name = $('#edit-workout-name').val();
+                    
+                    if (name.trim() === '') {
+                        alert('Please enter a workout name');
+                        return;
+                    }
+                    
+                    // AJAX call to update workout
+                    $.ajax({
+                        url: '@Url.Action("UpdateName", "Workout")',
+                        type: 'POST',
+                        data: { 
+                            id: id, 
+                            name: name 
+                        },
+                        success: function() {
+                            location.reload();
+                        },
+                        error: function() {
+                            alert('Error updating workout');
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+} 
