@@ -131,10 +131,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<WorkoutDbContext>();
-    db.Database.Migrate();
-}
-
 app.Run();

@@ -14,7 +14,7 @@ namespace Workout.Core.Data
         public DatabaseHelper()
         {
            // connectionString = @"Data Source=localhost\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;";
-             connectionString = @"Server=localhost\SQLEXPRESS;Database=Workout;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
+             connectionString = @"Server=WIN-IVAPD6T4EJF\MSSQLSERVER01;Database=Workout;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
             // connectionString = @"Data Source=DESKTOP-DCVLDLM\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;TrustServerCertificate=True";
             sqlConnection = new SqlConnection(connectionString);
         }
