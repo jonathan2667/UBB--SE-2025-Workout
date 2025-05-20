@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
 using Workout.Web.Models;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
@@ -58,6 +59,7 @@ namespace Workout.Web.Controllers
         }
 
         // GET: WorkoutType/Create
+        [AuthorizeUser]
         public IActionResult Create()
         {
             return View();
@@ -66,6 +68,7 @@ namespace Workout.Web.Controllers
         // POST: WorkoutType/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Create(WorkoutTypeModel workoutType)
         {
             if (ModelState.IsValid)
@@ -113,6 +116,7 @@ namespace Workout.Web.Controllers
         }
 
         // GET: WorkoutType/Edit/5
+        [AuthorizeUser]
         public async Task<IActionResult> Edit(int id)
         {
             var client = _clientFactory.CreateClient();
@@ -135,6 +139,7 @@ namespace Workout.Web.Controllers
         // POST: WorkoutType/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Edit(int id, WorkoutTypeModel workoutType)
         {
             if (id != workoutType.Id)
@@ -161,6 +166,7 @@ namespace Workout.Web.Controllers
         }
 
         // GET: WorkoutType/Delete/5
+        [AuthorizeUser]
         public async Task<IActionResult> Delete(int id)
         {
             var client = _clientFactory.CreateClient();
@@ -183,6 +189,7 @@ namespace Workout.Web.Controllers
         // POST: WorkoutType/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var client = _clientFactory.CreateClient();

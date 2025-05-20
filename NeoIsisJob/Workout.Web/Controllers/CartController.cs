@@ -7,9 +7,12 @@ using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Web.Models;
+using Workout.Web.Filters;
+using Microsoft.AspNetCore.Http;
 
 namespace Workout.Web.Controllers
 {
+    [AuthorizeUser]
     public class CartController : Controller
     {
         private readonly ILogger<CartController> _logger;
@@ -19,6 +22,16 @@ namespace Workout.Web.Controllers
         {
             _logger = logger;
             _cartService = cartService;
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return 1; // Default to user ID 1 if not logged in
+            }
+            return userId;
         }
 
         public async Task<IActionResult> Index()
@@ -58,7 +71,7 @@ namespace Workout.Web.Controllers
                 var cartItem = new CartItemModel
                 {
                     ProductID = productId,
-                    UserID = 1 // TODO: Get the current user ID
+                    UserID = GetCurrentUserId()
                 };
                 
                 var result = await _cartService.CreateAsync(cartItem);
@@ -151,8 +164,8 @@ namespace Workout.Web.Controllers
                 await ((CartService)_cartService).ResetCart();
                 
                 // Add two test items to the cart
-                await _cartService.CreateAsync(new CartItemModel { ProductID = 1, UserID = 1 });
-                await _cartService.CreateAsync(new CartItemModel { ProductID = 2, UserID = 1 });
+                await _cartService.CreateAsync(new CartItemModel { ProductID = 1, UserID = GetCurrentUserId() });
+                await _cartService.CreateAsync(new CartItemModel { ProductID = 2, UserID = GetCurrentUserId() });
                 
                 return RedirectToAction(nameof(Index));
             }

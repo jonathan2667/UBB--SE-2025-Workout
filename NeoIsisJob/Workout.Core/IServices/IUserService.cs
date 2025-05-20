@@ -15,6 +15,11 @@ namespace Workout.Core.IServices
         Task<int> RegisterNewUserAsync();
 
         /// <summary>
+        /// Adds a new user with credentials and returns the new user ID.
+        /// </summary>
+        Task<int> AddUserAsync(string username, string email, string password);
+
+        /// <summary>
         /// Retrieves a user by their ID.
         /// </summary>
         Task<UserModel> GetUserAsync(int userId);
@@ -28,5 +33,10 @@ namespace Workout.Core.IServices
         /// Retrieves all users.
         /// </summary>
         Task<IList<UserModel>> GetAllUsersAsync();
+
+        /// <summary>
+        /// Authenticates a user and returns user ID if successful.
+        /// </summary>
+        Task<long> LoginAsync(string username, string password);
     }
 }

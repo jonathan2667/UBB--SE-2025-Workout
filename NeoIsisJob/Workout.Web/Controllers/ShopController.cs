@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Core.Utils.Filters;
 using Workout.Web.ViewModels.Shop;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
@@ -123,7 +127,7 @@ namespace Workout.Web.Controllers
             return RedirectToAction(nameof(Product), new { id = productId });
         }
 
-        [HttpGet]
+        [AuthorizeUser]
         public async Task<IActionResult> Create()
         {
             var categories = await categoryService.GetAllAsync();
@@ -136,6 +140,7 @@ namespace Workout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Create(CreateProductViewModel model)
         {
             if (!ModelState.IsValid)
@@ -160,7 +165,7 @@ namespace Workout.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
+        [AuthorizeUser]
         public async Task<IActionResult> Update(int id)
         {
             var product = await productService.GetByIdAsync(id);
@@ -189,6 +194,7 @@ namespace Workout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Update(UpdateProductViewModel model)
         {
             if (!ModelState.IsValid)
@@ -216,8 +222,7 @@ namespace Workout.Web.Controllers
             return RedirectToAction(nameof(Product), new { id = product.ID });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await productService.GetByIdAsync(id);

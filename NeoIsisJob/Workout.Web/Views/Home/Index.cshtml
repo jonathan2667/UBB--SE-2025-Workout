@@ -124,9 +124,18 @@
                             }
                             else if (!Model.HasActiveWorkout)
                             {
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkoutModal">
-                                    <i class="bi bi-plus-circle me-2"></i>Add Workout
-                                </button>
+                                @if (Context.Session.GetString("UserId") != null)
+                                {
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkoutModal">
+                                        <i class="bi bi-plus-circle me-2"></i>Add Workout
+                                    </button>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info">
+                                        <p>Please <a asp-controller="User" asp-action="Login">sign in</a> to add a workout.</p>
+                                    </div>
+                                }
                             }
                             else
                             {
