@@ -1,10 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Workout.Core.IServices
+@inject IUserService UserService
+
+@{
+    string username = "User";
+    if (Context.Session.GetString("UserId") != null && 
+        int.TryParse(Context.Session.GetString("UserId"), out int userId))
+    {
+        var user = await UserService.GetUserAsync(userId);
+        if (user != null)
+        {
+            username = user.Username;
+        }
+    }
+}
 
 <ul class="navbar-nav">
 @if (Context.Session.GetString("UserId") != null)
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" href="#">Hello User!</a>
+        <a class="nav-link text-dark" href="#">Hello @username!</a>
     </li>
     <li class="nav-item">
         <form class="form-inline" asp-controller="User" asp-action="Logout">

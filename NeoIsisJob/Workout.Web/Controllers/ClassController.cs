@@ -5,6 +5,7 @@ using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Core.Repositories;
 using Workout.Core.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Workout.Web.Controllers
 {
@@ -15,9 +16,12 @@ namespace Workout.Web.Controllers
 
 		private int GetCurrentUserId()
 		{
-			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			//return int.Parse(userId);
-			return 1; // hardcodat pana se repara UserId
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return 1; // Default to user ID 1 if not logged in (for backward compatibility)
+            }
+            return userId;
 		}
 
 		private string GetCurrentUserName() => User.Identity?.Name;

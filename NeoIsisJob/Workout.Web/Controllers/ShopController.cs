@@ -7,6 +7,7 @@ using Workout.Core.Models;
 using Workout.Core.Utils.Filters;
 using Workout.Web.ViewModels.Shop;
 using Workout.Web.Filters;
+using Microsoft.AspNetCore.Http;
 
 namespace Workout.Web.Controllers
 {
@@ -16,7 +17,6 @@ namespace Workout.Web.Controllers
         private readonly IService<CategoryModel> categoryService;
         private readonly IService<WishlistItemModel> wishlistService;
         private readonly IService<CartItemModel> cartService;
-        private const int DefaultUserId = 1; // This should be replaced with actual user ID from authentication
 
         public ShopController(
             IService<ProductModel> productService,
@@ -28,6 +28,16 @@ namespace Workout.Web.Controllers
             this.categoryService = categoryService;
             this.wishlistService = wishlistService;
             this.cartService = cartService;
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return 1; // Default to user ID 1 if not logged in
+            }
+            return userId;
         }
 
         [HttpGet]
@@ -63,9 +73,10 @@ namespace Workout.Web.Controllers
                 return NotFound();
             }
 
+            var currentUserId = GetCurrentUserId();
             var category = await categoryService.GetByIdAsync(product.CategoryID);
             var wishlistItems = await wishlistService.GetAllAsync();
-            var isInWishlist = wishlistItems.Any(w => w.ProductID == id && w.UserID == DefaultUserId);
+            var isInWishlist = wishlistItems.Any(w => w.ProductID == id && w.UserID == currentUserId);
 
             var viewModel = new ProductViewModel
             {
@@ -88,8 +99,9 @@ namespace Workout.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleWishlist(int productId)
         {
+            var currentUserId = GetCurrentUserId();
             var wishlistItems = await wishlistService.GetAllAsync();
-            var existingItem = wishlistItems.FirstOrDefault(w => w.ProductID == productId && w.UserID == DefaultUserId);
+            var existingItem = wishlistItems.FirstOrDefault(w => w.ProductID == productId && w.UserID == currentUserId);
 
             if (existingItem != null)
             {
@@ -97,7 +109,7 @@ namespace Workout.Web.Controllers
             }
             else
             {
-                var newWishlistItem = new WishlistItemModel(productId, DefaultUserId);
+                var newWishlistItem = new WishlistItemModel(productId, currentUserId);
                 await wishlistService.CreateAsync(newWishlistItem);
             }
 
@@ -120,7 +132,8 @@ namespace Workout.Web.Controllers
                 return RedirectToAction(nameof(Product), new { id = productId });
             }
 
-            var cartItem = new CartItemModel(productId, DefaultUserId);
+            var currentUserId = GetCurrentUserId();
+            var cartItem = new CartItemModel(productId, currentUserId);
             await cartService.CreateAsync(cartItem);
 
             TempData["SuccessMessage"] = "Product added to cart successfully!";

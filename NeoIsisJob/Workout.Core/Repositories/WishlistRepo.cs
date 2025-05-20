@@ -31,17 +31,14 @@ namespace Workout.Core.Repositories
         }
 
         /// <summary>
-        /// Retrieves all wishlist items for the current user.
+        /// Retrieves all wishlist items.
         /// </summary>
         /// <returns>A collection of <see cref="WishlistItemModel"/> objects.</returns>
         public async Task<IEnumerable<WishlistItemModel>> GetAllAsync()
         {
-            int customerId = 1;
-
             List<WishlistItemModel> wishlistItems = await this.context.WishlistItems
                 .Include(wi => wi.Product)
                 .ThenInclude(p => p.Category)
-                .Where(wi => wi.UserID == customerId)
                 .ToListAsync();
 
             return wishlistItems;
@@ -56,12 +53,10 @@ namespace Workout.Core.Repositories
         /// </returns>
         public async Task<WishlistItemModel?> GetByIdAsync(int id)
         {
-            int customerId = 1;
-
             WishlistItemModel? wishlistItem = await this.context.WishlistItems
                 .Include(wi => wi.Product)
                 .ThenInclude(p => p.Category)
-                .FirstOrDefaultAsync(wi => wi.ID == id && wi.UserID == customerId);
+                .FirstOrDefaultAsync(wi => wi.ID == id);
 
             return wishlistItem;
         }

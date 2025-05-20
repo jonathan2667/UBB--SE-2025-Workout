@@ -9,6 +9,7 @@ using Workout.Core.Services;
 using Workout.Web.Models;
 using Workout.Web.Filters;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace Workout.Web.Controllers
 {
@@ -38,7 +39,11 @@ namespace Workout.Web.Controllers
         {
             try
             {
-                var cartItems = await _cartService.GetAllAsync();
+                var currentUserId = GetCurrentUserId();
+                var allCartItems = await _cartService.GetAllAsync();
+                // Filter the cart items for the current user
+                var cartItems = allCartItems.Where(item => item.UserID == currentUserId).ToList();
+                
                 return View(cartItems);
             }
             catch (Exception ex)
@@ -89,7 +94,15 @@ namespace Workout.Web.Controllers
         {
             try
             {
-                await ((CartService)_cartService).ResetCart();
+                var currentUserId = GetCurrentUserId();
+                var allCartItems = await _cartService.GetAllAsync();
+                var userCartItems = allCartItems.Where(item => item.UserID == currentUserId).ToList();
+                
+                foreach(var item in userCartItems)
+                {
+                    await _cartService.DeleteAsync(item.ID);
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -103,7 +116,11 @@ namespace Workout.Web.Controllers
         {
             try
             {
-                var cartItems = await _cartService.GetAllAsync();
+                var currentUserId = GetCurrentUserId();
+                var allCartItems = await _cartService.GetAllAsync();
+                // Filter the cart items for the current user
+                var cartItems = allCartItems.Where(item => item.UserID == currentUserId).ToList();
+                
                 decimal totalAmount = 0;
                 
                 foreach (var item in cartItems)
@@ -134,7 +151,15 @@ namespace Workout.Web.Controllers
                 _logger.LogInformation($"Processing payment for {customerName} ({email})");
                 _logger.LogInformation($"Shipping to: {address}, {city}, {zipCode}");
                 
-                await ((CartService)_cartService).ResetCart();
+                // Clear only the current user's cart
+                var currentUserId = GetCurrentUserId();
+                var allCartItems = await _cartService.GetAllAsync();
+                var userCartItems = allCartItems.Where(item => item.UserID == currentUserId).ToList();
+                
+                foreach(var item in userCartItems)
+                {
+                    await _cartService.DeleteAsync(item.ID);
+                }
                 
                 TempData["CustomerName"] = customerName;
                 TempData["Email"] = email;
@@ -160,12 +185,20 @@ namespace Workout.Web.Controllers
         {
             try
             {
-                // First clear the cart
-                await ((CartService)_cartService).ResetCart();
+                var currentUserId = GetCurrentUserId();
+                
+                // First clear the current user's cart
+                var allCartItems = await _cartService.GetAllAsync();
+                var userCartItems = allCartItems.Where(item => item.UserID == currentUserId).ToList();
+                
+                foreach(var item in userCartItems)
+                {
+                    await _cartService.DeleteAsync(item.ID);
+                }
                 
                 // Add two test items to the cart
-                await _cartService.CreateAsync(new CartItemModel { ProductID = 1, UserID = GetCurrentUserId() });
-                await _cartService.CreateAsync(new CartItemModel { ProductID = 2, UserID = GetCurrentUserId() });
+                await _cartService.CreateAsync(new CartItemModel { ProductID = 1, UserID = currentUserId });
+                await _cartService.CreateAsync(new CartItemModel { ProductID = 2, UserID = currentUserId });
                 
                 return RedirectToAction(nameof(Index));
             }

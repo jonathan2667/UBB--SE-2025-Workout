@@ -90,6 +90,10 @@ namespace Workout.Web.Controllers
                 };
                 
                 var result = await _wishlistService.CreateAsync(wishlistItem);
+                
+                // Add success message to TempData
+                TempData["SuccessMessage"] = "Product successfully added to your wishlist!";
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
