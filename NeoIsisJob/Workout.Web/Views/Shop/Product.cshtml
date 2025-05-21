@@ -39,26 +39,35 @@
                 <p>@Model.Description</p>
             </div>
             <div class="d-grid gap-2">
-                <form asp-action="AddToCart" method="post" class="mb-2">
-                    <input type="hidden" name="productId" value="@Model.ID" />
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-success w-100" @(Model.Stock <= 0 ? "disabled" : "")>
-                        @(Model.Stock <= 0 ? "Out of Stock" : "Add to Cart")
-                    </button>
-                </form>
-                <form asp-action="ToggleWishlist" method="post" class="mb-2">
-                    <input type="hidden" name="productId" value="@Model.ID" />
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn @(Model.IsInWishlist ? "btn-danger" : "btn-outline-danger") w-100">
-                        @(Model.IsInWishlist ? "Remove from Wishlist" : "Add to Wishlist")
-                    </button>
-                </form>
-                <a asp-controller="Shop" asp-action="Update" asp-route-id="@Model.ID" class="btn btn-primary mb-2">Update Product</a>
-                <form asp-action="Delete" method="post" class="mb-2" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                    <input type="hidden" name="id" value="@Model.ID" />
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger w-100">Delete Product</button>
-                </form>
+                @if (Context.Session.GetString("UserId") != null)
+                {
+                    <form asp-action="AddToCart" method="post" class="mb-2">
+                        <input type="hidden" name="productId" value="@Model.ID" />
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success w-100" @(Model.Stock <= 0 ? "disabled" : "")>
+                            @(Model.Stock <= 0 ? "Out of Stock" : "Add to Cart")
+                        </button>
+                    </form>
+                    <form asp-action="ToggleWishlist" method="post" class="mb-2">
+                        <input type="hidden" name="productId" value="@Model.ID" />
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn @(Model.IsInWishlist ? "btn-danger" : "btn-outline-danger") w-100">
+                            @(Model.IsInWishlist ? "Remove from Wishlist" : "Add to Wishlist")
+                        </button>
+                    </form>
+                    <a asp-controller="Shop" asp-action="Update" asp-route-id="@Model.ID" class="btn btn-primary mb-2">Update Product</a>
+                    <form asp-action="Delete" method="post" class="mb-2" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                        <input type="hidden" name="id" value="@Model.ID" />
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger w-100">Delete Product</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-info mb-2">
+                        <a asp-controller="User" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="btn btn-primary">Log in</a> to add this item to your cart or wishlist.
+                    </div>
+                }
                 <a asp-controller="Shop" asp-action="Index" class="btn btn-secondary">Back to Shop</a>
             </div>
         </div>

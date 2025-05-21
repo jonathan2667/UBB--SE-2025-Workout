@@ -97,6 +97,7 @@ namespace Workout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> ToggleWishlist(int productId)
         {
             var currentUserId = GetCurrentUserId();
@@ -118,6 +119,7 @@ namespace Workout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> AddToCart(int productId)
         {
             var product = await productService.GetByIdAsync(productId);
