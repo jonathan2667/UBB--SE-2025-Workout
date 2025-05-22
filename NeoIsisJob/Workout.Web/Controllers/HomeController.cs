@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Web.Models;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers;
 
@@ -17,9 +19,6 @@ public class HomeController : Controller
     private readonly ICompleteWorkoutService _completeWorkoutService;
     private readonly IExerciseService _exerciseService;
     private readonly IUserWorkoutService _userWorkoutService;
-
-    // Test user ID (for testing purposes only)
-    private readonly int _currentUserId = 1;
 
     public HomeController(
         ILogger<HomeController> logger,
@@ -33,6 +32,16 @@ public class HomeController : Controller
         _completeWorkoutService = completeWorkoutService;
         _exerciseService = exerciseService;
         _userWorkoutService = userWorkoutService;
+    }
+
+    private int GetCurrentUserId()
+    {
+        var userIdString = HttpContext.Session.GetString("UserId");
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return 1; // Default to user ID 1 if not logged in (for backward compatibility)
+        }
+        return userId;
     }
 
     public async Task<IActionResult> Index()
@@ -50,43 +59,50 @@ public class HomeController : Controller
             viewModel.SuccessMessage = TempData["SuccessMessage"].ToString();
         }
 
-        try
+        // Check if user is logged in
+        var userIdString = HttpContext.Session.GetString("UserId");
+        if (!string.IsNullOrEmpty(userIdString))
         {
-            // Get today's workout for the current user
-            var today = DateTime.Now.Date;
-            var userWorkout = await _userWorkoutService.GetUserWorkoutForDateAsync(_currentUserId, today);
-
-            if (userWorkout != null)
+            try
             {
-                // Get the workout details
-                viewModel.CurrentWorkout = await _workoutService.GetWorkoutAsync(userWorkout.WID);
+                // Get today's workout for the current user
+                var today = DateTime.Now.Date;
+                var currentUserId = GetCurrentUserId();
+                var userWorkout = await _userWorkoutService.GetUserWorkoutForDateAsync(currentUserId, today);
 
-                // Get the exercises for this workout
-                var completeWorkouts = await _completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(userWorkout.WID);
-
-                foreach (var completeWorkout in completeWorkouts)
+                if (userWorkout != null)
                 {
-                    var exercise = await _exerciseService.GetExerciseByIdAsync(completeWorkout.EID);
-                    if (exercise != null)
+                    // Get the workout details
+                    viewModel.CurrentWorkout = await _workoutService.GetWorkoutAsync(userWorkout.WID);
+
+                    // Get the exercises for this workout
+                    var completeWorkouts = await _completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(userWorkout.WID);
+
+                    foreach (var completeWorkout in completeWorkouts)
                     {
-                        viewModel.WorkoutExercises.Add(new HomeViewModel.ExerciseWithDetails
+                        var exercise = await _exerciseService.GetExerciseByIdAsync(completeWorkout.EID);
+                        if (exercise != null)
                         {
-                            Name = exercise.Name,
-                            Details = $"{completeWorkout.Sets} sets × {completeWorkout.RepsPerSet} reps"
-                        });
+                            viewModel.WorkoutExercises.Add(new HomeViewModel.ExerciseWithDetails
+                            {
+                                Name = exercise.Name,
+                                Details = $"{completeWorkout.Sets} sets × {completeWorkout.RepsPerSet} reps"
+                            });
+                        }
                     }
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error loading workout data for home page");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading workout data for home page");
+            }
         }
 
         return View(viewModel);
     }
 
     [HttpPost]
+    [AuthorizeUser]
     public async Task<IActionResult> AddWorkout(int workoutId)
     {
         try
@@ -94,7 +110,7 @@ public class HomeController : Controller
             var today = DateTime.Now.Date;
             var userWorkout = new Workout.Core.Models.UserWorkoutModel
             {
-                UID = _currentUserId,
+                UID = GetCurrentUserId(),
                 WID = workoutId,
                 Date = today,
                 Completed = false
@@ -116,12 +132,13 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [AuthorizeUser]
     public async Task<IActionResult> CompleteWorkout(int workoutId)
     {
         try
         {
             var today = DateTime.Now.Date;
-            await _userWorkoutService.CompleteUserWorkoutAsync(_currentUserId, workoutId, today);
+            await _userWorkoutService.CompleteUserWorkoutAsync(GetCurrentUserId(), workoutId, today);
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)
@@ -132,12 +149,13 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [AuthorizeUser]
     public async Task<IActionResult> DeleteWorkout(int workoutId)
     {
         try
         {
             var today = DateTime.Now.Date;
-            await _userWorkoutService.DeleteUserWorkoutAsync(_currentUserId, workoutId, today);
+            await _userWorkoutService.DeleteUserWorkoutAsync(GetCurrentUserId(), workoutId, today);
             return RedirectToAction(nameof(Index));
         }
         catch (Exception ex)

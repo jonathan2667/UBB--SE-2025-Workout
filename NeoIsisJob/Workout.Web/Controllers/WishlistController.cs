@@ -8,9 +8,13 @@ using Workout.Core.Data;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Web.Models;
+using Workout.Web.Filters;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace Workout.Web.Controllers
 {
+    [AuthorizeUser]
     public class WishlistController : Controller
     {
         private readonly ILogger<WishlistController> _logger;
@@ -26,7 +30,10 @@ namespace Workout.Web.Controllers
         {
             try
             {
-                var wishlistItems = await _wishlistService.GetAllAsync();
+                var userId = GetCurrentUserId();
+                var allWishlistItems = await _wishlistService.GetAllAsync();
+                // Filter the wishlist items for the current user
+                var wishlistItems = allWishlistItems.Where(item => item.UserID == userId).ToList();
                 
                 foreach (var item in wishlistItems)
                 {
@@ -50,6 +57,16 @@ namespace Workout.Web.Controllers
         {
             try
             {
+                // First check if this item belongs to the current user
+                var userId = GetCurrentUserId();
+                var wishlistItem = await _wishlistService.GetByIdAsync(id);
+                
+                if (wishlistItem == null || wishlistItem.UserID != userId)
+                {
+                    _logger.LogWarning($"Attempt to remove wishlist item {id} that doesn't belong to user {userId}");
+                    return RedirectToAction(nameof(Index));
+                }
+                
                 var result = await _wishlistService.DeleteAsync(id);
                 return RedirectToAction(nameof(Index));
             }
@@ -65,13 +82,18 @@ namespace Workout.Web.Controllers
         {
             try
             {
+                var userId = GetCurrentUserId();
                 var wishlistItem = new WishlistItemModel
                 {
                     ProductID = productId,
-                    UserID = 1 // TODO: Get the current user ID
+                    UserID = userId
                 };
                 
                 var result = await _wishlistService.CreateAsync(wishlistItem);
+                
+                // Add success message to TempData
+                TempData["SuccessMessage"] = "Product successfully added to your wishlist!";
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -79,6 +101,16 @@ namespace Workout.Web.Controllers
                 _logger.LogError(ex, "Error adding wishlist item");
                 return View("Error", new ErrorViewModel { RequestId = "Failed to add wishlist item" });
             }
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return 1; // Default to user ID 1 if not logged in
+            }
+            return userId;
         }
     }
 } 

@@ -12,6 +12,16 @@ namespace Workout.Core.Models
         [Column("UID")]
         public int ID { get; set; }
 
+        [Required]
+        [MaxLength(256)]
+        public string Username { get; set; }
+
+        [MaxLength(256)]
+        public string Email { get; set; }
+
+        [MaxLength(256)]
+        public string Password { get; set; }
+
         public UserModel()
         {
             UserWorkouts = new List<UserWorkoutModel>();

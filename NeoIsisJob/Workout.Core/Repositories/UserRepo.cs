@@ -23,10 +23,30 @@ namespace Workout.Core.Repositories
             return await context.Users
                 .FirstOrDefaultAsync(u => u.ID == userId);
         }
+        
+        public async Task<UserModel?> GetUserByUsernameAsync(string username)
+        {
+            return await context.Users
+                .FirstOrDefaultAsync(u => u.Username == username);
+        }
 
         public async Task<int> InsertUserAsync()
         {
             var user = new UserModel();
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
+            return user.ID;
+        }
+
+        public async Task<int> InsertUserAsync(string username, string email, string password)
+        {
+            var user = new UserModel
+            {
+                Username = username,
+                Email = email ?? "",
+                Password = password
+            };
+            
             context.Users.Add(user);
             await context.SaveChangesAsync();
             return user.ID;

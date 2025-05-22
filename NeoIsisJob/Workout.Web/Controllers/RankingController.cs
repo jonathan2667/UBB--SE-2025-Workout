@@ -4,25 +4,36 @@ using System.Threading.Tasks;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Web.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Workout.Web.Controllers
 {
     public class RankingController : Controller
     {
         private readonly IRankingsService _rankingsService;
-        private readonly int _currentUserId = 1; // In a real app, get this from authentication
 
         public RankingController(IRankingsService rankingsService)
         {
             _rankingsService = rankingsService;
         }
 
+        private int GetCurrentUserId()
+        {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return 1; // Default to user ID 1 if not logged in
+            }
+            return userId;
+        }
+
         public async Task<IActionResult> Index()
         {
+            var currentUserId = GetCurrentUserId();
             var viewModel = new RankingViewModel
             {
                 RankDefinitions = GetRankDefinitions(),
-                UserRankings = await _rankingsService.GetAllRankingsByUserIDAsync(_currentUserId)
+                UserRankings = await _rankingsService.GetAllRankingsByUserIDAsync(currentUserId)
             };
 
             return View(viewModel);
@@ -30,7 +41,8 @@ namespace Workout.Web.Controllers
 
         public async Task<IActionResult> MuscleGroupDetails(int muscleGroupId)
         {
-            var ranking = await _rankingsService.GetRankingByFullIDAsync(_currentUserId, muscleGroupId);
+            var currentUserId = GetCurrentUserId();
+            var ranking = await _rankingsService.GetRankingByFullIDAsync(currentUserId, muscleGroupId);
             if (ranking == null)
             {
                 return NotFound();

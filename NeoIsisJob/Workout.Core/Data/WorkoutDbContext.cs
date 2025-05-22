@@ -208,8 +208,18 @@ namespace Workout.Core.Data
                 new CompleteWorkoutModel { WID = 2, EID = 2, Sets = 5, RepsPerSet = 8 });
 
             modelBuilder.Entity<UserModel>().HasData(
-                new UserModel { ID = 1 },
-                new UserModel { ID = 2 });
+                new UserModel { 
+                    ID = 1,
+                    Username = "user1",
+                    Email = "user1@example.com",
+                    Password = "password1"
+                },
+                new UserModel { 
+                    ID = 2,
+                    Username = "user2",
+                    Email = "user2@example.com",
+                    Password = "password2"
+                });
 
             modelBuilder.Entity<UserWorkoutModel>().HasData(
                 new UserWorkoutModel { UID = 1, WID = 1, Date = new DateTime(2025, 3, 28), Completed = true },

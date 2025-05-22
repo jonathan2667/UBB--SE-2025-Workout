@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Workout.Web.Models;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
@@ -110,6 +111,7 @@ namespace Workout.Web.Controllers
         }
 
         // GET: Workout/Create
+        [AuthorizeUser]
         public async Task<IActionResult> Create()
         {
             try
@@ -144,6 +146,7 @@ namespace Workout.Web.Controllers
         // POST: Workout/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Create(WorkoutModel workout)
         {
             if (ModelState.IsValid)
@@ -361,6 +364,7 @@ namespace Workout.Web.Controllers
         }
 
         // GET: Workout/Edit/5
+        [AuthorizeUser]
         public async Task<IActionResult> Edit(int id)
         {
             var client = _clientFactory.CreateClient();
@@ -393,6 +397,7 @@ namespace Workout.Web.Controllers
         // POST: Workout/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> Edit(int id, WorkoutModel workout)
         {
             if (id != workout.Id)
@@ -507,6 +512,7 @@ namespace Workout.Web.Controllers
         }
 
         // GET: Workout/Delete/5
+        [AuthorizeUser]
         public async Task<IActionResult> Delete(int id)
         {
             var client = _clientFactory.CreateClient();
@@ -539,6 +545,7 @@ namespace Workout.Web.Controllers
         // POST: Workout/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AuthorizeUser]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var client = _clientFactory.CreateClient();

@@ -34,17 +34,13 @@ namespace Workout.Core.Repositories
         /// <summary>
         /// Retrieves all cart items asynchronously.
         /// </summary>
-        /// <returns>A collection of cart items belonging to the current user.</returns>
+        /// <returns>A collection of cart items for all users.</returns>
         public async Task<IEnumerable<CartItemModel>> GetAllAsync()
         {
-            // The current userID needs to be properly fetched.
-            int customerID = 1;
-
             List<CartItemModel> cartItems = await this.context.CartItems
                         .Include(ci => ci.Product)
                         .ThenInclude(p => p.Category)
                         .Include(ci => ci.User)
-                        .Where(ci => ci.UserID == customerID)
                         .ToListAsync();
 
             return cartItems;
@@ -57,14 +53,11 @@ namespace Workout.Core.Repositories
         /// <returns>The cart item with the specified ID, or null if not found.</returns>
         public async Task<CartItemModel?> GetByIdAsync(int cartItemID)
         {
-            // The current userID needs to be properly fetched.
-            int customerID = 1;
-
             CartItemModel? cartItem = await this.context.CartItems
                 .Include(ci => ci.Product)
                 .ThenInclude(p => p.Category)
                 .Include(ci => ci.User)
-                .FirstOrDefaultAsync(ci => ci.ID == cartItemID && ci.UserID == customerID);
+                .FirstOrDefaultAsync(ci => ci.ID == cartItemID);
 
             return cartItem;
         }

@@ -8,6 +8,8 @@ using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Http;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
@@ -24,12 +26,16 @@ namespace Workout.Web.Controllers
 
         private int GetCurrentUserId()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //return int.Parse(userId);
-            return 1; // hardcodat pana se repara UserId
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+                return 1; // Default to user ID 1 if not logged in (for backward compatibility)
+            }
+            return userId;
         }
 
         // GET: Calendar
+        [AuthorizeUser]
         public async Task<IActionResult> Index(int? year, int? month)
         {
             try
@@ -70,10 +76,12 @@ namespace Workout.Web.Controllers
         }
 
         // GET: Calendar/Details/5/2024/3/15
-        public async Task<IActionResult> Details(int userId, int year, int month, int day)
+        [AuthorizeUser]
+        public async Task<IActionResult> Details(int year, int month, int day)
         {
             try
             {
+                var userId = GetCurrentUserId();
                 var date = new DateTime(year, month, day);
                 var workout = await _calendarService.GetUserWorkoutAsync(userId, date);
                 
@@ -93,7 +101,8 @@ namespace Workout.Web.Controllers
         }
 
         // GET: Calendar/Create
-        public async Task<IActionResult> Create(string date, int userId, int workoutId = 0)
+        [AuthorizeUser]
+        public async Task<IActionResult> Create(string date, int workoutId = 0)
         {
             try
             {
@@ -101,9 +110,10 @@ namespace Workout.Web.Controllers
                 ViewBag.Workouts = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
                     workouts, "WID", "Name", workoutId);
                 
+                var userId = GetCurrentUserId();
                 var userWorkout = new UserWorkoutModel
                 {
-                    UID = userId > 0 ? userId : GetCurrentUserId(),
+                    UID = userId,
                     WID = workoutId,
                     Completed = false
                 };
@@ -130,8 +140,12 @@ namespace Workout.Web.Controllers
         // POST: Calendar/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UID,WID,Date")] UserWorkoutModel userWorkout)
+        [AuthorizeUser]
+        public async Task<IActionResult> Create([Bind("WID,Date")] UserWorkoutModel userWorkout)
         {
+            // Set the user ID from session
+            userWorkout.UID = GetCurrentUserId();
+            
             // Validate that the date is not in the past
             if (userWorkout.Date.Date < DateTime.Today)
             {
@@ -176,10 +190,12 @@ namespace Workout.Web.Controllers
         }
 
         // GET: Calendar/Edit/5/2024/3/15
-        public async Task<IActionResult> Edit(int userId, int year, int month, int day)
+        [AuthorizeUser]
+        public async Task<IActionResult> Edit(int year, int month, int day)
         {
             try
             {
+                var userId = GetCurrentUserId();
                 var date = new DateTime(year, month, day);
                 var workout = await _calendarService.GetUserWorkoutAsync(userId, date);
                 
@@ -205,8 +221,12 @@ namespace Workout.Web.Controllers
         // POST: Calendar/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("UID,WID,Date")] UserWorkoutModel userWorkout)
+        [AuthorizeUser]
+        public async Task<IActionResult> Edit([Bind("WID,Date")] UserWorkoutModel userWorkout)
         {
+            // Set the user ID from session
+            userWorkout.UID = GetCurrentUserId();
+            
             // Validate that the date is not in the past
             if (userWorkout.Date.Date < DateTime.Today)
             {
@@ -250,11 +270,13 @@ namespace Workout.Web.Controllers
             return View(userWorkout);
         }
 
-        // GET: Calendar/Delete/5/2024/3/15
-        public async Task<IActionResult> Delete(int userId, int year, int month, int day)
+        // GET: Calendar/Delete/2024/3/15
+        [AuthorizeUser]
+        public async Task<IActionResult> Delete(int year, int month, int day)
         {
             try
             {
+                var userId = GetCurrentUserId();
                 var date = new DateTime(year, month, day);
                 var workout = await _calendarService.GetUserWorkoutAsync(userId, date);
                 
@@ -263,7 +285,7 @@ namespace Workout.Web.Controllers
                     _logger.LogWarning($"Workout not found for user {userId} on {date:yyyy-MM-dd}");
                     return NotFound();
                 }
-
+                    
                 return View(workout);
             }
             catch (Exception ex)
@@ -273,47 +295,23 @@ namespace Workout.Web.Controllers
             }
         }
 
-        // POST: Calendar/Delete/5/2024/3/15
+        // POST: Calendar/Delete/2024/3/15
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int userId, int workoutId, int year, int month, int day)
+        [AuthorizeUser]
+        public async Task<IActionResult> DeleteConfirmed(int workoutId, int year, int month, int day)
         {
             try
             {
+                var userId = GetCurrentUserId();
                 var date = new DateTime(year, month, day);
-                
-                // Validate that the date is not in the past
-                if (date.Date < DateTime.Today)
-                {
-                    _logger.LogWarning($"Attempt to delete workout for past date: {date:yyyy-MM-dd}");
-                    ViewBag.ErrorMessage = "Cannot delete workouts for past dates.";
-                    return RedirectToAction(nameof(Index));
-                }
-                
-                // Check if we have a valid workoutId
-                if (workoutId <= 0)
-                {
-                    // If workoutId is not provided or is invalid, try to get it from the service
-                    var userWorkout = await _calendarService.GetUserWorkoutAsync(userId, date);
-                    if (userWorkout != null)
-                    {
-                        workoutId = userWorkout.WID;
-                    }
-                    else
-                    {
-                        // No workout found for this date
-                        _logger.LogWarning($"No workout found to delete for user {userId} on {date:yyyy-MM-dd}");
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
-                
                 await _calendarService.DeleteUserWorkoutAsync(userId, workoutId, date);
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error deleting workout: {ex.Message}");
-                ViewBag.ErrorMessage = "An error occurred while deleting the workout.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -321,10 +319,19 @@ namespace Workout.Web.Controllers
         // Direct AJAX delete endpoint that doesn't require antiforgery token
         [HttpPost]
         [Route("Calendar/DirectDelete/{userId}/{year}/{month}/{day}")]
+        [AuthorizeUser]
         public async Task<IActionResult> DirectDelete(int userId, int year, int month, int day)
         {
             try
             {
+                // Check if the requested userId matches the current logged-in user
+                var currentUserId = GetCurrentUserId();
+                if (userId != currentUserId)
+                {
+                    _logger.LogWarning($"Unauthorized attempt to delete workout for user {userId} by user {currentUserId}");
+                    return Json(new { success = false, message = "Unauthorized. You can only manage your own calendar." });
+                }
+                
                 var date = new DateTime(year, month, day);
                 
                 // Validate that the date is not in the past
@@ -358,10 +365,19 @@ namespace Workout.Web.Controllers
         // Direct AJAX update endpoint that doesn't require antiforgery token
         [HttpPost]
         [Route("Calendar/DirectUpdate/{userId}/{year}/{month}/{day}/{workoutId}")]
+        [AuthorizeUser]
         public async Task<IActionResult> DirectUpdate(int userId, int year, int month, int day, int workoutId)
         {
             try
             {
+                // Check if the requested userId matches the current logged-in user
+                var currentUserId = GetCurrentUserId();
+                if (userId != currentUserId)
+                {
+                    _logger.LogWarning($"Unauthorized attempt to update workout for user {userId} by user {currentUserId}");
+                    return Json(new { success = false, message = "Unauthorized. You can only manage your own calendar." });
+                }
+                
                 var date = new DateTime(year, month, day);
                 
                 // Validate that the date is not in the past
@@ -431,10 +447,19 @@ namespace Workout.Web.Controllers
 
         [HttpGet]
         [Route("api/calendar/{userId}/{year}/{month}")]
+        [AuthorizeUser]
         public async Task<IActionResult> GetCalendarDaysForMonth(int userId, int year, int month)
         {
             try
             {
+                // Check if the requested userId matches the current logged-in user
+                var currentUserId = GetCurrentUserId();
+                if (userId != currentUserId)
+                {
+                    _logger.LogWarning($"Unauthorized attempt to access calendar for user {userId} by user {currentUserId}");
+                    return StatusCode(403, new { error = "Unauthorized. You can only view your own calendar." });
+                }
+                
                 var date = new DateTime(year, month, 1);
                 var days = await _calendarService.GetCalendarDaysForMonthAsync(userId, date);
                 
@@ -461,10 +486,19 @@ namespace Workout.Web.Controllers
 
         [HttpGet]
         [Route("api/calendar/{userId}/{year}/{month}/{day}")]
+        [AuthorizeUser]
         public async Task<IActionResult> GetUserWorkoutForDay(int userId, int year, int month, int day)
         {
             try
             {
+                // Check if the requested userId matches the current logged-in user
+                var currentUserId = GetCurrentUserId();
+                if (userId != currentUserId)
+                {
+                    _logger.LogWarning($"Unauthorized attempt to access workout for user {userId} by user {currentUserId}");
+                    return StatusCode(403, new { error = "Unauthorized. You can only view your own workouts." });
+                }
+                
                 var date = new DateTime(year, month, day);
                 var userWorkout = await _calendarService.GetUserWorkoutAsync(userId, date);
                 
@@ -497,10 +531,19 @@ namespace Workout.Web.Controllers
 
         [HttpGet]
         [Route("api/calendar/{userId}/{year}/{month}/{day}/class")]
+        [AuthorizeUser]
         public async Task<IActionResult> GetUserClass(int userId, int year, int month, int day)
         {
             try
             {
+                // Check if the requested userId matches the current logged-in user
+                var currentUserId = GetCurrentUserId();
+                if (userId != currentUserId)
+                {
+                    _logger.LogWarning($"Unauthorized attempt to access class for user {userId} by user {currentUserId}");
+                    return StatusCode(403, new { error = "Unauthorized. You can only view your own classes." });
+                }
+                
                 var date = new DateTime(year, month, day);
                 
                 _logger.LogInformation($"Fetching class for userId: {userId}, date: {date:yyyy-MM-dd}");
@@ -584,10 +627,19 @@ namespace Workout.Web.Controllers
 
         [HttpDelete]
         [Route("api/calendar/{userId}/{year}/{month}/{day}")]
+        [AuthorizeUser]
         public async Task<IActionResult> DeleteWorkoutApi(int userId, int year, int month, int day)
         {
             try
             {
+                // Check if the requested userId matches the current logged-in user
+                var currentUserId = GetCurrentUserId();
+                if (userId != currentUserId)
+                {
+                    _logger.LogWarning($"Unauthorized attempt to delete workout for user {userId} by user {currentUserId}");
+                    return StatusCode(403, new { error = "Unauthorized. You can only delete your own workouts." });
+                }
+                
                 var date = new DateTime(year, month, day);
                 
                 // Validate that the date is not in the past

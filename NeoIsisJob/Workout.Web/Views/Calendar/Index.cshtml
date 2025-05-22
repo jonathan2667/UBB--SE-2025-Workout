@@ -1,8 +1,20 @@
 @model List<Workout.Core.Models.CalendarDayModel>
-
+@using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Calendar";
+    // Get the current user ID from session
+    int currentUserId = 1; // Default to 1 if not logged in
+    var userIdString = Context.Session.GetString("UserId");
+    if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int sessionUserId))
+    {
+        currentUserId = sessionUserId;
+    }
 }
+
+<script>
+    // Store the current user ID from session for use in JavaScript
+    const currentUserId = @currentUserId;
+</script>
 
 <div class="container mt-4">
     <!-- Hidden anti-forgery token for form submissions -->
@@ -240,7 +252,6 @@
                         const year = dateParts[0];
                         const month = dateParts[1];
                         const day = dateParts[2];
-                        const userId = 1; // Default user ID
                         
                         console.log(`Removing workout for date: ${year}-${month}-${day}`);
                         
@@ -250,7 +261,7 @@
                             workoutDetailsModal.hide();
                             
                             // Use the DirectDelete endpoint with fetch API
-                            fetch(`/Calendar/DirectDelete/${userId}/${year}/${month}/${day}`, {
+                            fetch(`/Calendar/DirectDelete/${currentUserId}/${year}/${month}/${day}`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -315,10 +326,7 @@
 
             // Function to fetch calendar data from the server
             function fetchCalendarData(year, month) {
-                // Using 1 as the default user ID as specified in GetCurrentUserId()
-                const userId = 1;
-                
-                fetch(`/api/calendar/${userId}/${year}/${month + 1}`)
+                fetch(`/api/calendar/${currentUserId}/${year}/${month + 1}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -529,7 +537,6 @@
                                 const year = dateParts[0];
                                 const month = dateParts[1];
                                 const day = dateParts[2];
-                                const userId = 1; // Default user ID
                                 
                                 console.log(`Updating workout for date ${dateString} to workout ${workoutName} (ID: ${workoutId})`);
                                 
@@ -537,7 +544,7 @@
                                 workoutSelectionModal.hide();
                                 
                                 // Use DirectUpdate endpoint with fetch API
-                                fetch(`/Calendar/DirectUpdate/${userId}/${year}/${month}/${day}/${workoutId}`, {
+                                fetch(`/Calendar/DirectUpdate/${currentUserId}/${year}/${month}/${day}/${workoutId}`, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -652,7 +659,6 @@
             const year = dateParts[0];
             const month = dateParts[1];
             const day = dateParts[2];
-            const userId = 1; // Default user ID
             
             // Check if this date is in the past
             const today = new Date();
@@ -665,7 +671,7 @@
                 document.getElementById('workoutDate').textContent = `${year}-${month}-${day}`;
                 
                 // Fetch workout details if possible, otherwise just show placeholder
-                fetch(`/api/calendar/${userId}/${year}/${month}/${day}`)
+                fetch(`/api/calendar/${currentUserId}/${year}/${month}/${day}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -723,7 +729,7 @@
                 document.getElementById('classDate').textContent = `${year}-${month}-${day}`;
                 
                 // Fetch class details
-                fetch(`/api/calendar/${userId}/${year}/${month}/${day}/class`)
+                fetch(`/api/calendar/${currentUserId}/${year}/${month}/${day}/class`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -794,7 +800,7 @@
                     document.getElementById('pastDateMessage').style.display = 'block';
                 } else {
                     // Otherwise show add workout button and hide message
-                    document.getElementById('addWorkoutLink').href = `/Calendar/Create?date=${date}&userId=${userId}`;
+                    document.getElementById('addWorkoutLink').href = `/Calendar/Create?date=${date}&userId=${currentUserId}`;
                     document.getElementById('addWorkoutLink').style.display = 'inline-block';
                     document.getElementById('pastDateMessage').style.display = 'none';
                 }

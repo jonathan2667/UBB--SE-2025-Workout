@@ -1,4 +1,5 @@
 @model Workout.Core.Models.ClassModel
+@using Microsoft.AspNetCore.Http
 
 @{
 	ViewData["Title"] = Model.Name;
@@ -32,10 +33,18 @@
 						<a href="@Url.Action("Index", "Class")" class="btn btn-secondary">
 							<i class="fas fa-arrow-left"></i> Back to Classes
 						</a>
-						<a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerClassModal">
-							<i class="fas fa-user-plus"></i> Enroll in Class
-						</a>
-
+						@if (Context.Session.GetString("UserId") != null)
+						{
+							<a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerClassModal">
+								<i class="fas fa-user-plus"></i> Enroll in Class
+							</a>
+						}
+						else
+						{
+							<a href="@Url.Action("Login", "User")" class="btn btn-outline-primary">
+								<i class="fas fa-sign-in-alt"></i> Sign in to Enroll
+							</a>
+						}
 					</div>
 				</div>
 			</div>
