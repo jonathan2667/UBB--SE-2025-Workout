@@ -271,7 +271,7 @@ namespace Workout.Core.Data
                     Size = "2 lb",
                     Color = "N/A",
                     Description = "High-quality whey protein for muscle building.",
-                    PhotoURL = "https://example.com/images/protein-powder.jpg",
+                    PhotoURL = "https://m.media-amazon.com/images/I/711Lq+gNUtL._AC_UF1000,1000_QL80_.jpg",
                 },
                 new ProductModel
                 {
@@ -283,7 +283,7 @@ namespace Workout.Core.Data
                     Size = "Standard",
                     Color = "Purple",
                     Description = "Non-slip yoga mat for all levels.",
-                    PhotoURL = "https://example.com/images/yoga-mat.jpg",
+                    PhotoURL = "https://i5.walmartimages.com/seo/CAP-High-Density-1-inch-Thick-Exercise-Mat-with-Carry-Strap-71-x24-x1-Purple_8c5eca06-c117-4677-8d0d-71cee6065b4c.8aeda60b6c033b50c0bc2f993eab60f5.jpeg",
                 });
 
             modelBuilder.Entity<CartItemModel>().HasData(
