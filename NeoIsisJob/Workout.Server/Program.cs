@@ -34,6 +34,7 @@ builder.Services.AddScoped<IPersonalTrainerRepo, PersonalTrainerRepo>();
 builder.Services.AddScoped<ICompleteWorkoutRepository, CompleteWorkoutRepo>();
 builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
+builder.Services.AddScoped<IRepository<MealModel>, MealRepository>();
 
 // Add corresponding services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IPersonalTrainerService, PersonalTrainerService>();
 builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
+builder.Services.AddScoped<IService<MealModel>, MealService>();
 
 builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
 builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();

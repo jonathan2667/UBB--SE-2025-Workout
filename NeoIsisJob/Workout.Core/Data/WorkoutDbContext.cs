@@ -36,8 +36,12 @@ namespace Workout.Core.Data
         public DbSet<OrderModel> Orders { get; set; }
 
         public DbSet<OrderItemModel> OrderItems { get; set; }
+        public DbSet<MealModel> Meals { get; set; }
+        public DbSet<IngredientModel> Ingredients { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
+
         {
             // Configure composite keys
             modelBuilder.Entity<CompleteWorkoutModel>()
@@ -154,6 +158,12 @@ namespace Workout.Core.Data
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(oi => oi.ProductID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Define meal and ingredient relationships
+            modelBuilder.Entity<MealModel>()
+            .HasMany(m => m.Ingredients)
+            .WithMany(i => i.Meals)
+            .UsingEntity(j => j.ToTable("MealIngredients"));
 
             // Table mappings
             modelBuilder.Entity<UserModel>().ToTable("Users");
@@ -306,6 +316,56 @@ namespace Workout.Core.Data
             modelBuilder.Entity<OrderItemModel>().HasData(
                 new OrderItemModel { ID = 1, OrderID = 1, ProductID = 1, Quantity = 1 },
                 new OrderItemModel { ID = 2, OrderID = 1, ProductID = 2, Quantity = 1 });
+
+            modelBuilder.Entity<IngredientModel>().HasData(
+       new IngredientModel { Id = 1, Name = "Lettuce" },
+       new IngredientModel { Id = 2, Name = "Tomato" },
+       new IngredientModel { Id = 3, Name = "Chicken" },
+       new IngredientModel { Id = 4, Name = "Cheese" },
+       new IngredientModel { Id = 5, Name = "Croutons" }
+   );
+
+            // Seed Meals
+            modelBuilder.Entity<MealModel>().HasData(
+                new MealModel
+                {
+                    Id = 1,
+                    Name = "Chicken Salad",
+                    Type = "Salad",
+                    ImageUrl = "/images/chickensalad.jpg",
+                    CookingLevel = "Easy",
+                    CookingTimeMins = 15,
+                    Directions = "Mix all ingredients and serve cold."
+                },
+                new MealModel
+                {
+                    Id = 2,
+                    Name = "Veggie Delight",
+                    Type = "Vegetarian",
+                    ImageUrl = "/images/veggiedelight.jpg",
+                    CookingLevel = "Easy",
+                    CookingTimeMins = 10,
+                    Directions = "Toss vegetables and enjoy fresh."
+                }
+            );
+
+            // Seed many-to-many Meal-Ingredient links
+            modelBuilder.Entity<MealModel>()
+                .HasMany(m => m.Ingredients)
+                .WithMany(i => i.Meals)
+                .UsingEntity(j => j.HasData(
+                    // Chicken Salad (MealId: 1)
+                    new { IngredientsId = 1, MealsId = 1 },
+                    new { IngredientsId = 2, MealsId = 1 },
+                    new { IngredientsId = 3, MealsId = 1 },
+                    new { IngredientsId = 5, MealsId = 1 },
+
+                    // Veggie Delight (MealId: 2)
+                    new { IngredientsId = 1, MealsId = 2 },
+                    new { IngredientsId = 2, MealsId = 2 },
+                    new { IngredientsId = 4, MealsId = 2 }
+                ));
+
         }
     }
 }
