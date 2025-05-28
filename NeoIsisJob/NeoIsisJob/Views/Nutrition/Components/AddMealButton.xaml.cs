@@ -6,6 +6,7 @@ namespace NeoIsisJob.Views.Nutrition.Components
 {
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Controls.Primitives;
 
     /// <summary>
     /// A user control that displays a button for adding a meal, which opens a flyout.
@@ -30,8 +31,9 @@ namespace NeoIsisJob.Views.Nutrition.Components
             var flyout = new Flyout
             {
                 Content = new AddMealFlyout(),
+                Placement = FlyoutPlacementMode.BottomEdgeAlignedRight,
+                ShowMode = FlyoutShowMode.Standard,
             };
-
             flyout.ShowAt(this.AddButton);
         }
     }

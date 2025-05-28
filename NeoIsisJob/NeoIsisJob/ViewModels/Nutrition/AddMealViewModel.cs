@@ -69,6 +69,26 @@ namespace NeoIsisJob.ViewModels.Nutrition
         public string Directions { get; set; }
 
         /// <summary>
+        /// Gets or sets the total calories of the meal.
+        /// </summary>
+        public string Calories { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total proteins in grams of the meal.
+        /// </summary>
+        public string Proteins { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total carbohydrates in grams of the meal.
+        /// </summary>
+        public string Carbohydrates { get; set; }
+
+        /// <summary>
+        /// Gets or sets the total fats in grams of the meal.
+        /// </summary>
+        public string Fats { get; set; }
+
+        /// <summary>
         /// Gets or sets the ingredients of the meal.
         /// <summary/>
         public ObservableCollection<IngredientModel> Ingredients { get; set; }
@@ -111,6 +131,10 @@ namespace NeoIsisJob.ViewModels.Nutrition
                 CookingLevel = this.CookingLevel,
                 CookingTimeMins = int.Parse(this.CookingTimeMins),
                 Directions = this.Directions,
+                Calories = int.Parse(this.Calories),
+                Proteins = double.Parse(this.Proteins),
+                Carbohydrates = double.Parse(this.Carbohydrates),
+                Fats = double.Parse(this.Fats),
                 Ingredients = this.SelectedIngredients,
             };
 
@@ -143,6 +167,30 @@ namespace NeoIsisJob.ViewModels.Nutrition
             if (!decimal.TryParse(this.CookingTimeMins, out decimal parsedTime) || parsedTime < 0)
             {
                 error = "Cooking time must be a valid positive number.";
+                return false;
+            }
+
+            if (!int.TryParse(this.Calories, out int parsedCalories) || parsedCalories < 0)
+            {
+                error = "Calories must be a valid positive integer.";
+                return false;
+            }
+
+            if (!double.TryParse(this.Proteins, out double parsedProteins) || parsedProteins < 0)
+            {
+                error = "Proteins must be a valid positive number.";
+                return false;
+            }
+
+            if (!double.TryParse(this.Carbohydrates, out double parsedCarbohydrates) || parsedCarbohydrates < 0)
+            {
+                error = "Carbohydrates must be a valid positive number.";
+                return false;
+            }
+
+            if (!double.TryParse(this.Fats, out double parsedFats) || parsedFats < 0)
+            {
+                error = "Fats must be a valid positive number.";
                 return false;
             }
 
