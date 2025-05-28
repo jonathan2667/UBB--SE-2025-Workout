@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Workout.Core.Models;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Views.Shop.Pages;
+using NeoIsisJob.Views.Nutrition;
 
 namespace NeoIsisJob.Views
 {
@@ -284,6 +284,11 @@ namespace NeoIsisJob.Views
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }

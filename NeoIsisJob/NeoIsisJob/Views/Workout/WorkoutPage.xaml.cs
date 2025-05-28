@@ -1,24 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Diagnostics;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using NeoIsisJob.ViewModels.Workout;
 // using NeoIsisJob.Models;
 using NeoIsisJob.Views.Workout;
 using Microsoft.Extensions.DependencyInjection;
 using Workout.Core.Models;
 using NeoIsisJob.Views.Shop.Pages;
+using NeoIsisJob.Views.Nutrition;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -79,6 +70,11 @@ namespace NeoIsisJob.Views
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
 
         public async void GoToSelectedWorkoutPage_Click(object sender, ItemClickEventArgs e)
