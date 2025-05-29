@@ -12,6 +12,7 @@ namespace NeoIsisJob.Views.Shop.Pages
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
+    using NeoIsisJob.Views.Nutrition;
 
     /// <summary>
     /// A page that displays the main list of products and allows category filtering.
@@ -173,6 +174,11 @@ namespace NeoIsisJob.Views.Shop.Pages
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }

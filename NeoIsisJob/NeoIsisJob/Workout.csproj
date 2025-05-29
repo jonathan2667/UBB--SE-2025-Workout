@@ -33,6 +33,9 @@
     <None Remove="Views\CalendarPage.xaml" />
     <None Remove="Views\ClassPage.xaml" />
     <None Remove="Views\MainPage.xaml" />
+    <None Remove="Views\Nutrition\Components\AddMealButton.xaml" />
+    <None Remove="Views\Nutrition\Components\AddMealFlyout.xaml" />
+    <None Remove="Views\Nutrition\NutritionPage.xaml" />
     <None Remove="Views\RankingPage.xaml" />
     <None Remove="Views\WorkoutPage.xaml" />
     <None Remove="Views\Workout\CreateWorkoutPage.xaml" />
@@ -110,6 +113,21 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Workout.Core\Workout.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Nutrition\Components\AddMealFlyout.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Nutrition\Components\AddMealButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Nutrition\NutritionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Workout\CreateWorkoutPage.xaml">

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 using Workout.Core.Data.Interfaces;
 
 namespace Workout.Core.Data
@@ -13,8 +11,8 @@ namespace Workout.Core.Data
 
         public DatabaseHelper()
         {
-            connectionString = @"Data Source=MANITA\SQLEXPRESS01;Initial Catalog=Workout;Integrated Security=True;Trust Server Certificate=True";
-          //   connectionString = @"Server=WIN-IVAPD6T4EJF\MSSQLSERVER01;Database=Workout;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
+            connectionString = @"Data Source=SIMONA-NEGREA;Initial Catalog=Workout;Integrated Security=True;Trust Server Certificate=True";
+            //   connectionString = @"Server=WIN-IVAPD6T4EJF\MSSQLSERVER01;Database=Workout;Integrated Security=True;TrustServerCertificate=True;MultipleActiveResultSets=True";
             // connectionString = @"Data Source=DESKTOP-DCVLDLM\SQLEXPRESS;Initial Catalog=Workout;Integrated Security=True;TrustServerCertificate=True";
             sqlConnection = new SqlConnection(connectionString);
         }
