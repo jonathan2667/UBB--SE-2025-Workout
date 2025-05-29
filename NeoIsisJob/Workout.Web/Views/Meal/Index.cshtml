@@ -1,0 +1,60 @@
+@model IEnumerable<Workout.Core.Models.MealModel>
+
+@{
+    ViewData["Title"] = "Meals";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Meals</h1>
+        <a asp-action="Create" class="btn btn-primary">Add New Meal</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Cooking Level</th>
+                    <th>Time (mins)</th>
+                    <th>Calories</th>
+                    <th>Proteins (g)</th>
+                    <th>Carbs (g)</th>
+                    <th>Fats (g)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var meal in Model)
+                {
+                    <tr>
+                        <td>@meal.Name</td>
+                        <td>@meal.Type</td>
+                        <td>@meal.CookingLevel</td>
+                        <td>@meal.CookingTimeMins</td>
+                        <td>@meal.Calories</td>
+                        <td>@meal.Proteins</td>
+                        <td>@meal.Carbohydrates</td>
+                        <td>@meal.Fats</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div> 
