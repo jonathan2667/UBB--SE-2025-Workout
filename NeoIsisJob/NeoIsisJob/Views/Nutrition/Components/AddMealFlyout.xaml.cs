@@ -17,6 +17,11 @@ namespace NeoIsisJob.Views.Nutrition.Components
     public sealed partial class AddMealFlyout : UserControl
     {
         /// <summary>
+        /// Event that is raised when a meal is successfully added.
+        /// </summary>
+        public event RoutedEventHandler MealAdded;
+
+        /// <summary>
         /// The view model that manages state and logic for adding a meal.
         /// </summary>
         private readonly AddMealViewModel viewModel;
@@ -66,6 +71,11 @@ namespace NeoIsisJob.Views.Nutrition.Components
                 };
 
                 await dialog.ShowAsync();
+
+                if (result)
+                {
+                    MealAdded?.Invoke(this, new RoutedEventArgs());
+                }
 
                 NeoIsisJob.MainWindow.AppMainFrame.Navigate(typeof(NeoIsisJob.Views.Nutrition.NutritionPage));
             }

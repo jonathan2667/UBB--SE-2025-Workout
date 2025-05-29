@@ -26,6 +26,43 @@
             <Frame x:Name="contentFrame"/>
         </NavigationView>
 
-        <component:AddMealButton HorizontalAlignment="Right" Margin="0,0,15,0"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header with Add Meal Button -->
+            <Grid Grid.Row="0" Margin="20,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="My Meals"
+                          FontSize="24"
+                          FontWeight="Bold"
+                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                          VerticalAlignment="Center"/>
+
+                <component:AddMealButton Grid.Column="1" 
+                                       HorizontalAlignment="Right" 
+                                       Margin="0,0,15,0"
+                                       AddMealCompleted="AddMealButton_AddMealCompleted"/>
+            </Grid>
+
+            <!-- Meal List -->
+            <Border Grid.Row="1"
+                    Margin="20,0,20,20"
+                    Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                <component:MealListComponent x:Name="MealList"
+                                           Margin="10"
+                                           MealClicked="MealList_MealClicked"
+                                           MealDeleted="MealList_MealDeleted"/>
+            </Border>
+        </Grid>
     </StackPanel>
 </Page>

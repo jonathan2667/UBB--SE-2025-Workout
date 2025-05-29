@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using NeoIsisJob.Views.Shop.Pages;
+using Workout.Core.Models;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -15,6 +16,22 @@ namespace NeoIsisJob.Views.Nutrition
         public NutritionPage()
         {
             this.InitializeComponent();
+        }
+
+        private void MealList_MealClicked(object sender, MealModel meal)
+        {
+            // Handle meal click - could navigate to detail view
+        }
+
+        private void MealList_MealDeleted(object sender, MealModel meal)
+        {
+            // Meal was already removed from the list in the component
+        }
+
+        private void AddMealButton_AddMealCompleted(object sender, RoutedEventArgs e)
+        {
+            // Refresh the meal list when a new meal is added
+            MealList.RefreshMeals();
         }
 
         // Navigation methods

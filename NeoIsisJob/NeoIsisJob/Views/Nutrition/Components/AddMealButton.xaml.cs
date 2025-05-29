@@ -14,6 +14,11 @@ namespace NeoIsisJob.Views.Nutrition.Components
     public sealed partial class AddMealButton : UserControl
     {
         /// <summary>
+        /// Event that is raised when a meal is successfully added.
+        /// </summary>
+        public event RoutedEventHandler AddMealCompleted;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AddMealButton"/> class.
         /// </summary>
         public AddMealButton()
@@ -28,13 +33,26 @@ namespace NeoIsisJob.Views.Nutrition.Components
         /// <param name="e">The event arguments.</param>
         private void AddMealButton_Click(object sender, RoutedEventArgs e)
         {
+            var flyoutContent = new AddMealFlyout();
+            flyoutContent.MealAdded += OnMealAdded;
+
             var flyout = new Flyout
             {
-                Content = new AddMealFlyout(),
+                Content = flyoutContent,
                 Placement = FlyoutPlacementMode.BottomEdgeAlignedRight,
                 ShowMode = FlyoutShowMode.Standard,
             };
             flyout.ShowAt(this.AddButton);
+        }
+
+        /// <summary>
+        /// Handles the event when a meal is successfully added through the flyout.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event arguments.</param>
+        private void OnMealAdded(object sender, RoutedEventArgs e)
+        {
+            AddMealCompleted?.Invoke(this, new RoutedEventArgs());
         }
     }
 }
