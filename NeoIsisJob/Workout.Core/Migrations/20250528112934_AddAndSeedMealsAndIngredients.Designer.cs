@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Workout.Core.Data;
 
@@ -11,9 +12,11 @@ using Workout.Core.Data;
 namespace Workout.Core.Migrations
 {
     [DbContext(typeof(WorkoutDbContext))]
-    partial class WorkoutDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250528112934_AddAndSeedMealsAndIngredients")]
+    partial class AddAndSeedMealsAndIngredients
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -449,12 +452,6 @@ namespace Workout.Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Calories")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Carbohydrates")
-                        .HasColumnType("float");
-
                     b.Property<string>("CookingLevel")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -466,9 +463,6 @@ namespace Workout.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Fats")
-                        .HasColumnType("float");
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -476,9 +470,6 @@ namespace Workout.Core.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Proteins")
-                        .HasColumnType("float");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -492,29 +483,21 @@ namespace Workout.Core.Migrations
                         new
                         {
                             Id = 1,
-                            Calories = 0,
-                            Carbohydrates = 0.0,
                             CookingLevel = "Easy",
                             CookingTimeMins = 15,
                             Directions = "Mix all ingredients and serve cold.",
-                            Fats = 0.0,
                             ImageUrl = "/images/chickensalad.jpg",
                             Name = "Chicken Salad",
-                            Proteins = 0.0,
                             Type = "Salad"
                         },
                         new
                         {
                             Id = 2,
-                            Calories = 0,
-                            Carbohydrates = 0.0,
                             CookingLevel = "Easy",
                             CookingTimeMins = 10,
                             Directions = "Toss vegetables and enjoy fresh.",
-                            Fats = 0.0,
                             ImageUrl = "/images/veggiedelight.jpg",
                             Name = "Veggie Delight",
-                            Proteins = 0.0,
                             Type = "Vegetarian"
                         });
                 });

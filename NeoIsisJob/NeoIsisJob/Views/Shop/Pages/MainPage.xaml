@@ -21,11 +21,12 @@
                 <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
                 <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
                 <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
+                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
             </NavigationView.MenuItems>
             <Frame x:Name="contentFrame"/>
         </NavigationView>
         
-        <Grid Background="Red">
+        <Grid>
             <!-- Define 2 rows: SearchBar on top, main content below -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -46,7 +47,7 @@
             <component:AddProductButton HorizontalAlignment="Right" Margin="0,0,15,0"/>
 
             <!-- MAIN CONTENT AREA -->
-            <Grid Grid.Row="1" Background="Black">
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1*"/>
@@ -55,7 +56,10 @@
                 <!-- LEFT SIDE -->
                 <StackPanel Orientation="Horizontal">
                     <StackPanel x:Name="FilterOptionsPanel"
-                            Background="Red"
+                            Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
                             Margin="10"
                             Padding="10"
                             Width="250">
@@ -71,6 +75,7 @@
                         <Button x:Name="ResetFiltersButton"
                             Content="Reset Filters"
                             Click="ResetFiltersButton_Click"
+                            Style="{ThemeResource AccentButtonStyle}"
                             Margin="0,0,0,10"/>
                     </StackPanel>
 
@@ -83,18 +88,21 @@
                 <!-- RIGHT SIDE: Offers -->
                 <StackPanel Grid.Column="1"
                         VerticalAlignment="Center"
-                        Margin="0,10,0,10"
-                        Background="DarkGray">
-                    <StackPanel Padding="10">
-                        <TextBlock Text="Special Offer!" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <Image Source="https://example.com/offer1.jpg" Height="150" Width="150"/>
-                        <TextBlock Text="Discount on Protein Powder!" FontSize="14" Foreground="Yellow" TextWrapping="Wrap"/>
+                        Margin="10"
+                        Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                    <StackPanel Padding="15">
+                        <TextBlock Text="Special Offer!" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                        <Image Source="https://example.com/offer1.jpg" Height="150" Width="150" Margin="0,10"/>
+                        <TextBlock Text="Discount on Protein Powder!" FontSize="14" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                     </StackPanel>
 
-                    <StackPanel>
-                        <TextBlock Text="Limited Time Deal!" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <Image Source="https://example.com/offer2.jpg" Height="150" Width="150"/>
-                        <TextBlock Text="Get 2 for 1 on Sports Equipment!" FontSize="14" Foreground="Yellow" TextWrapping="Wrap"/>
+                    <StackPanel Padding="15">
+                        <TextBlock Text="Limited Time Deal!" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                        <Image Source="https://example.com/offer2.jpg" Height="150" Width="150" Margin="0,10"/>
+                        <TextBlock Text="Get 2 for 1 on Sports Equipment!" FontSize="14" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

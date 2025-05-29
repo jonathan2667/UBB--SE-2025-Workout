@@ -8,6 +8,7 @@ namespace NeoIsisJob.Views.Shop.Pages
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob.ViewModels.Shop;
+    using NeoIsisJob.Views.Nutrition;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -83,6 +84,11 @@ namespace NeoIsisJob.Views.Shop.Pages
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }

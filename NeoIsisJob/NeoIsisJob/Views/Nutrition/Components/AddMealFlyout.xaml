@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="NeoIsisJob.Views.Nutrition.Components.AddMealFlyout"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NeoIsisJob.Views.Nutrition.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Spacing="10" Padding="15" Orientation="Vertical">
+                <TextBox Header="Name" Width="175" Text="{Binding Name, Mode=TwoWay}" />
+                <TextBox Header="Type" Width="175" Text="{Binding Type, Mode=TwoWay}" />
+                <TextBox Header="Cooking Level" Width="175" Text="{Binding CookingLevel, Mode=TwoWay}" />
+                <TextBox Header="Cooking Time (min)" Width="175" Text="{Binding CookingTimeMins, Mode=TwoWay}" />
+                <TextBox Header="Directions" Width="175" Text="{Binding Directions, Mode=TwoWay}" />
+                <TextBox Header="Image URL" Width="175" Text="{Binding ImageUrl, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="10" Padding="15" Orientation="Vertical">
+                <TextBox Header="Calories (kcal)" Width="175" Text="{Binding Calories, Mode=TwoWay}" />
+                <TextBox Header="Proteins (grams)" Width="175" Text="{Binding Proteins, Mode=TwoWay}" />
+                <TextBox Header="Carbohydrates (grams)" Width="175" Text="{Binding Carbohydrates, Mode=TwoWay}" />
+                <TextBox Header="Fats (grams)" Width="175" Text="{Binding Fats, Mode=TwoWay}" />
+                <TextBlock Text="Ingredients"/>
+                <ListBox x:Name="IngredientsListBox"
+                    ItemsSource="{Binding Ingredients}"
+                    DisplayMemberPath="Name"
+                    SelectionMode="Multiple"
+                    Width="175"
+                    Height="120"/>
+            </StackPanel>
+        </StackPanel>
+        <Button Content="Add Meal" Click="OnAddMealClick" HorizontalAlignment="Center" />
+    </StackPanel>
+
+</UserControl>

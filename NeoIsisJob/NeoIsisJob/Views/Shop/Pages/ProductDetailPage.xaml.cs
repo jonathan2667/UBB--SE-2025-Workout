@@ -12,6 +12,7 @@ namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your pr
     using Microsoft.UI.Xaml.Controls; // For WinUI Page, ContentDialog
     using Microsoft.UI.Xaml.Navigation; // For NavigationEventArgs
     using NeoIsisJob.ViewModels.Shop;
+    using NeoIsisJob.Views.Nutrition;
 
 
     /// <summary>
@@ -366,6 +367,11 @@ namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your pr
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }
