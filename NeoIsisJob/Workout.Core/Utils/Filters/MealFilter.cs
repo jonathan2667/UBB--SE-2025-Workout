@@ -1,28 +1,28 @@
 ﻿namespace Workout.Core.Utils.Filters
 {
     /// <summary>
-    /// Represents a filter for meals, allowing filtering by type, cooking level, search term, and maximum cooking time.
+    /// Represents a filter for meals, allowing filtering by type, cooking level, cooking time range, and calorie range.
     /// </summary>
     public class MealFilter : IFilter
     {
         /// <summary>
-        /// Gets or sets the type of the meal (e.g., breakfast, lunch, dinner).
+        /// Gets or sets the type of the meal (e.g., breakfast, lunch, dinner, snack).
         /// </summary>
         public string? Type { get; set; }
 
         /// <summary>
-        /// Gets or sets the cooking level required for the meal (e.g., beginner, intermediate, expert).
+        /// Gets or sets the cooking level required for the meal (e.g., easy, medium, hard).
         /// </summary>
         public string? CookingLevel { get; set; }
 
         /// <summary>
-        /// Gets or sets the search term to filter meals by name or description.
+        /// Gets or sets the cooking time range filter (quick, medium, long).
         /// </summary>
-        public string? SearchTerm { get; set; }
+        public string? CookingTimeRange { get; set; }
 
         /// <summary>
-        /// Gets or sets the maximum cooking time (in minutes) for the meal.
+        /// Gets or sets the calorie range filter (low, medium, high).
         /// </summary>
-        public int? MaxCookingTime { get; set; }
+        public string? CalorieRange { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Web.ViewModels.Meal;
 using Workout.Core.IServices;
+using Workout.Core.Utils.Filters;
 
 namespace Workout.Web.Controllers
 {
@@ -15,10 +16,41 @@ namespace Workout.Web.Controllers
             _mealService = mealService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(MealFilter filter)
         {
-            var meals = await _mealService.GetAllAsync();
-            return View(meals);
+            var viewModel = new MealIndexViewModel
+            {
+                Filter = filter ?? new MealFilter()
+            };
+
+            try
+            {
+                // If no filters are applied, get all meals
+                if (IsFilterEmpty(filter))
+                {
+                    viewModel.Meals = await _mealService.GetAllAsync();
+                }
+                else
+                {
+                    viewModel.Meals = await _mealService.GetFilteredAsync(filter);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to load meals: " + ex.Message;
+                viewModel.Meals = new List<MealModel>();
+            }
+
+            return View(viewModel);
+        }
+
+        private bool IsFilterEmpty(MealFilter filter)
+        {
+            return filter == null ||
+                   (string.IsNullOrEmpty(filter.Type) &&
+                    string.IsNullOrEmpty(filter.CookingLevel) &&
+                    string.IsNullOrEmpty(filter.CookingTimeRange) &&
+                    string.IsNullOrEmpty(filter.CalorieRange));
         }
 
         public IActionResult Create()
