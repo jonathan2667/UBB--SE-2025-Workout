@@ -12,7 +12,13 @@
         <ListView x:Name="MealListView" 
                   SelectionMode="Single"
                   IsItemClickEnabled="True"
-                  ItemClick="MealListView_ItemClick">
+                  ItemClick="MealListView_ItemClick"
+                  Height="500"
+                  Width="800"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollMode="Enabled"
+                  ScrollViewer.HorizontalScrollMode="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,5" Padding="10">

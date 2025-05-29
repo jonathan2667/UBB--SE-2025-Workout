@@ -4,9 +4,11 @@ using Workout.Core.Services;
 using Workout.Web.ViewModels.Meal;
 using Workout.Core.IServices;
 using Workout.Core.Utils.Filters;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
+    [AuthorizeUser]
     public class MealController : Controller
     {
         private readonly IService<MealModel> _mealService;
