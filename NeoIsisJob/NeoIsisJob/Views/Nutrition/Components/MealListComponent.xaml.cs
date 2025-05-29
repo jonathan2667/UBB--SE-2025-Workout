@@ -5,6 +5,7 @@ using Workout.Core.Models;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using Workout.Core.Utils.Filters;
 
 namespace NeoIsisJob.Views.Nutrition.Components
 {
@@ -12,6 +13,7 @@ namespace NeoIsisJob.Views.Nutrition.Components
     {
         private readonly ViewModels.Nutrition.NutritionViewModel viewModel;
         public ObservableCollection<MealModel> Meals { get; private set; }
+        private MealFilter _currentFilter;
 
         public event EventHandler<MealModel> MealClicked;
         public event EventHandler<MealModel> MealDeleted;
@@ -22,14 +24,20 @@ namespace NeoIsisJob.Views.Nutrition.Components
             this.viewModel = new ViewModels.Nutrition.NutritionViewModel();
             this.Meals = new ObservableCollection<MealModel>();
             this.MealListView.ItemsSource = this.Meals;
+            this._currentFilter = new MealFilter();
             this.LoadMeals();
         }
 
         private async void LoadMeals()
         {
+            await LoadMealsWithFilter(_currentFilter);
+        }
+
+        private async Task LoadMealsWithFilter(MealFilter filter)
+        {
             try
             {
-                var meals = await this.viewModel.GetAllMealsAsync();
+                var meals = await this.viewModel.GetFilteredMealsAsync(filter);
                 this.Meals.Clear();
                 foreach (var meal in meals)
                 {
@@ -47,6 +55,12 @@ namespace NeoIsisJob.Views.Nutrition.Components
                 };
                 await dialog.ShowAsync();
             }
+        }
+
+        public async void ApplyFilter(MealFilter filter)
+        {
+            _currentFilter = filter ?? new MealFilter();
+            await LoadMealsWithFilter(_currentFilter);
         }
 
         private void MealListView_ItemClick(object sender, ItemClickEventArgs e)

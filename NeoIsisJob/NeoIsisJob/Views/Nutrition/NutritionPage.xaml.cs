@@ -2,6 +2,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using NeoIsisJob.Views.Shop.Pages;
 using Workout.Core.Models;
+using Workout.Core.Utils.Filters;
+using System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,6 +34,12 @@ namespace NeoIsisJob.Views.Nutrition
         {
             // Refresh the meal list when a new meal is added
             MealList.RefreshMeals();
+        }
+
+        private void MealFilter_FilterChanged(object sender, MealFilter filter)
+        {
+            // Apply the filter to the meal list
+            MealList.ApplyFilter(filter);
         }
 
         // Navigation methods
