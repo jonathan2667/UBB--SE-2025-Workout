@@ -1,27 +1,34 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Workout.Core.Models;
+using Workout.Core.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NeoIsisJob.Proxy
 {
     public class FavoriteMealServiceProxy
     {
+        private readonly UserFavoriteMealService _favoriteMealService;
+        private readonly int userId = 1; // Replace with actual user ID from session/auth
+
+        public FavoriteMealServiceProxy()
+        {
+            _favoriteMealService = App.Services.GetRequiredService<UserFavoriteMealService>();
+        }
+
         public async Task<IEnumerable<UserFavoriteMealModel>> GetAllAsync()
         {
-            // TODO: Implement API call to get all favourite meals
-            return new List<UserFavoriteMealModel>(); // Placeholder
+            return await _favoriteMealService.GetUserFavoritesAsync(userId);
         }
 
         public async Task<UserFavoriteMealModel> CreateAsync(UserFavoriteMealModel favoriteMeal)
         {
-            // TODO: Implement API call to add a meal to favourites
-            return favoriteMeal; // Placeholder
+            return await _favoriteMealService.AddToFavoritesAsync(favoriteMeal.UserID, favoriteMeal.MealID);
         }
 
         public async Task<bool> DeleteAsync(int mealId)
         {
-            // TODO: Implement API call to remove a meal from favourites
-            return true; // Placeholder
+            return await _favoriteMealService.RemoveFromFavoritesAsync(userId, mealId);
         }
     }
 } 

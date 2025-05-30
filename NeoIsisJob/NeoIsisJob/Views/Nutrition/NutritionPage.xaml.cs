@@ -38,16 +38,51 @@ namespace NeoIsisJob.Views.Nutrition
 
         private async void MealList_MealLiked(object sender, MealModel meal)
         {
-            var vm = new FavouriteMealsViewModel();
-            await vm.AddMealToFavourites(meal);
-            var dialog = new ContentDialog
+            try
             {
-                Title = "Favourited!",
-                Content = $"{meal.Name} was added to your favourite meals.",
-                CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
-            };
-            await dialog.ShowAsync();
+                var vm = new FavouriteMealsViewModel();
+                
+                // Check if already favorited
+                bool isAlreadyFavorite = await vm.IsMealFavorite(meal.Id);
+                
+                if (isAlreadyFavorite)
+                {
+                    // Remove from favorites
+                    await vm.RemoveMealFromFavourites(meal.Id);
+                    var removeDialog = new ContentDialog
+                    {
+                        Title = "Removed from Favorites!",
+                        Content = $"{meal.Name} was removed from your favourite meals.",
+                        CloseButtonText = "OK",
+                        XamlRoot = this.XamlRoot
+                    };
+                    await removeDialog.ShowAsync();
+                }
+                else
+                {
+                    // Add to favorites
+                    await vm.AddMealToFavourites(meal);
+                    var addDialog = new ContentDialog
+                    {
+                        Title = "Added to Favorites!",
+                        Content = $"{meal.Name} was added to your favourite meals.",
+                        CloseButtonText = "OK",
+                        XamlRoot = this.XamlRoot
+                    };
+                    await addDialog.ShowAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = $"Failed to update favorites: {ex.Message}",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+                await errorDialog.ShowAsync();
+            }
         }
 
         // Navigation methods

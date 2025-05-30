@@ -10,6 +10,8 @@ using Workout.Core.Services;
 using Workout.Core.IRepositories;
 using Workout.Core.IServices;
 using NeoIsisJob.Proxy;
+using Workout.Core.Data;
+using Microsoft.EntityFrameworkCore;
 // using NeoIsisJob.Repositories.Interfaces;
 // using NeoIsisJob.Services.Interfaces;
 
@@ -49,11 +51,19 @@ namespace NeoIsisJob
         {
             ServiceCollection serviceCollection = new ServiceCollection();
 
+            // Register DbContext
+            serviceCollection.AddDbContext<WorkoutDbContext>(options =>
+                options.UseSqlServer("Server=localhost;Database=Workout;Integrated Security=True;MultipleActiveResultSets=true;Encrypt=True;TrustServerCertificate=True"));
+
             // Register repositories
             serviceCollection.AddSingleton<IRankingsRepository, RankingsRepository>();
+            serviceCollection.AddScoped<UserFavoriteMealRepository>();
+            serviceCollection.AddScoped<MealRepository>();
 
             // Register services
             serviceCollection.AddSingleton<IRankingsService, RankingsService>();
+            serviceCollection.AddScoped<UserFavoriteMealService>();
+            serviceCollection.AddScoped<MealService>();
 
             // Register view models
             serviceCollection.AddSingleton<RankingsViewModel>();

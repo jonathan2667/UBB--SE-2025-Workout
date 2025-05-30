@@ -1,43 +1,39 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Workout.Core.Models;
+using Workout.Core.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NeoIsisJob.ViewModels.Shop
 {
     public class FavouriteMealsViewModel
     {
-        // Placeholder for the future FavoriteMealServiceProxy
-        // private readonly FavoriteMealServiceProxy favoriteMealServiceProxy;
+        private readonly UserFavoriteMealService _favoriteMealService;
         private readonly int userId = 1; // Replace with actual user ID from session/auth
 
         public FavouriteMealsViewModel()
         {
-            // this.favoriteMealServiceProxy = new FavoriteMealServiceProxy();
+            _favoriteMealService = App.Services.GetRequiredService<UserFavoriteMealService>();
         }
 
         public async Task<IEnumerable<UserFavoriteMealModel>> GetAllFavouriteMealsAsync()
         {
-            // return await this.favoriteMealServiceProxy.GetAllAsync();
-            return new List<UserFavoriteMealModel>(); // Placeholder
+            return await _favoriteMealService.GetUserFavoritesAsync(userId);
         }
 
         public async Task<UserFavoriteMealModel> AddMealToFavourites(MealModel meal)
         {
-            // return await this.favoriteMealServiceProxy.CreateAsync(new UserFavoriteMealModel { UserID = userId, MealID = meal.Id });
-            return new UserFavoriteMealModel { UserID = userId, MealID = meal.Id, Meal = meal }; // Placeholder
+            return await _favoriteMealService.AddToFavoritesAsync(userId, meal.Id);
         }
 
         public async Task<bool> RemoveMealFromFavourites(int mealId)
         {
-            // return await this.favoriteMealServiceProxy.DeleteAsync(mealId);
-            return true; // Placeholder
+            return await _favoriteMealService.RemoveFromFavoritesAsync(userId, mealId);
         }
 
-        public async Task<UserFavoriteMealModel?> GetFavouriteMeal(int mealId)
+        public async Task<bool> IsMealFavorite(int mealId)
         {
-            // var all = await this.favoriteMealServiceProxy.GetAllAsync();
-            // return all.FirstOrDefault(fm => fm.MealID == mealId);
-            return null; // Placeholder
+            return await _favoriteMealService.IsMealFavoriteAsync(userId, mealId);
         }
     }
 } 
