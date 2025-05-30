@@ -4,7 +4,7 @@ using NeoIsisJob.Views.Shop.Pages;
 using Workout.Core.Models;
 using NeoIsisJob.ViewModels.Shop;
 using System;
-
+using Workout.Core.Utils.Filters;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -35,16 +35,20 @@ namespace NeoIsisJob.Views.Nutrition
             // Refresh the meal list when a new meal is added
             MealList.RefreshMeals();
         }
-
+        private void MealFilter_FilterChanged(object sender, MealFilter filter)
+        {
+            // Apply the filter to the meal list
+            MealList.ApplyFilter(filter);
+        }
         private async void MealList_MealLiked(object sender, MealModel meal)
         {
             try
             {
                 var vm = new FavouriteMealsViewModel();
-                
+
                 // Check if already favorited
                 bool isAlreadyFavorite = await vm.IsMealFavorite(meal.Id);
-                
+
                 if (isAlreadyFavorite)
                 {
                     // Remove from favorites
@@ -84,7 +88,6 @@ namespace NeoIsisJob.Views.Nutrition
                 await errorDialog.ShowAsync();
             }
         }
-
         // Navigation methods
         public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
         {

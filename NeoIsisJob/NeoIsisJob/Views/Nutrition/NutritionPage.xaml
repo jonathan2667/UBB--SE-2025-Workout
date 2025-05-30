@@ -30,6 +30,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -52,8 +53,14 @@
                                        AddMealCompleted="AddMealButton_AddMealCompleted"/>
             </Grid>
 
+            <!-- Filter Component -->
+            <component:MealFilterComponent Grid.Row="1"
+                                         x:Name="MealFilter"
+                                         Margin="20,0,20,10"
+                                         FilterChanged="MealFilter_FilterChanged"/>
+
             <!-- Meal List -->
-            <Border Grid.Row="1"
+            <Border Grid.Row="2"
                     Margin="20,0,20,20"
                     Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"

@@ -3,10 +3,12 @@ using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Web.ViewModels.Meal;
 using Workout.Core.IServices;
+using Workout.Core.Utils.Filters;
 using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
+    [AuthorizeUser]
     public class MealController : Controller
     {
         private readonly IService<MealModel> _mealService;
@@ -18,6 +20,42 @@ namespace Workout.Web.Controllers
             _favoriteMealService = favoriteMealService;
         }
 
+        public async Task<IActionResult> Index(MealFilter filter)
+        {
+            var viewModel = new MealIndexViewModel
+            {
+                Filter = filter ?? new MealFilter()
+            };
+
+            try
+            {
+                // If no filters are applied, get all meals
+                if (IsFilterEmpty(filter))
+                {
+                    viewModel.Meals = await _mealService.GetAllAsync();
+                }
+                else
+                {
+                    viewModel.Meals = await _mealService.GetFilteredAsync(filter);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Failed to load meals: " + ex.Message;
+                viewModel.Meals = new List<MealModel>();
+            }
+
+            return View(viewModel);
+        }
+
+        private bool IsFilterEmpty(MealFilter filter)
+        {
+            return filter == null ||
+                    (string.IsNullOrEmpty(filter.Type) &&
+                     string.IsNullOrEmpty(filter.CookingLevel) &&
+                     string.IsNullOrEmpty(filter.CookingTimeRange) &&
+                     string.IsNullOrEmpty(filter.CalorieRange));
+        }
         public async Task<IActionResult> Index()
         {
             var meals = await _mealService.GetAllAsync();
