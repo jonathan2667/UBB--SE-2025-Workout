@@ -38,42 +38,6 @@ namespace Workout.Web.Controllers
                 {
                     viewModel.Meals = await _mealService.GetFilteredAsync(filter);
                 }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Failed to load meals: " + ex.Message;
-                viewModel.Meals = new List<MealModel>();
-            }
-
-            return View(viewModel);
-        }
-
-        private bool IsFilterEmpty(MealFilter filter)
-        {
-            return filter == null ||
-                    (string.IsNullOrEmpty(filter.Type) &&
-                     string.IsNullOrEmpty(filter.CookingLevel) &&
-                     string.IsNullOrEmpty(filter.CookingTimeRange) &&
-                     string.IsNullOrEmpty(filter.CalorieRange));
-        }
-        public async Task<IActionResult> Index()
-        {
-            var viewModel = new MealIndexViewModel
-            {
-                Filter = filter ?? new MealFilter()
-            };
-
-            try
-            {
-                // If no filters are applied, get all meals
-                if (IsFilterEmpty(filter))
-                {
-                    viewModel.Meals = await _mealService.GetAllAsync();
-                }
-                else
-                {
-                    viewModel.Meals = await _mealService.GetFilteredAsync(filter);
-                }
 
                 // Get favorite meal IDs for the current user
                 int userId = 0;
@@ -94,10 +58,10 @@ namespace Workout.Web.Controllers
         private bool IsFilterEmpty(MealFilter filter)
         {
             return filter == null ||
-                   (string.IsNullOrEmpty(filter.Type) &&
-                    string.IsNullOrEmpty(filter.CookingLevel) &&
-                    string.IsNullOrEmpty(filter.CookingTimeRange) &&
-                    string.IsNullOrEmpty(filter.CalorieRange));
+                    (string.IsNullOrEmpty(filter.Type) &&
+                     string.IsNullOrEmpty(filter.CookingLevel) &&
+                     string.IsNullOrEmpty(filter.CookingTimeRange) &&
+                     string.IsNullOrEmpty(filter.CalorieRange));
         }
 
         public IActionResult Create()
