@@ -180,5 +180,10 @@ namespace NeoIsisJob.Views.Shop.Pages
         {
             this.Frame.Navigate(typeof(NutritionPage));
         }
+
+        public void GoToFavouriteMealsPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(FavouriteMealsPage));
+        }
     }
 }

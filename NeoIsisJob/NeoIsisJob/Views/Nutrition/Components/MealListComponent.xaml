@@ -122,10 +122,14 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <Button Grid.Column="2" 
-                                Content="Delete"
-                                Click="DeleteButton_Click"
-                                Style="{ThemeResource AccentButtonStyle}"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                            <Button Content="Delete"
+                                    Click="DeleteButton_Click"
+                                    Style="{ThemeResource AccentButtonStyle}"/>
+                            <Button Content="♥"
+                                    Click="LikeButton_Click"
+                                    Style="{ThemeResource AccentButtonStyle}"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

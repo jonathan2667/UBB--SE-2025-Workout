@@ -103,11 +103,13 @@
                     <th>Proteins (g)</th>
                     <th>Carbs (g)</th>
                     <th>Fats (g)</th>
+                    <th>Fave</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var meal in Model.Meals)
                 {
+                    var isFavorite = ViewBag.FavoriteMealIds != null && ((List<int>)ViewBag.FavoriteMealIds).Contains(meal.Id);
                     <tr>
                         <td>@meal.Name</td>
                         <td>
@@ -127,6 +129,21 @@
                         <td>@meal.Proteins</td>
                         <td>@meal.Carbohydrates</td>
                         <td>@meal.Fats</td>
+                        <td>
+                            <form asp-action="@(isFavorite ? "RemoveFromFavorites" : "AddToFavorites")" asp-controller="Meal" method="post" style="display:inline;">
+                                <input type="hidden" name="mealId" value="@meal.Id" />
+                                <button type="submit" class="btn btn-link p-0" title="@(isFavorite ? "Remove from Favorites" : "Add to Favorites")">
+                                    @if (isFavorite)
+                                    {
+                                        <span style="color:red; font-size:1.5em;">&#10084;</span> <!-- filled heart -->
+                                    }
+                                    else
+                                    {
+                                        <span style="color:gray; font-size:1.5em;">&#9825;</span> <!-- empty heart -->
+                                    }
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>

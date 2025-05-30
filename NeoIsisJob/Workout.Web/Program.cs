@@ -75,6 +75,8 @@ builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 builder.Services.AddScoped<IRepository<MealModel>, MealRepository>();
+builder.Services.AddScoped<UserFavoriteMealRepository>();
+builder.Services.AddScoped<UserFavoriteMealService>();
 
 
 // Add services

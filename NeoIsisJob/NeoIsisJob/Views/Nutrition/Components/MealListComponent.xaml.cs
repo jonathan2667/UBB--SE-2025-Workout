@@ -17,6 +17,7 @@ namespace NeoIsisJob.Views.Nutrition.Components
 
         public event EventHandler<MealModel> MealClicked;
         public event EventHandler<MealModel> MealDeleted;
+        public event EventHandler<MealModel> MealLiked;
 
         public MealListComponent()
         {
@@ -94,6 +95,14 @@ namespace NeoIsisJob.Views.Nutrition.Components
                     };
                     await dialog.ShowAsync();
                 }
+            }
+        }
+
+        private void LikeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is MealModel meal)
+            {
+                MealLiked?.Invoke(this, meal);
             }
         }
 

@@ -33,6 +33,8 @@ namespace Workout.Core.Data
 
         public DbSet<WishlistItemModel> WishlistItems { get; set; }
 
+        public DbSet<UserFavoriteMealModel> UserFavoriteMeals { get; set; }
+
         public DbSet<OrderModel> Orders { get; set; }
 
         public DbSet<OrderItemModel> OrderItems { get; set; }
@@ -139,6 +141,18 @@ namespace Workout.Core.Data
                 .HasOne(w => w.Product)
                 .WithMany(p => p.WishlistItems)
                 .HasForeignKey(w => w.ProductID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFavoriteMealModel>()
+                .HasOne(fm => fm.User)
+                .WithMany()
+                .HasForeignKey(fm => fm.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFavoriteMealModel>()
+                .HasOne(fm => fm.Meal)
+                .WithMany()
+                .HasForeignKey(fm => fm.MealID)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<OrderModel>()
@@ -304,6 +318,11 @@ namespace Workout.Core.Data
             modelBuilder.Entity<WishlistItemModel>().HasData(
                 new WishlistItemModel { ID = 1, UserID = 1, ProductID = 1 },
                 new WishlistItemModel { ID = 2, UserID = 2, ProductID = 1 });
+
+            modelBuilder.Entity<UserFavoriteMealModel>().HasData(
+                new UserFavoriteMealModel { ID = 1, UserID = 1, MealID = 1 },
+                new UserFavoriteMealModel { ID = 2, UserID = 1, MealID = 2 }
+            );
 
             modelBuilder.Entity<OrderModel>().HasData(
                 new OrderModel
