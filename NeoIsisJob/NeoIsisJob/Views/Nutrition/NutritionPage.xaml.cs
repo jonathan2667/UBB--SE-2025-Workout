@@ -2,6 +2,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using NeoIsisJob.Views.Shop.Pages;
 using Workout.Core.Models;
+using NeoIsisJob.ViewModels.Shop;
+using System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -32,6 +34,20 @@ namespace NeoIsisJob.Views.Nutrition
         {
             // Refresh the meal list when a new meal is added
             MealList.RefreshMeals();
+        }
+
+        private async void MealList_MealLiked(object sender, MealModel meal)
+        {
+            var vm = new FavouriteMealsViewModel();
+            await vm.AddMealToFavourites(meal);
+            var dialog = new ContentDialog
+            {
+                Title = "Favourited!",
+                Content = $"{meal.Name} was added to your favourite meals.",
+                CloseButtonText = "OK",
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
         }
 
         // Navigation methods
@@ -78,6 +94,11 @@ namespace NeoIsisJob.Views.Nutrition
         public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
         {
             //this.Frame.Navigate(typeof(NutritionPage));
+        }
+
+        public void GoToFavouriteMealsPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.FavouriteMealsPage));
         }
     }
 }

@@ -22,6 +22,7 @@
                 <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
                 <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
                 <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
+                <NavigationViewItem Content="Favourite Meals" Tag="FavouriteMealsPage" Tapped="GoToFavouriteMealsPage_Tap"/>
             </NavigationView.MenuItems>
             <Frame x:Name="contentFrame"/>
         </NavigationView>
@@ -61,7 +62,8 @@
                 <component:MealListComponent x:Name="MealList"
                                            Margin="10"
                                            MealClicked="MealList_MealClicked"
-                                           MealDeleted="MealList_MealDeleted"/>
+                                           MealDeleted="MealList_MealDeleted"
+                                           MealLiked="MealList_MealLiked"/>
             </Border>
         </Grid>
     </StackPanel>

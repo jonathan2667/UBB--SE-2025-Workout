@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="NeoIsisJob.Views.Shop.Components.VerticalFavoriteMealItemListComponent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:model="using:Workout.Core.Models"
+    mc:Ignorable="d">
+
+    <StackPanel Background="Gray">
+        <ListView
+             x:Name="MealListView"
+             ItemsSource="{x:Bind FavoriteMealList, Mode=OneWay}"
+             SelectionMode="None"
+             IsItemClickEnabled="True"
+             ItemClick="MealList_ItemClick"
+             Height="540"
+             Width="700">
+
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="model:UserFavoriteMealModel">
+                    <Grid Padding="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Bind Meal.Name, Mode=OneWay}" FontWeight="Bold" FontSize="18"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Meal.Directions, Mode=OneWay}"/>
+                        <Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveButton_Click" Tag="{x:Bind MealID}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackPanel>
+</UserControl> 
