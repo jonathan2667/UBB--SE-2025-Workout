@@ -3,21 +3,29 @@ using Workout.Core.Models;
 using Workout.Core.Services;
 using Workout.Web.ViewModels.Meal;
 using Workout.Core.IServices;
+using Workout.Web.Filters;
 
 namespace Workout.Web.Controllers
 {
     public class MealController : Controller
     {
         private readonly IService<MealModel> _mealService;
+        private readonly UserFavoriteMealService _favoriteMealService;
 
-        public MealController(IService<MealModel> mealService)
+        public MealController(IService<MealModel> mealService, UserFavoriteMealService favoriteMealService)
         {
             _mealService = mealService;
+            _favoriteMealService = favoriteMealService;
         }
 
         public async Task<IActionResult> Index()
         {
             var meals = await _mealService.GetAllAsync();
+            int userId = 0;
+            if (HttpContext.Session.GetString("UserId") != null)
+                userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            var favoriteIds = userId > 0 ? (await _favoriteMealService.GetUserFavoritesAsync(userId)).Select(f => f.MealID).ToList() : new List<int>();
+            ViewBag.FavoriteMealIds = favoriteIds;
             return View(meals);
         }
 
@@ -59,6 +67,41 @@ namespace Workout.Web.Controllers
                 }
             }
             return View(model);
+        }
+
+        [AuthorizeUser]
+        public async Task<IActionResult> Favorites()
+        {
+            int userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            var favorites = await _favoriteMealService.GetUserFavoritesAsync(userId);
+            return View(favorites);
+        }
+
+        [AuthorizeUser]
+        [HttpPost]
+        public async Task<IActionResult> AddToFavorites(int mealId)
+        {
+            int userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            try
+            {
+                await _favoriteMealService.AddToFavoritesAsync(userId, mealId);
+                TempData["SuccessMessage"] = "Meal added to favorites!";
+            }
+            catch (System.Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            return RedirectToAction("Index");
+        }
+
+        [AuthorizeUser]
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromFavorites(int mealId)
+        {
+            int userId = int.Parse(HttpContext.Session.GetString("UserId"));
+            await _favoriteMealService.RemoveFromFavoritesAsync(userId, mealId);
+            TempData["SuccessMessage"] = "Meal removed from favorites!";
+            return RedirectToAction("Favorites");
         }
     }
 } 
