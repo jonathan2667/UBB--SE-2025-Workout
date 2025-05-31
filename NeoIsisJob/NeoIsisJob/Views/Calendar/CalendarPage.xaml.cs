@@ -15,6 +15,7 @@ using Workout.Core.Data;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Nutrition;
+using NeoIsisJob.Views.Statistics;
 namespace NeoIsisJob.Views
 {
     public sealed partial class CalendarPage : Page
@@ -483,51 +484,6 @@ namespace NeoIsisJob.Views
                     return result?.ToString();
                 }
             }
-        }
-
-        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MainPage));
-        }
-
-        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WorkoutPage));
-        }
-
-        // Already on CalendarPage, no Action needed
-        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
-        {
-        }
-
-        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(ClassPage));
-        }
-
-        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(RankingPage));
-        }
-
-        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
-        }
-
-        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WishlistPage));
-        }
-
-        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(CartPage));
-        }
-
-        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }
