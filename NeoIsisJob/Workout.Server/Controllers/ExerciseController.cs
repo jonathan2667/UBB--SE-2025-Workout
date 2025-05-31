@@ -13,7 +13,7 @@ namespace Workout.Server.Controllers
             this.exerciseService = exerciseService;
         }
 
-        [HttpGet("api/exercise")]
+        [HttpGet]
         public async Task<IActionResult> GetAllExercises()
         {
             try
@@ -26,7 +26,8 @@ namespace Workout.Server.Controllers
                 return BadRequest($"Error fetching exercises: {ex.Message}");
             }
         }
-        [HttpGet("api/exercise/{exerciseId}")]
+        
+        [HttpGet("{exerciseId}")]
         public async Task<IActionResult> GetExerciseById(int exerciseId)
         {
             try

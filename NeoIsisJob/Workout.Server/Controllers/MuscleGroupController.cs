@@ -13,17 +13,17 @@ namespace Workout.Server.Controllers
             this.muscleGroupService = muscleGroupService;
         }
 
-        [HttpGet("api/musclegroup/{muscleGroupId}")]
-        public async Task<IActionResult> GetAllMuscleGroups(int muscleGroupId)
+        [HttpGet("{muscleGroupId}")]
+        public async Task<IActionResult> GetMuscleGroupById(int muscleGroupId)
         {
             try
             {
-                var muscleGroups = await muscleGroupService.GetMuscleGroupByIdAsync(muscleGroupId);
-                return Ok(muscleGroups);
+                var muscleGroup = await muscleGroupService.GetMuscleGroupByIdAsync(muscleGroupId);
+                return Ok(muscleGroup);
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error fetching muscle groups: {ex.Message}");
+                return BadRequest($"Error fetching muscle group: {ex.Message}");
             }
         }
     }
