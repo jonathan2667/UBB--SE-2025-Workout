@@ -211,6 +211,19 @@ namespace Workout.Core.Services
         }
 
         /// <inheritdoc/>
+        public async Task<UserDailyNutritionModel> GetTodayNutritionAsync(int userId)
+        {
+            try
+            {
+                return await this.GetDailyNutritionAsync(userId, DateTime.Today);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get today's nutrition for user {userId}.", ex);
+            }
+        }
+
+        /// <inheritdoc/>
         public async Task<UserDailyNutritionModel> UpdateDailyNutritionAsync(int userId, DateTime date)
         {
             try

@@ -43,14 +43,18 @@ namespace Workout.Core.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"WaterTrackingService.AddWaterIntakeAsync: userId={userId}, amount={amountMl}ml");
+                
                 var waterIntake = new UserWaterIntakeModel
                 {
                     UserId = userId,
                     AmountMl = amountMl,
-                    ConsumedAt = DateTime.Now,
-                    Notes = notes,
-                    CreatedAt = DateTime.Now
+                    ConsumedAt = DateTime.Now,  // Keep as local time for consistency
+                    Notes = notes ?? string.Empty,
+                    CreatedAt = DateTime.Now   // Change to local time for consistency with ConsumedAt
                 };
+
+                System.Diagnostics.Debug.WriteLine($"Created water intake object: UserId={waterIntake.UserId}, Amount={waterIntake.AmountMl}, ConsumedAt={waterIntake.ConsumedAt:yyyy-MM-dd HH:mm:ss}");
 
                 // Try to create the water intake record
                 UserWaterIntakeModel createdIntake = null;

@@ -34,13 +34,17 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                entity.CreatedAt = DateTime.UtcNow;
+                System.Diagnostics.Debug.WriteLine($"Repository.CreateAsync: Saving water entry - UserId={entity.UserId}, Amount={entity.AmountMl}, ConsumedAt={entity.ConsumedAt:yyyy-MM-dd HH:mm:ss}, CreatedAt={entity.CreatedAt:yyyy-MM-dd HH:mm:ss}");
+                
                 await this.context.UserWaterIntake.AddAsync(entity);
                 await this.context.SaveChangesAsync();
+                
+                System.Diagnostics.Debug.WriteLine($"Repository.CreateAsync: Successfully saved water entry with ID={entity.Id}");
                 return entity;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Repository.CreateAsync: Error saving water entry: {ex.Message}");
                 throw new Exception($"Failed to create water intake record.", ex);
             }
         }
@@ -114,13 +118,24 @@ namespace Workout.Core.Repositories
         {
             try
             {
-                return await this.context.UserWaterIntake
+                System.Diagnostics.Debug.WriteLine($"Repository.GetByUserAndDateAsync: Querying for userId={userId}, date={date:yyyy-MM-dd}, date.Date={date.Date:yyyy-MM-dd HH:mm:ss}");
+                
+                var results = await this.context.UserWaterIntake
                     .Where(w => w.UserId == userId && w.ConsumedAt.Date == date.Date)
                     .OrderBy(w => w.ConsumedAt)
                     .ToListAsync();
+                
+                System.Diagnostics.Debug.WriteLine($"Repository.GetByUserAndDateAsync: Found {results.Count} entries");
+                foreach (var entry in results)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  - Entry {entry.Id}: {entry.AmountMl}ml at {entry.ConsumedAt:yyyy-MM-dd HH:mm:ss}");
+                }
+                
+                return results;
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Repository.GetByUserAndDateAsync: Error: {ex.Message}");
                 throw new Exception($"Failed to get water intake entries for user {userId} on {date:yyyy-MM-dd}.", ex);
             }
         }

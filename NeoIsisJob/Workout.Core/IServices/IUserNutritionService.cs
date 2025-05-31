@@ -66,15 +66,22 @@ namespace Workout.Core.IServices
         Task<UserDailyNutritionModel> GetMonthlyAverageAsync(int userId, int month, int year);
 
         /// <summary>
-        /// Gets the most frequently consumed meal types for a user.
+        /// Gets the top meal types consumed by a user in the last specified days.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
-        /// <param name="days">The number of days to analyze.</param>
-        /// <returns>A dictionary of meal types and their consumption frequency.</returns>
+        /// <param name="days">The number of days to analyze (default is 30).</param>
+        /// <returns>A dictionary of meal types and their consumption counts, ordered by frequency.</returns>
         Task<Dictionary<string, int>> GetTopMealTypesAsync(int userId, int days = 30);
 
         /// <summary>
-        /// Updates or creates the daily nutrition summary for a user.
+        /// Gets today's nutrition summary for a user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>Today's nutrition summary.</returns>
+        Task<UserDailyNutritionModel> GetTodayNutritionAsync(int userId);
+
+        /// <summary>
+        /// Updates the daily nutrition summary for a user on a specific date based on meal logs.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="date">The date to update nutrition data for.</param>
