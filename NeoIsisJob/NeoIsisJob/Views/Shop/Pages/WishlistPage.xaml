@@ -9,20 +9,37 @@
     xmlns:component="using:NeoIsisJob.Views.Shop.Components"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    
-    <StackPanel Orientation="Vertical" Height="610">
-        <TextBlock
-        Text="Wishlist"
-        FontSize="24"
-        FontWeight="Bold"
-        HorizontalAlignment="Left"
-        Margin="20,20,0,10"/>
-        <component:VerticalWishlistItemListComponent 
-            x:Name="WishlistItemListControl"
-            WishlistItemClicked="VerticalWishlistItemListControl_WishlistItemClicked"
-            WishlistItemRemoved="VerticalWishlistItemListControl_WishlistItemRemoved"
-            Margin="20,0,0,0"
-            Width="850"
-            Height="Auto"/>
+    <StackPanel>
+        <!-- Top Navigation -->
+        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
+                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
+                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
+                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
+                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
+                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
+                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
+                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
+                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
+            </NavigationView.MenuItems>
+            <Frame x:Name="contentFrame"/>
+        </NavigationView>
+        
+        <StackPanel Orientation="Vertical" Height="610">
+            <TextBlock
+            Text="Wishlist"
+            FontSize="24"
+            FontWeight="Bold"
+            HorizontalAlignment="Left"
+            Margin="20,20,0,10"/>
+            <component:VerticalWishlistItemListComponent 
+                x:Name="WishlistItemListControl"
+                WishlistItemClicked="VerticalWishlistItemListControl_WishlistItemClicked"
+                WishlistItemRemoved="VerticalWishlistItemListControl_WishlistItemRemoved"
+                Margin="20,0,0,0"
+                Width="850"
+                Height="Auto"/>
+        </StackPanel>
     </StackPanel>
 </Page>

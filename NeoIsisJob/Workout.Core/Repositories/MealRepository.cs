@@ -139,32 +139,12 @@ namespace Workout.Core.Repositories
                 .Include(m => m.Ingredients)
                 .Where(m =>
                     (string.IsNullOrEmpty(mealFilter.Type) || m.Type == mealFilter.Type) &&
-                    (string.IsNullOrEmpty(mealFilter.CookingLevel) || m.CookingLevel == mealFilter.CookingLevel))
+                    (string.IsNullOrEmpty(mealFilter.CookingLevel) || m.CookingLevel == mealFilter.CookingLevel) &&
+                    (!mealFilter.MaxCookingTime.HasValue || m.CookingTimeMins <= mealFilter.MaxCookingTime) &&
+                    (string.IsNullOrEmpty(mealFilter.SearchTerm) ||
+                        m.Name.Contains(mealFilter.SearchTerm) ||
+                        m.Directions.Contains(mealFilter.SearchTerm)))
                 .OrderBy(m => m.Id);
-
-            // Apply cooking time range filter
-            if (!string.IsNullOrEmpty(mealFilter.CookingTimeRange))
-            {
-                query = mealFilter.CookingTimeRange.ToLower() switch
-                {
-                    "quick" => query.Where(m => m.CookingTimeMins <= 15),
-                    "medium" => query.Where(m => m.CookingTimeMins > 15 && m.CookingTimeMins <= 45),
-                    "long" => query.Where(m => m.CookingTimeMins > 45),
-                    _ => query
-                };
-            }
-
-            // Apply calorie range filter
-            if (!string.IsNullOrEmpty(mealFilter.CalorieRange))
-            {
-                query = mealFilter.CalorieRange.ToLower() switch
-                {
-                    "low" => query.Where(m => m.Calories <= 300),
-                    "medium" => query.Where(m => m.Calories > 300 && m.Calories <= 600),
-                    "high" => query.Where(m => m.Calories > 600),
-                    _ => query
-                };
-            }
 
             return await query.ToListAsync();
         }

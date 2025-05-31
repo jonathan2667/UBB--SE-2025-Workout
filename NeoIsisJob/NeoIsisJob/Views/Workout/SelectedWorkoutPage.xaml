@@ -45,7 +45,7 @@
             </Grid>
 
             <!-- Table Content -->
-            <ListView ItemsSource="{Binding CompleteWorkouts, Mode=OneWay}">
+            <ListView ItemsSource="{Binding CompleteWorkouts}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>

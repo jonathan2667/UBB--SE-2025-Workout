@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Workout.Core.Models;
 using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Nutrition;
-using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -33,13 +32,61 @@ namespace NeoIsisJob.Views
             this.DataContext = ViewModel;
         }
 
+        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(MainPage));
+        }
+
+        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
+        {
+            // Already on WorkoutPage
+        }
+
+        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CalendarPage));
+        }
+
+        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ClassPage));
+        }
+
+        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
+        }
+
         public async void GoToSelectedWorkoutPage_Click(object sender, ItemClickEventArgs e)
         {
             if (e.ClickedItem is WorkoutModel selectedWorkout)
             {
-                Debug.WriteLine($"Selected workout: {selectedWorkout.Name}");
-                var selectedWorkoutViewModel = App.Services.GetService<SelectedWorkoutViewModel>();
-                await selectedWorkoutViewModel.SetSelectedWorkoutAsync(selectedWorkout);
+                SelectedWorkoutViewModel selectedWorkoutViewModel = App.Services.GetService<SelectedWorkoutViewModel>();
+                // selectedWorkoutViewModel.SelectedWorkout = selectedWorkout;
+                if (DataContext is WorkoutViewModel viewModel)
+                {
+                    await viewModel.SelectedWorkoutViewModel.SetSelectedWorkoutAsync(selectedWorkout);
+                }
                 this.Frame.Navigate(typeof(SelectedWorkoutPage));
             }
         }
@@ -117,6 +164,7 @@ namespace NeoIsisJob.Views
             {
                 if (DataContext is WorkoutViewModel viewModel)
                 {
+                    // viewModel.SelectedWorkout = workout;
                     await viewModel.SelectedWorkoutViewModel.SetSelectedWorkoutAsync(workout);
                     WorkoutNameTextBox.Text = workout.Name;
                     EditWorkoutPopup.IsOpen = true;

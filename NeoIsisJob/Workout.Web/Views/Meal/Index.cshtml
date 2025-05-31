@@ -1,4 +1,4 @@
-@model Workout.Web.ViewModels.Meal.MealIndexViewModel
+@model IEnumerable<Workout.Core.Models.MealModel>
 
 @{
     ViewData["Title"] = "Meals";
@@ -26,71 +26,6 @@
         </div>
     }
 
-    <!-- Filter Form -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">Filter Meals</h5>
-        </div>
-        <div class="card-body">
-            <form asp-action="Index" method="get">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label for="Type" class="form-label">Meal Type</label>
-                        <select asp-for="Filter.Type" class="form-select">
-                            <option value="">All Types</option>
-                            @foreach (var type in Model.MealTypes)
-                            {
-                                <option value="@type">@type</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="CookingLevel" class="form-label">Cooking Level</label>
-                        <select asp-for="Filter.CookingLevel" class="form-select">
-                            <option value="">All Levels</option>
-                            @foreach (var level in Model.CookingLevels)
-                            {
-                                <option value="@level">@level</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="CookingTimeRange" class="form-label">Cooking Time</label>
-                        <select asp-for="Filter.CookingTimeRange" class="form-select">
-                            <option value="">All Times</option>
-                            @foreach (var timeRange in Model.CookingTimeRanges)
-                            {
-                                <option value="@timeRange">@timeRange (@(timeRange == "Quick" ? "≤15 min" : timeRange == "Medium" ? "16-45 min" : "45+ min"))</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="CalorieRange" class="form-label">Calorie Range</label>
-                        <select asp-for="Filter.CalorieRange" class="form-select">
-                            <option value="">All Ranges</option>
-                            @foreach (var calorieRange in Model.CalorieRanges)
-                            {
-                                <option value="@calorieRange">@calorieRange (@(calorieRange == "Low" ? "≤300 cal" : calorieRange == "Medium" ? "301-600 cal" : "600+ cal"))</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="row g-3 mt-2">
-                    <div class="col-md-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success me-2">Apply Filters</button>
-                        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Results Summary -->
-    <div class="mb-3">
-        <small class="text-muted">Showing @Model.Meals.Count() meal(s)</small>
-    </div>
-
-    <!-- Meals Table -->
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -103,58 +38,23 @@
                     <th>Proteins (g)</th>
                     <th>Carbs (g)</th>
                     <th>Fats (g)</th>
-                    <th>Fave</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var meal in Model.Meals)
+                @foreach (var meal in Model)
                 {
-                    var isFavorite = ViewBag.FavoriteMealIds != null && ((List<int>)ViewBag.FavoriteMealIds).Contains(meal.Id);
                     <tr>
                         <td>@meal.Name</td>
-                        <td>
-                            <span class="badge bg-primary">@meal.Type</span>
-                        </td>
-                        <td>
-                            <span class="badge @(meal.CookingLevel == "Easy" ? "bg-success" : meal.CookingLevel == "Medium" ? "bg-warning" : "bg-danger")">
-                                @meal.CookingLevel
-                            </span>
-                        </td>
+                        <td>@meal.Type</td>
+                        <td>@meal.CookingLevel</td>
                         <td>@meal.CookingTimeMins</td>
-                        <td>
-                            <span class="badge @(meal.Calories <= 300 ? "bg-success" : meal.Calories <= 600 ? "bg-warning" : "bg-danger")">
-                                @meal.Calories
-                            </span>
-                        </td>
+                        <td>@meal.Calories</td>
                         <td>@meal.Proteins</td>
                         <td>@meal.Carbohydrates</td>
                         <td>@meal.Fats</td>
-                        <td>
-                            <form asp-action="@(isFavorite ? "RemoveFromFavorites" : "AddToFavorites")" asp-controller="Meal" method="post" style="display:inline;">
-                                <input type="hidden" name="mealId" value="@meal.Id" />
-                                <button type="submit" class="btn btn-link p-0" title="@(isFavorite ? "Remove from Favorites" : "Add to Favorites")">
-                                    @if (isFavorite)
-                                    {
-                                        <span style="color:red; font-size:1.5em;">&#10084;</span> <!-- filled heart -->
-                                    }
-                                    else
-                                    {
-                                        <span style="color:gray; font-size:1.5em;">&#9825;</span> <!-- empty heart -->
-                                    }
-                                </button>
-                            </form>
-                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-
-    @if (!Model.Meals.Any())
-    {
-        <div class="text-center py-5">
-            <h5 class="text-muted">No meals found matching your criteria</h5>
-            <p class="text-muted">Try adjusting your filters or <a asp-action="Create">add a new meal</a>.</p>
-        </div>
-    }
 </div> 

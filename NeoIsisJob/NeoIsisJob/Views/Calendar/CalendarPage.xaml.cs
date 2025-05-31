@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -16,7 +15,6 @@ using Workout.Core.Data;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Nutrition;
-using NeoIsisJob.Views.Statistics;
 namespace NeoIsisJob.Views
 {
     public sealed partial class CalendarPage : Page
@@ -473,10 +471,63 @@ namespace NeoIsisJob.Views
 
         private async Task<string> GetWorkoutName(int workoutId)
         {
-            var workouts = await calendarService.GetWorkoutsAsync();
-            var workoutDetails = workouts.FirstOrDefault(w => w.WID == workoutId);
+            using (var conn = new DatabaseHelper().GetConnection())
+            {
+                await conn.OpenAsync();
+                string query = "SELECT Name FROM Workouts WHERE Wid = @WorkoutId";
 
-            return workoutDetails?.Name ?? "Unknown Workout";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@WorkoutId", workoutId);
+                    var result = await cmd.ExecuteScalarAsync();
+                    return result?.ToString();
+                }
+            }
+        }
+
+        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(MainPage));
+        }
+
+        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WorkoutPage));
+        }
+
+        // Already on CalendarPage, no Action needed
+        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
+        {
+        }
+
+        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ClassPage));
+        }
+
+        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }

@@ -52,7 +52,7 @@ namespace NeoIsisJob.ViewModels.Shop
         /// <returns>The newly added <see cref="CartItem"/>.</returns>
         public async Task<CartItemModel> AddProductToCart(ProductModel product)
         {
-            return await this.cartServiceProxy.CreateAsync(new CartItemModel(product.ID, this.userId));
+            return await this.cartServiceProxy.CreateAsync(new CartItemModel(this.userId, product.ID));
         }
 
         /// <summary>

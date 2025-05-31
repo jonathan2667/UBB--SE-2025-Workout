@@ -75,13 +75,7 @@ builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 builder.Services.AddScoped<IRepository<MealModel>, MealRepository>();
-builder.Services.AddScoped<UserFavoriteMealRepository>();
-builder.Services.AddScoped<UserFavoriteMealService>();
 
-// Add meal statistics and water tracking repositories
-builder.Services.AddScoped<IUserDailyNutritionRepository, UserDailyNutritionRepository>();
-builder.Services.AddScoped<IUserWaterIntakeRepository, UserWaterIntakeRepository>();
-builder.Services.AddScoped<IUserMealLogRepository, UserMealLogRepository>();
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -101,10 +95,6 @@ builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IService<MealModel>, MealService>();
-
-// Add meal statistics and water tracking services
-builder.Services.AddScoped<IUserNutritionService, UserNutritionService>();
-builder.Services.AddScoped<IWaterTrackingService, WaterTrackingService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();

@@ -42,8 +42,7 @@ namespace NeoIsisJob.ViewModels.Shop
         /// <returns>The created wishlist item.</returns>
         public async Task<WishlistItemModel> AddProductToWishlist(ProductModel product)
         {
-            System.Diagnostics.Debug.WriteLine($"[WishlistViewModel] AddProductToWishlist called with ProductID={product.ID}, Name={product.Name}");
-            return await this.wishlistServiceProxy.CreateAsync(new WishlistItemModel(product.ID, userId));
+            return await this.wishlistServiceProxy.CreateAsync(new WishlistItemModel(userId, product.ID));
         }
 
         /// <summary>

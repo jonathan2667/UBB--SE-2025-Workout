@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="NeoIsisJob.Views.Shop.Pages.ProductDetailPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -15,85 +14,100 @@
     <d:DesignData.DataContext>
         <viewmodel:ProductViewModel/>
     </d:DesignData.DataContext>
+    <StackPanel>
+        <!-- Top Navigation -->
+        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
+                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
+                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
+                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
+                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
+                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
+                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
+                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
+                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
+            </NavigationView.MenuItems>
+            <Frame x:Name="contentFrame"/>
+        </NavigationView>
 
-    <Grid>
-        <ScrollViewer Height="610">
-            <StackPanel Orientation="Vertical" Margin="20">
+        <Grid>
+            <ScrollViewer Height="610">
+                <StackPanel Orientation="Vertical" Margin="20">
 
-                <TextBlock Text="{Binding Name}"
+                    <TextBlock Text="{Binding Name}"
+                           HorizontalAlignment="Center"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"/>
+
+                    <Image Source="{Binding PhotoURL}"
+                       MaxWidth="300" MaxHeight="300"
+                       Stretch="Uniform"
                        HorizontalAlignment="Center"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"/>
+                       Margin="0,0,0,20"/>
 
-                <Image Source="{Binding PhotoURL}"
-                   MaxWidth="300" MaxHeight="300"
-                   Stretch="Uniform"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,20"/>
+                    <Grid HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                <Grid HorizontalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Price:" FontWeight="Bold" Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FormattedPrice}" Margin="0,0,0,5"/>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Price:" FontWeight="Bold" Margin="0,0,10,5"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FormattedPrice}" Margin="0,0,0,5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Stock:" FontWeight="Bold" Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Stock}" Margin="0,0,0,5"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Stock:" FontWeight="Bold" Margin="0,0,10,5"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Stock}" Margin="0,0,0,5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Category:" FontWeight="Bold" Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CategoryName}" Margin="0,0,0,5"/>
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Category:" FontWeight="Bold" Margin="0,0,10,5"/>
-                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CategoryName}" Margin="0,0,0,5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Size:" FontWeight="Bold" Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Size}" Margin="0,0,0,5"/>
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Size:" FontWeight="Bold" Margin="0,0,10,5"/>
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Size}" Margin="0,0,0,5"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Color:" FontWeight="Bold" Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Color}" Margin="0,0,0,5"/>
 
-                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Color:" FontWeight="Bold" Margin="0,0,10,5"/>
-                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Color}" Margin="0,0,0,5"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Description:" FontWeight="Bold" Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,0,5"/>
 
-                    <TextBlock Grid.Row="5" Grid.Column="0" Text="Description:" FontWeight="Bold" Margin="0,0,10,5"/>
-                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                    </Grid>
 
-                </Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                        <Button Content="Add to Cart" Padding="10,5" Margin="0,0,15,0" Click="AddToCartButton_Click"/>
+                        <Button x:Name="AddToWishlistButton" Content="Add to Wishlist" Padding="10,5" Margin="0,0,15,0" Click="AddToWishlistButton_Click"/>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
-                    <Button Content="Add to Cart" Padding="10,5" Margin="0,0,15,0" Click="AddToCartButton_Click"/>
-                    <Button x:Name="AddToWishlistButton" Content="Add to Wishlist" Padding="10,5" Margin="0,0,15,0" Click="AddToWishlistButton_Click"/>
+                        <components:UpdateProductButton
+                        ViewModel="{Binding}" />
 
-                    <components:UpdateProductButton
-                    ViewModel="{Binding}" />
+                        <components:DeleteProductButton
+                        ViewModel="{Binding}"  />
 
-                    <components:DeleteProductButton
-                    ViewModel="{Binding}"  />
+                    </StackPanel>
 
-                </StackPanel>
+                    <TextBlock Text="Related Products"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Margin="0,40,0,10"/>
 
-                <TextBlock Text="Related Products"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,40,0,10"/>
-
-                <ItemsControl ItemsSource="{Binding RelatedProducts}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:ProductModel">
-                            <Border Background="LightGray" CornerRadius="10" Margin="5" Padding="10">
-                                <StackPanel Orientation="Vertical">
+                    <ItemsControl ItemsSource="{Binding RelatedProducts}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:ProductModel">
+                                <StackPanel Orientation="Vertical" Padding="10" Background="LightGray" CornerRadius="10" Margin="5">
                                     <Image Source="{Binding PhotoURL}" Height="80" Width="80" Stretch="Uniform"/>
                                     <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                     <TextBlock Text="{Binding Price}" FontSize="12" Foreground="Green" HorizontalAlignment="Center"/>
@@ -103,25 +117,25 @@
                                         Click="SeeRelatedProductButton_Click"
                                         Tag="{Binding ID}"/>
                                 </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-            </StackPanel>
-        </ScrollViewer>
+                </StackPanel>
+            </ScrollViewer>
 
-        <ContentDialog x:Name="UpdateProductContentDialog"
-                   Title="Update Product"
-                   PrimaryButtonText="Save"
-                   SecondaryButtonText="Cancel"
-                   PrimaryButtonCommand="{x:Bind ViewModel.SaveCommand}"
-                   SecondaryButtonCommand="{x:Bind ViewModel.CancelEditCommand}"
-                   DataContext="{Binding ViewModel}" >
-            <ContentDialog.Content>
-                <components:UpdateProductModal />
-            </ContentDialog.Content>
-        </ContentDialog>
+            <ContentDialog x:Name="UpdateProductContentDialog"
+                       Title="Update Product"
+                       PrimaryButtonText="Save"
+                       SecondaryButtonText="Cancel"
+                       PrimaryButtonCommand="{x:Bind ViewModel.SaveCommand}"
+                       SecondaryButtonCommand="{x:Bind ViewModel.CancelEditCommand}"
+                       DataContext="{Binding ViewModel}" >
+                <ContentDialog.Content>
+                    <components:UpdateProductModal />
+                </ContentDialog.Content>
+            </ContentDialog>
 
-    </Grid>
+        </Grid>
+    </StackPanel>
 </Page>

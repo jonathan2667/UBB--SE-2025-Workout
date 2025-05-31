@@ -161,40 +161,13 @@ namespace NeoIsisJob.ViewModels.Workout
 
         public async void LoadExercises()
         {
-            Console.WriteLine("[CreateWorkoutViewModel] Starting to load exercises...");
             Exercises.Clear();
 
-            try
+            foreach (ExercisesModel exercise in await this.exerciseService.GetAllExercisesAsync())
             {
-                var exercisesList = await this.exerciseService.GetAllExercisesAsync();
-                Console.WriteLine($"[CreateWorkoutViewModel] Retrieved {exercisesList.Count} exercises from service");
-
-                foreach (ExercisesModel exercise in exercisesList)
-                {
-                    Console.WriteLine($"[CreateWorkoutViewModel] Processing exercise: {exercise.Name} (ID: {exercise.EID}, MGID: {exercise.MGID})");
-                    
-                    // add the corresponding MuscleGroup object to every one
-                    try
-                    {
-                        exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MGID);
-                        Console.WriteLine($"[CreateWorkoutViewModel] Loaded muscle group: {exercise.MuscleGroup?.Name ?? "NULL"} for exercise {exercise.Name}");
-                    }
-                    catch (Exception mgEx)
-                    {
-                        Console.WriteLine($"[CreateWorkoutViewModel] Error loading muscle group for exercise {exercise.Name}: {mgEx.Message}");
-                        // Still add the exercise even if muscle group fails to load
-                    }
-                    
-                    this.Exercises.Add(exercise);
-                    Console.WriteLine($"[CreateWorkoutViewModel] Added exercise {exercise.Name} to collection. Total exercises: {this.Exercises.Count}");
-                }
-                
-                Console.WriteLine($"[CreateWorkoutViewModel] Finished loading exercises. Final count: {this.Exercises.Count}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[CreateWorkoutViewModel] Error loading exercises: {ex.Message}");
-                Console.WriteLine($"[CreateWorkoutViewModel] Stack trace: {ex.StackTrace}");
+                // add the corresponding MuscleGroup object to every one
+                exercise.MuscleGroup = await this.muscleGroupService.GetMuscleGroupByIdAsync(exercise.MGID);
+                this.Exercises.Add(exercise);
             }
         }
 
