@@ -17,14 +17,14 @@ namespace NeoIsisJob.ViewModels.Nutrition
     /// </summary>
     public class AddMealViewModel
     {
-        private readonly MealServiceProxy mealServiceProxy;
+        private readonly MealAPIServiceProxy mealServiceProxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddMealViewModel"/> class.
         /// </summary>
         public AddMealViewModel()
         {
-            this.mealServiceProxy = new MealServiceProxy();
+            this.mealServiceProxy = new MealAPIServiceProxy();
             this.Ingredients = new ObservableCollection<IngredientModel>();
         }
 

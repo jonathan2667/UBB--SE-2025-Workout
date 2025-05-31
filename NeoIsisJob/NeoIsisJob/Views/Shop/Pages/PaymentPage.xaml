@@ -9,97 +9,79 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel>
-        <!-- Top Navigation -->
-        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
-                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
-                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
-                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
-                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
-                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
-                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
-                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
-                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
-            </NavigationView.MenuItems>
-            <Frame x:Name="contentFrame"/>
-        </NavigationView>
+    <ScrollView>
+        <StackPanel Orientation="Vertical"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
 
-        <ScrollView>
-            <StackPanel Orientation="Vertical"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
+            <TextBlock Text="First Name:" FontSize="14" Margin="10,5,0,0"/>
+            <TextBox x:Name="FirstNameTextBox" Height="25"/>
 
-                <TextBlock Text="First Name:" FontSize="14" Margin="10,5,0,0"/>
-                <TextBox x:Name="FirstNameTextBox" Height="25"/>
+            <TextBlock Text="Last Name:" FontSize="14" Margin="10,5,0,0"/>
+            <TextBox x:Name="LastNameTextBox" Height="25"/>
 
-                <TextBlock Text="Last Name:" FontSize="14" Margin="10,5,0,0"/>
-                <TextBox x:Name="LastNameTextBox" Height="25"/>
+            <TextBlock Text="Phone Number:" FontSize="14" Margin="10,5,0,0"/>
+            <TextBox x:Name="PhoneNumberTextBox" Height="25"/>
 
-                <TextBlock Text="Phone Number:" FontSize="14" Margin="10,5,0,0"/>
-                <TextBox x:Name="PhoneNumberTextBox" Height="25"/>
+            <TextBlock Text="Region:" FontSize="14" Margin="10,5,0,0"/>
+            <ComboBox x:Name="RegionComboBox">
+                <ComboBoxItem Content="Alba"/>
+                <ComboBoxItem Content="Arad"/>
+                <ComboBoxItem Content="Arges"/>
+                <ComboBoxItem Content="Bacau"/>
+                <ComboBoxItem Content="Bihor"/>
+                <ComboBoxItem Content="Bistrita-Nasaud"/>
+                <ComboBoxItem Content="Botosani"/>
+                <ComboBoxItem Content="Brasov"/>
+                <ComboBoxItem Content="Braila"/>
+                <ComboBoxItem Content="Bucuresti"/>
+                <ComboBoxItem Content="Buzau"/>
+                <ComboBoxItem Content="Caras-Severin"/>
+                <ComboBoxItem Content="Calarasi"/>
+                <ComboBoxItem Content="Cluj"/>
+                <ComboBoxItem Content="Constanta"/>
+                <ComboBoxItem Content="Covasna"/>
+                <ComboBoxItem Content="Dambovita"/>
+                <ComboBoxItem Content="Dolj"/>
+                <ComboBoxItem Content="Galati"/>
+                <ComboBoxItem Content="Giurgiu"/>
+                <ComboBoxItem Content="Gorj"/>
+                <ComboBoxItem Content="Harghita"/>
+                <ComboBoxItem Content="Hunedoara"/>
+                <ComboBoxItem Content="Ialomita"/>
+                <ComboBoxItem Content="Iasi"/>
+                <ComboBoxItem Content="Ilfov"/>
+                <ComboBoxItem Content="Maramures"/>
+                <ComboBoxItem Content="Mehedinti"/>
+                <ComboBoxItem Content="Mures"/>
+                <ComboBoxItem Content="Neamt"/>
+                <ComboBoxItem Content="Olt"/>
+                <ComboBoxItem Content="Prahova"/>
+                <ComboBoxItem Content="Satu Mare"/>
+                <ComboBoxItem Content="Salaj"/>
+                <ComboBoxItem Content="Sibiu"/>
+                <ComboBoxItem Content="Suceava"/>
+                <ComboBoxItem Content="Teleorman"/>
+                <ComboBoxItem Content="Timis"/>
+                <ComboBoxItem Content="Tulcea"/>
+                <ComboBoxItem Content="Vaslui"/>
+                <ComboBoxItem Content="Valcea"/>
+                <ComboBoxItem Content="Vrancea"/>
+            </ComboBox>
 
-                <TextBlock Text="Region:" FontSize="14" Margin="10,5,0,0"/>
-                <ComboBox x:Name="RegionComboBox">
-                    <ComboBoxItem Content="Alba"/>
-                    <ComboBoxItem Content="Arad"/>
-                    <ComboBoxItem Content="Arges"/>
-                    <ComboBoxItem Content="Bacau"/>
-                    <ComboBoxItem Content="Bihor"/>
-                    <ComboBoxItem Content="Bistrita-Nasaud"/>
-                    <ComboBoxItem Content="Botosani"/>
-                    <ComboBoxItem Content="Brasov"/>
-                    <ComboBoxItem Content="Braila"/>
-                    <ComboBoxItem Content="Bucuresti"/>
-                    <ComboBoxItem Content="Buzau"/>
-                    <ComboBoxItem Content="Caras-Severin"/>
-                    <ComboBoxItem Content="Calarasi"/>
-                    <ComboBoxItem Content="Cluj"/>
-                    <ComboBoxItem Content="Constanta"/>
-                    <ComboBoxItem Content="Covasna"/>
-                    <ComboBoxItem Content="Dambovita"/>
-                    <ComboBoxItem Content="Dolj"/>
-                    <ComboBoxItem Content="Galati"/>
-                    <ComboBoxItem Content="Giurgiu"/>
-                    <ComboBoxItem Content="Gorj"/>
-                    <ComboBoxItem Content="Harghita"/>
-                    <ComboBoxItem Content="Hunedoara"/>
-                    <ComboBoxItem Content="Ialomita"/>
-                    <ComboBoxItem Content="Iasi"/>
-                    <ComboBoxItem Content="Ilfov"/>
-                    <ComboBoxItem Content="Maramures"/>
-                    <ComboBoxItem Content="Mehedinti"/>
-                    <ComboBoxItem Content="Mures"/>
-                    <ComboBoxItem Content="Neamt"/>
-                    <ComboBoxItem Content="Olt"/>
-                    <ComboBoxItem Content="Prahova"/>
-                    <ComboBoxItem Content="Satu Mare"/>
-                    <ComboBoxItem Content="Salaj"/>
-                    <ComboBoxItem Content="Sibiu"/>
-                    <ComboBoxItem Content="Suceava"/>
-                    <ComboBoxItem Content="Teleorman"/>
-                    <ComboBoxItem Content="Timis"/>
-                    <ComboBoxItem Content="Tulcea"/>
-                    <ComboBoxItem Content="Vaslui"/>
-                    <ComboBoxItem Content="Valcea"/>
-                    <ComboBoxItem Content="Vrancea"/>
-                </ComboBox>
+            <TextBlock Text="City:" FontSize="14" Margin="10,5,0,0"/>
+            <TextBox x:Name="CityTextBox" Height="25"/>
 
-                <TextBlock Text="City:" FontSize="14" Margin="10,5,0,0"/>
-                <TextBox x:Name="CityTextBox" Height="25"/>
+            <TextBlock Text="Address:" FontSize="14" Margin="10,5,0,0"/>
+            <TextBox x:Name="AddressTextBox" Height="50"/>
 
-                <TextBlock Text="Address:" FontSize="14" Margin="10,5,0,0"/>
-                <TextBox x:Name="AddressTextBox" Height="50"/>
-
-                <TextBlock Text="Payment Method:" FontSize="14" Margin="10,5,0,0"/>
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton x:Name="PaymentMethodCard" Content="Online"/>
-                    <RadioButton x:Name="PaymentMethodCash" Content="At Delivery (Cash)"/>
-                </StackPanel>
-
-                <Button HorizontalAlignment="Center" Content="Send order" Margin="0,20,0,5" FontSize="18" Background="Green" Click="SendOrderButton_Click"/>
+            <TextBlock Text="Payment Method:" FontSize="14" Margin="10,5,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <RadioButton x:Name="PaymentMethodCard" Content="Online"/>
+                <RadioButton x:Name="PaymentMethodCash" Content="At Delivery (Cash)"/>
             </StackPanel>
-        </ScrollView>
-    </StackPanel>
+
+            <Button HorizontalAlignment="Center" Content="Send order" Margin="0,20,0,5" FontSize="18" Background="Green" Click="SendOrderButton_Click"/>
+        </StackPanel>
+    </ScrollView>
 </Page>

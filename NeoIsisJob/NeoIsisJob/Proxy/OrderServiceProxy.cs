@@ -100,12 +100,13 @@ namespace NeoIsisJob.Proxy
         /// <summary>
         /// Creates an order from the current cart items.
         /// </summary>
+        /// <param name="userID">The ID of the user creating the order.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task CreateOrderFromCartAsync()
+        public async Task<OrderModel> CreateOrderFromCartAsync(int userID)
         {
             try
             {
-                await this.PostAsync($"{BaseRoute}/from-cart", null);
+                return await this.PostAsync<OrderModel>($"{BaseRoute}/from-cart/{userID}", null);
             }
             catch (Exception ex)
             {

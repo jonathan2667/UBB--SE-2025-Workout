@@ -5,10 +5,12 @@ using NeoIsisJob.ViewModels.Workout;
 // using NeoIsisJob.Repositories;
 // using NeoIsisJob.Services;
 using NeoIsisJob.ViewModels.Rankings;
+using NeoIsisJob.ViewModels;
 using Workout.Core.Repositories;
 using Workout.Core.Services;
 using Workout.Core.IRepositories;
 using Workout.Core.IServices;
+using Workout.Core.Models;
 using NeoIsisJob.Proxy;
 using Workout.Core.Data;
 using Microsoft.EntityFrameworkCore;
@@ -59,15 +61,22 @@ namespace NeoIsisJob
             serviceCollection.AddSingleton<IRankingsRepository, RankingsRepository>();
             serviceCollection.AddScoped<UserFavoriteMealRepository>();
             serviceCollection.AddScoped<MealRepository>();
+            serviceCollection.AddScoped<IRepository<MealModel>, MealRepository>();
+            serviceCollection.AddScoped<IUserDailyNutritionRepository, UserDailyNutritionRepository>();
+            serviceCollection.AddScoped<IUserWaterIntakeRepository, UserWaterIntakeRepository>();
+            serviceCollection.AddScoped<IUserMealLogRepository, UserMealLogRepository>();
 
             // Register services
             serviceCollection.AddSingleton<IRankingsService, RankingsService>();
             serviceCollection.AddScoped<UserFavoriteMealService>();
             serviceCollection.AddScoped<MealService>();
+            serviceCollection.AddScoped<IUserNutritionService, UserNutritionService>();
+            serviceCollection.AddScoped<IWaterTrackingService, WaterTrackingService>();
 
             // Register view models
             serviceCollection.AddSingleton<RankingsViewModel>();
             serviceCollection.AddSingleton<SelectedWorkoutViewModel>();
+            serviceCollection.AddTransient<StatisticsViewModel>();
 
             Services = serviceCollection.BuildServiceProvider();
         }

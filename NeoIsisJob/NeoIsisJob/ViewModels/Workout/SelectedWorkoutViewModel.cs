@@ -31,18 +31,25 @@ namespace NeoIsisJob.ViewModels.Workout
 
         public async Task SetSelectedWorkoutAsync(WorkoutModel workout)
         {
+            Debug.WriteLine($"SetSelectedWorkoutAsync called with workout: {workout?.Name}");
             selectedWorkout = workout;
-            Debug.WriteLine($"SelectedWorkout set to: {selectedWorkout?.Name}");
             OnPropertyChanged(nameof(SelectedWorkout));
 
             if (selectedWorkout != null)
             {
+                Debug.WriteLine($"Fetching complete workouts for workout ID: {selectedWorkout.WID}");
                 var completeWorkoutsRaw = await this.completeWorkoutService.GetCompleteWorkoutsByWorkoutIdAsync(selectedWorkout.WID);
+                Debug.WriteLine($"Found {completeWorkoutsRaw?.Count ?? 0} complete workouts");
+                
                 var completeWorkoutsFilled = await FilledCompleteWorkoutsWithExercies(completeWorkoutsRaw);
+                Debug.WriteLine($"Filled {completeWorkoutsFilled?.Count ?? 0} complete workouts with exercises");
+                
                 CompleteWorkouts = new ObservableCollection<CompleteWorkoutModel>(completeWorkoutsFilled);
+                Debug.WriteLine($"Set CompleteWorkouts collection with {CompleteWorkouts.Count} items");
             }
             else
             {
+                Debug.WriteLine("Selected workout is null, clearing CompleteWorkouts");
                 CompleteWorkouts.Clear();
             }
         }
@@ -53,6 +60,7 @@ namespace NeoIsisJob.ViewModels.Workout
             set
             {
                 completeWorkouts = value;
+                Debug.WriteLine($"CompleteWorkouts property changed, new count: {completeWorkouts?.Count ?? 0}");
                 OnPropertyChanged();
             }
         }
@@ -60,6 +68,7 @@ namespace NeoIsisJob.ViewModels.Workout
         // Default constructor
         public SelectedWorkoutViewModel()
         {
+            Debug.WriteLine("SelectedWorkoutViewModel constructor called");
             this.workoutService = new WorkoutServiceProxy();
             this.exerciseService = new ExerciseServiceProxy();
             this.completeWorkoutService = new CompleteWorkoutServiceProxy();
@@ -68,9 +77,11 @@ namespace NeoIsisJob.ViewModels.Workout
 
         public async Task<IList<CompleteWorkoutModel>> FilledCompleteWorkoutsWithExercies(IList<CompleteWorkoutModel> complWorkouts)
         {
+            Debug.WriteLine($"Filling {complWorkouts?.Count ?? 0} complete workouts with exercises");
             foreach (CompleteWorkoutModel complWorkout in complWorkouts)
             {
                 complWorkout.Exercise = await this.exerciseService.GetExerciseByIdAsync(complWorkout.EID);
+                Debug.WriteLine($"Filled exercise for workout: {complWorkout.Exercise?.Name}");
             }
 
             return complWorkouts;
@@ -82,6 +93,7 @@ namespace NeoIsisJob.ViewModels.Workout
         // gets triggered every time a property changes
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            Debug.WriteLine($"Property changed: {propertyName}");
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
@@ -106,6 +118,7 @@ namespace NeoIsisJob.ViewModels.Workout
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Error updating workout name: {ex.Message}");
                 throw new Exception($"An error occurred while updating the workout: {ex.Message}", ex);
             }
         }

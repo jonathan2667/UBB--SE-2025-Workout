@@ -860,6 +860,51 @@ namespace Workout.Core.Migrations
                     b.ToTable("UserClasses", (string)null);
                 });
 
+            modelBuilder.Entity("Workout.Core.Models.UserDailyNutritionModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MealsConsumed")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalCalories")
+                        .HasColumnType("int");
+
+                    b.Property<double>("TotalCarbohydrates")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TotalFats")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TotalProteins")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WaterIntakeMl")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserDailyNutrition", (string)null);
+                });
+
             modelBuilder.Entity("Workout.Core.Models.UserFavoriteMealModel", b =>
                 {
                     b.Property<int>("ID")
@@ -895,6 +940,42 @@ namespace Workout.Core.Migrations
                             MealID = 2,
                             UserID = 1
                         });
+                });
+
+            modelBuilder.Entity("Workout.Core.Models.UserMealLogModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ConsumedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MealId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("PortionMultiplier")
+                        .HasColumnType("float");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MealId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserMealLogs", (string)null);
                 });
 
             modelBuilder.Entity("Workout.Core.Models.UserModel", b =>
@@ -940,6 +1021,37 @@ namespace Workout.Core.Migrations
                             Password = "password2",
                             Username = "user2"
                         });
+                });
+
+            modelBuilder.Entity("Workout.Core.Models.UserWaterIntakeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AmountMl")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ConsumedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserWaterIntake", (string)null);
                 });
 
             modelBuilder.Entity("Workout.Core.Models.UserWorkoutModel", b =>
@@ -1313,6 +1425,17 @@ namespace Workout.Core.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Workout.Core.Models.UserDailyNutritionModel", b =>
+                {
+                    b.HasOne("Workout.Core.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Workout.Core.Models.UserFavoriteMealModel", b =>
                 {
                     b.HasOne("Workout.Core.Models.MealModel", "Meal")
@@ -1328,6 +1451,36 @@ namespace Workout.Core.Migrations
                         .IsRequired();
 
                     b.Navigation("Meal");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Workout.Core.Models.UserMealLogModel", b =>
+                {
+                    b.HasOne("Workout.Core.Models.MealModel", "Meal")
+                        .WithMany()
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Workout.Core.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meal");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Workout.Core.Models.UserWaterIntakeModel", b =>
+                {
+                    b.HasOne("Workout.Core.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
