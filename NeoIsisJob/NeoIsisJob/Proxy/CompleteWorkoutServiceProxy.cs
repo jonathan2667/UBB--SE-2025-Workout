@@ -60,7 +60,14 @@ namespace NeoIsisJob.Proxy
         {
             try
             {
-                await PostAsync($"{EndpointName}/{workoutId}/{exerciseId}/{sets}/{repetitionsPerSet}", null);
+                var completeWorkout = new
+                {
+                    WorkoutId = workoutId,
+                    ExerciseId = exerciseId,
+                    Sets = sets,
+                    RepetitionsPerSet = repetitionsPerSet
+                };
+                await PostAsync($"{EndpointName}/{workoutId}/{exerciseId}/{sets}/{repetitionsPerSet}", completeWorkout);
             }
             catch (Exception ex)
             {
