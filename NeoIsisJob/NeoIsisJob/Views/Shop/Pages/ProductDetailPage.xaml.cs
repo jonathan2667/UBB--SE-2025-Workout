@@ -223,14 +223,14 @@ namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your pr
         {
             if (sender is Button clickedButton)
             {
-                int currentProductId = this.ViewModel.ID;
-                Debug.WriteLine($"[ProductDetailPage] AddToWishlistButton_Click - Current product ID: {currentProductId}");
-                if (currentProductId > 0)
+                ProductModel selectedProduct = this.ViewModel.GetSelectedProduct();
+                if (selectedProduct != null)
                 {
-                    WishlistItemModel item = await this.wishlistViewModel.GetProductFromWishlist(currentProductId);
+                    // Check if the product is already in the wishlist
+                    WishlistItemModel item = await this.wishlistViewModel.GetProductFromWishlist(selectedProduct.ID);
                     if (item != null)
                     {
-                        Debug.WriteLine($"[ProductDetailPage] Removing from wishlist: WishlistItemID={item.ID}, ProductID={item.ProductID}");
+                        // Remove from wishlist
                         bool removed = await this.wishlistViewModel.RemoveProductFromWishlist(item.ID);
                         if (removed)
                         {
@@ -245,6 +245,7 @@ namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your pr
                         }
                         else
                         {
+                            // Failure feedback
                             await new ContentDialog
                             {
                                 Title = "Error",
@@ -256,56 +257,56 @@ namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your pr
                     }
                     else
                     {
-                        ProductModel selectedProduct = this.ViewModel.GetSelectedProduct();
-                        Debug.WriteLine($"[ProductDetailPage] Adding to wishlist: ProductID={selectedProduct.ID}, Name={selectedProduct.Name}");
-                        if (selectedProduct != null && selectedProduct.ID == currentProductId)
+                        // Add to wishlist
+                        WishlistItemModel addedItem = await this.wishlistViewModel.AddProductToWishlist(selectedProduct);
+                        if (addedItem != null)
                         {
-                            WishlistItemModel addedItem = await this.wishlistViewModel.AddProductToWishlist(selectedProduct);
-                            if (addedItem != null)
+                            this.AddToWishlistButton.Content = "Remove from Wishlist";
+
+                            // Success feedback
+                            await new ContentDialog
                             {
-                                this.AddToWishlistButton.Content = "Remove from Wishlist";
-                                await new ContentDialog
-                                {
-                                    Title = "Success",
-                                    Content = "Product added to wishlist.",
-                                    CloseButtonText = "OK",
-                                    XamlRoot = this.XamlRoot
-                                }.ShowAsync();
-                            }
-                            else
-                            {
-                                await new ContentDialog
-                                {
-                                    Title = "Error",
-                                    Content = "Failed to add product to wishlist.",
-                                    CloseButtonText = "OK",
-                                    XamlRoot = this.XamlRoot
-                                }.ShowAsync();
-                            }
+                                Title = "Success",
+                                Content = "Product added to wishlist.",
+                                CloseButtonText = "OK",
+                                XamlRoot = this.XamlRoot
+                            }.ShowAsync();
                         }
                         else
                         {
-                            Debug.WriteLine($"[ProductDetailPage] Product mismatch. Current ID: {currentProductId}, Selected ID: {selectedProduct?.ID}");
+                            // Failure feedback
                             await new ContentDialog
                             {
                                 Title = "Error",
-                                Content = "Failed to add product to wishlist: Product data mismatch.",
+                                Content = "Failed to add product to wishlist.",
                                 CloseButtonText = "OK",
                                 XamlRoot = this.XamlRoot
                             }.ShowAsync();
                         }
                     }
-                }
-                else
-                {
-                    Debug.WriteLine("[ProductDetailPage] Invalid product ID");
-                    await new ContentDialog
+                    /*WishlistItem addedItem = await this.wishlistViewModel.AddProductToWishlist(selectedProduct);
+                    if (addedItem != null)
                     {
-                        Title = "Error",
-                        Content = "Failed to add product to wishlist: Invalid product ID.",
-                        CloseButtonText = "OK",
-                        XamlRoot = this.XamlRoot
-                    }.ShowAsync();
+                        // Success feedback
+                        await new ContentDialog
+                        {
+                            Title = "Success",
+                            Content = "Product added to wishlist.",
+                            CloseButtonText = "OK",
+                            XamlRoot = this.XamlRoot,
+                        }.ShowAsync();
+                    }
+                    else
+                    {
+                        // Failure feedback
+                        await new ContentDialog
+                        {
+                            Title = "Error",
+                            Content = "Failed to add product to cart.",
+                            CloseButtonText = "OK",
+                            XamlRoot = this.XamlRoot
+                        }.ShowAsync();
+                    }*/
                 }
             }
         }
@@ -325,6 +326,52 @@ namespace NeoIsisJob.Views.Shop.Pages// Using the 'View' namespace as in your pr
                     this.AddToWishlistButton.Content = "Add to Wishlist";
                 }
             }
+        }
+
+        // Navigation methods - you already have these implemented
+        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.MainPage));
+        }
+
+        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WorkoutPage));
+        }
+
+        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CalendarPage));
+        }
+
+        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ClassPage));
+        }
+
+        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(RankingPage));
+        }
+
+        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+        }
+
+        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WishlistPage));
+        }
+
+        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CartPage));
+        }
+
+        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(NutritionPage));
         }
     }
 }

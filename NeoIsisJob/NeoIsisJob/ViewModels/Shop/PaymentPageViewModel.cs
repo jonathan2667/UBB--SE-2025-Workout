@@ -20,7 +20,6 @@ namespace NeoIsisJob.ViewModels.Shop
     public class PaymentPageViewModel
     {
         private readonly OrderServiceProxy orderServiceProxy;
-        private readonly int userId = 1; // This should be replaced with the actual user ID from the session or authentication context.
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentPageViewModel"/> class.
@@ -38,8 +37,8 @@ namespace NeoIsisJob.ViewModels.Shop
         {
             try
             {
-                var result = await this.orderServiceProxy.CreateOrderFromCartAsync(this.userId);
-                return result != null;
+                await ((OrderServiceProxy)this.orderServiceProxy).CreateOrderFromCartAsync();
+                return true;
             }
             catch (Exception exception)
             {

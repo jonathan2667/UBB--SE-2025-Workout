@@ -4,7 +4,7 @@ using Workout.Core.IServices;
 namespace Workout.Server.Controllers
 {
     [ApiController]
-    [Route("api/musclegroup")]
+    [Route("api/[controller]")]
     public class MuscleGroupController : ControllerBase
     {
         private readonly IMuscleGroupService muscleGroupService;
@@ -13,17 +13,17 @@ namespace Workout.Server.Controllers
             this.muscleGroupService = muscleGroupService;
         }
 
-        [HttpGet("{muscleGroupId}")]
+        [HttpGet("api/musclegroup/{muscleGroupId}")]
         public async Task<IActionResult> GetAllMuscleGroups(int muscleGroupId)
         {
             try
             {
-                var muscleGroup = await muscleGroupService.GetMuscleGroupByIdAsync(muscleGroupId);
-                return Ok(muscleGroup);
+                var muscleGroups = await muscleGroupService.GetMuscleGroupByIdAsync(muscleGroupId);
+                return Ok(muscleGroups);
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error fetching muscle group: {ex.Message}");
+                return BadRequest($"Error fetching muscle groups: {ex.Message}");
             }
         }
     }

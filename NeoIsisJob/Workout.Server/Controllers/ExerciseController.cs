@@ -3,7 +3,7 @@ using Workout.Core.IServices;
 namespace Workout.Server.Controllers
 {
     [ApiController]
-    [Route("api/exercise")]
+    [Route("api/[controller]")]
     public class ExerciseController : ControllerBase
     {
         private readonly IExerciseService exerciseService;
@@ -13,7 +13,7 @@ namespace Workout.Server.Controllers
             this.exerciseService = exerciseService;
         }
 
-        [HttpGet]
+        [HttpGet("api/exercise")]
         public async Task<IActionResult> GetAllExercises()
         {
             try
@@ -26,7 +26,7 @@ namespace Workout.Server.Controllers
                 return BadRequest($"Error fetching exercises: {ex.Message}");
             }
         }
-        [HttpGet("{exerciseId}")]
+        [HttpGet("api/exercise/{exerciseId}")]
         public async Task<IActionResult> GetExerciseById(int exerciseId)
         {
             try

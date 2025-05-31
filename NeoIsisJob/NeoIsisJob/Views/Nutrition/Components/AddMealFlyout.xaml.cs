@@ -77,9 +77,10 @@ namespace NeoIsisJob.Views.Nutrition.Components
                     MealAdded?.Invoke(this, new RoutedEventArgs());
                 }
 
-                // Don't navigate - let the parent handle any UI updates
-                System.Diagnostics.Debug.WriteLine("[AddMealFlyout] Add Meal button clicked.");
+                NeoIsisJob.MainWindow.AppMainFrame.Navigate(typeof(NeoIsisJob.Views.Nutrition.NutritionPage));
             }
+
+            System.Diagnostics.Debug.WriteLine("[AddMealFlyout] Add Meal button clicked.");
         }
     }
 }

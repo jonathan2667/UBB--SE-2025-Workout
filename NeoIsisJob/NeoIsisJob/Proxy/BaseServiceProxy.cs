@@ -86,7 +86,7 @@ namespace NeoIsisJob.Proxy
             var response = await httpClient.PostAsJsonAsync(url, data, jsonOptions);
             Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
 
-            // if it succeeded (200ï¿½299), return immediately
+            // if it succeeded (200–299), return immediately
             if (response.IsSuccessStatusCode)
             {
                 return;
@@ -145,7 +145,7 @@ namespace NeoIsisJob.Proxy
             var response = await httpClient.DeleteAsync(url);
             Debug.WriteLine($"[BaseServiceProxy] Response status: {response.StatusCode}");
 
-            // If it isnï¿½t a success (2xx), read and log the error JSON, then throw
+            // If it isn’t a success (2xx), read and log the error JSON, then throw
             if (!response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();
