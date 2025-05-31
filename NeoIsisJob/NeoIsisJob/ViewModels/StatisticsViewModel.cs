@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Workout.Core.IServices;
 using Workout.Core.Models;
 using NeoIsisJob.Commands;
 using NeoIsisJob.Proxy;
@@ -20,8 +19,8 @@ namespace NeoIsisJob.ViewModels
     /// </summary>
     public class StatisticsViewModel : INotifyPropertyChanged
     {
-        private readonly IUserNutritionService nutritionService;
-        private readonly IWaterTrackingService waterTrackingService;
+        private readonly UserNutritionServiceProxy nutritionService;
+        private readonly WaterTrackingServiceProxy waterTrackingService;
         private readonly MealAPIServiceProxy mealService;
 
         // Local persistence for data
@@ -42,9 +41,9 @@ namespace NeoIsisJob.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="StatisticsViewModel"/> class.
         /// </summary>
-        /// <param name="nutritionService">The nutrition service.</param>
-        /// <param name="waterTrackingService">The water tracking service.</param>
-        public StatisticsViewModel(IUserNutritionService nutritionService, IWaterTrackingService waterTrackingService)
+        /// <param name="nutritionService">The nutrition service proxy.</param>
+        /// <param name="waterTrackingService">The water tracking service proxy.</param>
+        public StatisticsViewModel(UserNutritionServiceProxy nutritionService, WaterTrackingServiceProxy waterTrackingService)
         {
             this.nutritionService = nutritionService ?? throw new ArgumentNullException(nameof(nutritionService));
             this.waterTrackingService = waterTrackingService ?? throw new ArgumentNullException(nameof(waterTrackingService));

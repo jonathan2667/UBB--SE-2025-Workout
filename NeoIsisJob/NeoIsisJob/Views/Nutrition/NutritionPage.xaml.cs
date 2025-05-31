@@ -47,7 +47,7 @@ namespace NeoIsisJob.Views.Nutrition
                 var vm = new FavouriteMealsViewModel();
 
                 // Check if already favorited
-                bool isAlreadyFavorite = await vm.IsMealFavorite(meal.Id);
+                    bool isAlreadyFavorite = await vm.IsMealFavorite(meal.Id);
 
                 if (isAlreadyFavorite)
                 {

@@ -79,6 +79,13 @@ namespace Workout.Core.IServices
         Task<double> GetWaterIntakeProgressAsync(int userId, DateTime date);
 
         /// <summary>
+        /// Gets today's water intake for a user.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>Today's water intake amount in milliliters.</returns>
+        Task<int> GetTodayWaterIntakeAsync(int userId);
+
+        /// <summary>
         /// Deletes a water intake entry.
         /// </summary>
         /// <param name="userId">The user identifier.</param>

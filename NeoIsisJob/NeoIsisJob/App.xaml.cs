@@ -1,21 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.UI.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using NeoIsisJob.ViewModels.Workout;
-// using NeoIsisJob.Repositories;
-// using NeoIsisJob.Services;
 using NeoIsisJob.ViewModels.Rankings;
 using NeoIsisJob.ViewModels;
-using Workout.Core.Repositories;
-using Workout.Core.Services;
-using Workout.Core.IRepositories;
-using Workout.Core.IServices;
-using Workout.Core.Models;
 using NeoIsisJob.Proxy;
-using Workout.Core.Data;
-using Microsoft.EntityFrameworkCore;
-// using NeoIsisJob.Repositories.Interfaces;
-// using NeoIsisJob.Services.Interfaces;
+using NeoIsisJob.Configuration;
+using Microsoft.Extensions.Configuration;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -53,25 +50,44 @@ namespace NeoIsisJob
         {
             ServiceCollection serviceCollection = new ServiceCollection();
 
-            // Register DbContext
-            serviceCollection.AddDbContext<WorkoutDbContext>(options =>
-                options.UseSqlServer("Server=localhost;Database=Workout;Integrated Security=True;MultipleActiveResultSets=true;Encrypt=True;TrustServerCertificate=True"));
+            // Configure API settings
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    {"ApiSettings:BaseUrl", "http://localhost:5261"}
+                })
+                .Build();
+            serviceCollection.AddSingleton<IConfiguration>(configuration);
 
-            // Register repositories
-            serviceCollection.AddSingleton<IRankingsRepository, RankingsRepository>();
-            serviceCollection.AddScoped<UserFavoriteMealRepository>();
-            serviceCollection.AddScoped<MealRepository>();
-            serviceCollection.AddScoped<IRepository<MealModel>, MealRepository>();
-            serviceCollection.AddScoped<IUserDailyNutritionRepository, UserDailyNutritionRepository>();
-            serviceCollection.AddScoped<IUserWaterIntakeRepository, UserWaterIntakeRepository>();
-            serviceCollection.AddScoped<IUserMealLogRepository, UserMealLogRepository>();
+            // ✅ CORRECT: Register only ServiceProxy classes for API communication
+            serviceCollection.AddScoped<UserFavoriteMealServiceProxy>();
+            serviceCollection.AddScoped<MealAPIServiceProxy>();
+            serviceCollection.AddScoped<RankingsServiceProxy>();
+            serviceCollection.AddScoped<UserServiceProxy>();
+            serviceCollection.AddScoped<WorkoutServiceProxy>();
+            serviceCollection.AddScoped<UserWorkoutServiceProxy>();
+            serviceCollection.AddScoped<WorkoutTypeServiceProxy>();
+            serviceCollection.AddScoped<UserClassServiceProxy>();
+            serviceCollection.AddScoped<ClassServiceProxy>();
+            serviceCollection.AddScoped<ClassTypeServiceProxy>();
+            serviceCollection.AddScoped<PersonalTrainerServiceProxy>();
+            serviceCollection.AddScoped<MuscleGroupServiceProxy>();
+            serviceCollection.AddScoped<ExerciseServiceProxy>();
+            serviceCollection.AddScoped<CompleteWorkoutServiceProxy>();
+            serviceCollection.AddScoped<UserNutritionServiceProxy>();
+            serviceCollection.AddScoped<WaterTrackingServiceProxy>();
+            serviceCollection.AddScoped<ProductServiceProxy>();
+            serviceCollection.AddScoped<CategoryServiceProxy>();
+            serviceCollection.AddScoped<CartServiceProxy>();
+            serviceCollection.AddScoped<WishlistServiceProxy>();
+            serviceCollection.AddScoped<OrderServiceProxy>();
+            serviceCollection.AddScoped<CalendarServiceProxy>();
 
-            // Register services
-            serviceCollection.AddSingleton<IRankingsService, RankingsService>();
-            serviceCollection.AddScoped<UserFavoriteMealService>();
-            serviceCollection.AddScoped<MealService>();
-            serviceCollection.AddScoped<IUserNutritionService, UserNutritionService>();
-            serviceCollection.AddScoped<IWaterTrackingService, WaterTrackingService>();
+            // Configure ApiSettings options
+            serviceCollection.Configure<ApiSettings>(options => 
+            {
+                options.BaseUrl = "http://localhost:5261";
+            });
 
             // Register view models
             serviceCollection.AddSingleton<RankingsViewModel>();
