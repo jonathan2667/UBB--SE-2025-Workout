@@ -56,6 +56,8 @@ builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
 builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();
 builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
 builder.Services.AddScoped<IRepository<WishlistItemModel>, WishlistRepo>();
+builder.Services.AddScoped<UserFavoriteMealRepository>();
+builder.Services.AddScoped<UserFavoriteMealService>();
 builder.Services.AddScoped<IRepository<OrderModel>, OrderRepository>();
 
 builder.Services.AddScoped<IService<ProductModel>, ProductService>();

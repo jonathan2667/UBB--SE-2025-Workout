@@ -33,7 +33,7 @@ namespace NeoIsisJob.Proxy
         {
             try
             {
-                var results = await GetAsync<IList<CompleteWorkoutModel>>($"{EndpointName}/workout/{workoutId}");
+                var results = await GetAsync<IList<CompleteWorkoutModel>>($"{EndpointName}/{workoutId}");
                 return results ?? new List<CompleteWorkoutModel>();
             }
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace NeoIsisJob.Proxy
                     Sets = sets,
                     RepetitionsPerSet = repetitionsPerSet
                 };
-                await PostAsync($"{EndpointName}", completeWorkout);
+                await PostAsync($"{EndpointName}/{workoutId}/{exerciseId}/{sets}/{repetitionsPerSet}", completeWorkout);
             }
             catch (Exception ex)
             {

@@ -12,7 +12,13 @@
         <ListView x:Name="MealListView" 
                   SelectionMode="Single"
                   IsItemClickEnabled="True"
-                  ItemClick="MealListView_ItemClick">
+                  ItemClick="MealListView_ItemClick"
+                  Height="500"
+                  Width="800"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollMode="Enabled"
+                  ScrollViewer.HorizontalScrollMode="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,5" Padding="10">
@@ -27,24 +33,103 @@
                                      FontSize="16" 
                                      FontWeight="SemiBold"
                                      Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                            <TextBlock Text="{Binding Description}" 
-                                     FontSize="14"
-                                     Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                     TextWrapping="Wrap"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                <TextBlock Text="Calories: " 
-                                         FontSize="12"
-                                         Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-                                <TextBlock Text="{Binding Calories}" 
-                                         FontSize="12"
-                                         Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            
+                            <!-- Meal Details Row 1 -->
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Spacing="15">
+                                <Border Background="{ThemeResource SystemAccentColor}" 
+                                       CornerRadius="8" 
+                                       Padding="6,2">
+                                    <TextBlock Text="{Binding Type}" 
+                                             FontSize="11"
+                                             FontWeight="SemiBold"
+                                             Foreground="White"/>
+                                </Border>
+                                
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <TextBlock Text="Level:" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding CookingLevel}" 
+                                             FontSize="12"
+                                             FontWeight="SemiBold"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <TextBlock Text="Time:" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding CookingTimeMins}" 
+                                             FontSize="12"
+                                             FontWeight="SemiBold"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                    <TextBlock Text="min" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            
+                            <!-- Meal Details Row 2 -->
+                            <StackPanel Orientation="Horizontal" Margin="0,3,0,0" Spacing="15">
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <TextBlock Text="Calories:" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding Calories}" 
+                                             FontSize="12"
+                                             FontWeight="SemiBold"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <TextBlock Text="Protein:" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding Proteins}" 
+                                             FontSize="12"
+                                             FontWeight="SemiBold"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                    <TextBlock Text="g" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <TextBlock Text="Carbs:" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding Carbohydrates}" 
+                                             FontSize="12"
+                                             FontWeight="SemiBold"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                    <TextBlock Text="g" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </StackPanel>
+                                
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <TextBlock Text="Fats:" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding Fats}" 
+                                             FontSize="12"
+                                             FontWeight="SemiBold"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                    <TextBlock Text="g" 
+                                             FontSize="12"
+                                             Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
 
-                        <Button Grid.Column="2" 
-                                Content="Delete"
-                                Click="DeleteButton_Click"
-                                Style="{ThemeResource AccentButtonStyle}"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                            <Button Content="Delete"
+                                    Click="DeleteButton_Click"
+                                    Style="{ThemeResource AccentButtonStyle}"/>
+                            <Button Content="♥"
+                                    Click="LikeButton_Click"
+                                    Style="{ThemeResource AccentButtonStyle}"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

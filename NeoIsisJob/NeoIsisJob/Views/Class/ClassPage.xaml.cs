@@ -26,51 +26,6 @@ namespace NeoIsisJob.Views
             this.DataContext = ViewModel;
         }
 
-        public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MainPage));
-        }
-
-        public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WorkoutPage));
-        }
-
-        public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(CalendarPage));
-        }
-
-        public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
-        {
-            // this.Frame.Navigate(typeof(ClassPage));
-        }
-
-        public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
-        }
-
-        public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WishlistPage));
-        }
-
-        public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(CartPage));
-        }
-
-        public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(RankingPage));
-        }
-
-        public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(NutritionPage));
-        }
-
     }
 
     public class BoolToVisibilityConverter : IValueConverter

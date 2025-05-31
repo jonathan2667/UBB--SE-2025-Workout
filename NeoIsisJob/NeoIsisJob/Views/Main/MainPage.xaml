@@ -10,12 +10,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!-- Top Navigation -->
+        <!-- Top Navigation with proper content area -->
         <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
@@ -27,157 +22,164 @@
                 <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
                 <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
                 <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
+                <NavigationViewItem Content="Statistics" Tag="StatisticsPage" Tapped="GoToStatisticsPage_Tap"/>
+                <NavigationViewItem Content="Favourite Meals" Tag="FavouriteMealsPage" Tapped="GoToFavouriteMealsPage_Tap"/>
             </NavigationView.MenuItems>
-            <Frame x:Name="contentFrame"/>
-        </NavigationView>
+            
+            <!-- Content area that shows either the frame content or main page content -->
+            <Grid>
+                <!-- Frame for navigation pages -->
+                <Frame x:Name="contentFrame"/>
+                
+                <!-- Main page content (shown when no navigation is active) -->
+                <Grid x:Name="mainPageContent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-        <!-- Main Content Area - Under the Navigation Bar -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                    <!-- Left Content -->
+                    <Grid Grid.Column="0" Margin="40">
+                        <!-- Your original main content here -->
+                        <TextBlock Text="Welcome to NeoIsis"
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   Margin="0,0,0,16" />
+                    </Grid>
 
-            <!-- Left Content -->
-            <Grid Grid.Column="0" Margin="40">
-                <!-- Your original main content here -->
-                <TextBlock Text="Welcome to NeoIsis"
-                           Style="{ThemeResource SubtitleTextBlockStyle}"
-                           Margin="0,0,0,16" />
-            </Grid>
-
-            <!-- Right Panel - Workout Card -->
-            <Grid Grid.Column="1" Margin="0,12,12,12">
-                <StackPanel Spacing="24">
-                    <!-- Current Date Display -->
-                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                            BorderThickness="1" 
-                            CornerRadius="8"
-                            Padding="10">
-                        <StackPanel>
-                            <TextBlock Text="Today's Date" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                            <TextBlock 
-                                x:Name="CurrentDateTextBlock"
-                                FontSize="16"
-                                FontWeight="SemiBold" 
-                                Text="Loading date..." />
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Workout Card -->
-                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                            BorderThickness="1" 
-                            CornerRadius="8"
-                            Padding="20">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Card Header -->
-                            <TextBlock Text="Today's Workout" 
-                                       FontWeight="SemiBold" 
-                                       Grid.Row="0" 
-                                       Margin="0,0,0,8"/>
-
-                            <!-- Workout Header -->
-                            <StackPanel Grid.Row="1">
-                                <TextBlock 
-                                    x:Name="WorkoutTitleTextBlock" 
-                                    Text="No Active Workout" 
-                                    FontSize="18" 
-                                    FontWeight="SemiBold" 
-                                    Margin="0,0,0,8"/>
-                                <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4,0,8"/>
-                            </StackPanel>
-
-                            <!-- Workout Content -->
-                            <ScrollViewer Grid.Row="2" MaxHeight="200" Margin="0,0,0,12">
-                                <StackPanel x:Name="WorkoutDetailsPanel">
-                                    <!-- Show when no workout exists -->
+                    <!-- Right Panel - Workout Card -->
+                    <Grid Grid.Column="1" Margin="0,12,12,12">
+                        <StackPanel Spacing="24">
+                            <!-- Current Date Display -->
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8"
+                                    Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="Today's Date" FontWeight="SemiBold" Margin="0,0,0,8"/>
                                     <TextBlock 
-                                        x:Name="NoWorkoutTextBlock"
-                                        Text="You don't have a workout scheduled for today. Add one to get started!"
-                                        TextWrapping="Wrap"
-                                        Opacity="0.8" />
-
-                                    <!-- Will be populated when workout exists -->
-                                    <StackPanel x:Name="WorkoutExercisesPanel" Visibility="Collapsed">
-                                        <TextBlock 
-                                            x:Name="WorkoutDescriptionTextBlock" 
-                                            Text="" 
-                                            TextWrapping="Wrap"
-                                            Margin="0,0,0,12"/>
-
-                                        <ItemsControl x:Name="ExercisesList">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid Margin="0,4">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <SymbolIcon Symbol="Accept" Grid.Column="0" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="{Binding}" Grid.Column="1"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </StackPanel>
+                                        x:Name="CurrentDateTextBlock"
+                                        FontSize="16"
+                                        FontWeight="SemiBold" 
+                                        Text="Loading date..." />
                                 </StackPanel>
-                            </ScrollViewer>
+                            </Border>
 
-                            <!-- Buttons -->
-                            <Grid Grid.Row="3">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                            <!-- Workout Card -->
+                            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8"
+                                    Padding="20">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <!-- Add Button (visible when no workout) -->
-                                <Button 
-                                    x:Name="AddWorkoutButton" 
-                                    Style="{ThemeResource AccentButtonStyle}"
-                                    HorizontalAlignment="Stretch"
-                                    Grid.Column="0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <SymbolIcon Symbol="Add" Margin="0,0,8,0"/>
-                                        <TextBlock Text="Add Workout"/>
+                                    <!-- Card Header -->
+                                    <TextBlock Text="Today's Workout" 
+                                               FontWeight="SemiBold" 
+                                               Grid.Row="0" 
+                                               Margin="0,0,0,8"/>
+
+                                    <!-- Workout Header -->
+                                    <StackPanel Grid.Row="1">
+                                        <TextBlock 
+                                            x:Name="WorkoutTitleTextBlock" 
+                                            Text="No Active Workout" 
+                                            FontSize="18" 
+                                            FontWeight="SemiBold" 
+                                            Margin="0,0,0,8"/>
+                                        <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,4,0,8"/>
                                     </StackPanel>
-                                </Button>
 
-                                <!-- Complete Button (hidden initially) -->
-                                <Button 
-                                    x:Name="CompleteWorkoutButton" 
-                                    Grid.Column="0"
-                                    Visibility="Collapsed"
-                                    Style="{ThemeResource AccentButtonStyle}"
-                                    HorizontalAlignment="Stretch">
-                                    <StackPanel Orientation="Horizontal">
-                                        <SymbolIcon Symbol="Accept" Margin="0,0,8,0"/>
-                                        <TextBlock Text="Complete"/>
-                                    </StackPanel>
-                                </Button>
+                                    <!-- Workout Content -->
+                                    <ScrollViewer Grid.Row="2" MaxHeight="200" Margin="0,0,0,12">
+                                        <StackPanel x:Name="WorkoutDetailsPanel">
+                                            <!-- Show when no workout exists -->
+                                            <TextBlock 
+                                                x:Name="NoWorkoutTextBlock"
+                                                Text="You don't have a workout scheduled for today. Add one to get started!"
+                                                TextWrapping="Wrap"
+                                                Opacity="0.8" />
 
-                                <!-- Delete Button (hidden initially) -->
-                                <Button 
-                                    x:Name="DeleteWorkoutButton" 
-                                    Grid.Column="1"
-                                    Style="{ThemeResource DefaultButtonStyle}"
-                                    Margin="8,0,0,0"
-                                    Visibility="Collapsed">
-                                    <SymbolIcon Symbol="Delete"/>
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Border>
-                </StackPanel>
+                                            <!-- Will be populated when workout exists -->
+                                            <StackPanel x:Name="WorkoutExercisesPanel" Visibility="Collapsed">
+                                                <TextBlock 
+                                                    x:Name="WorkoutDescriptionTextBlock" 
+                                                    Text="" 
+                                                    TextWrapping="Wrap"
+                                                    Margin="0,0,0,12"/>
+
+                                                <ItemsControl x:Name="ExercisesList">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Margin="0,4">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <SymbolIcon Symbol="Accept" Grid.Column="0" Margin="0,0,8,0"/>
+                                                                <TextBlock Text="{Binding}" Grid.Column="1"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </ScrollViewer>
+
+                                    <!-- Buttons -->
+                                    <Grid Grid.Row="3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Add Button (visible when no workout) -->
+                                        <Button 
+                                            x:Name="AddWorkoutButton" 
+                                            Style="{ThemeResource AccentButtonStyle}"
+                                            HorizontalAlignment="Stretch"
+                                            Grid.Column="0">
+                                            <StackPanel Orientation="Horizontal">
+                                                <SymbolIcon Symbol="Add" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Add Workout"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Complete Button (hidden initially) -->
+                                        <Button 
+                                            x:Name="CompleteWorkoutButton" 
+                                            Grid.Column="0"
+                                            Visibility="Collapsed"
+                                            Style="{ThemeResource AccentButtonStyle}"
+                                            HorizontalAlignment="Stretch">
+                                            <StackPanel Orientation="Horizontal">
+                                                <SymbolIcon Symbol="Accept" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Complete"/>
+                                            </StackPanel>
+                                        </Button>
+
+                                        <!-- Delete Button (hidden initially) -->
+                                        <Button 
+                                            x:Name="DeleteWorkoutButton" 
+                                            Grid.Column="1"
+                                            Style="{ThemeResource DefaultButtonStyle}"
+                                            Margin="8,0,0,0"
+                                            Visibility="Collapsed">
+                                            <SymbolIcon Symbol="Delete"/>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
             </Grid>
-        </Grid>
+        </NavigationView>
     </Grid>
 </Page>
