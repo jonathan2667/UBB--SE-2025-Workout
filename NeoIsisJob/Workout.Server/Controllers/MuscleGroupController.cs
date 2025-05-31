@@ -4,7 +4,7 @@ using Workout.Core.IServices;
 namespace Workout.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/musclegroup")]
     public class MuscleGroupController : ControllerBase
     {
         private readonly IMuscleGroupService muscleGroupService;
@@ -13,7 +13,7 @@ namespace Workout.Server.Controllers
             this.muscleGroupService = muscleGroupService;
         }
 
-        [HttpGet("api/musclegroup/{muscleGroupId}")]
+        [HttpGet("{muscleGroupId}")]
         public async Task<IActionResult> GetAllMuscleGroups(int muscleGroupId)
         {
             try

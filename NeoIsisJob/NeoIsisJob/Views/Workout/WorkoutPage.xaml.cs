@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Workout.Core.Models;
 using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Nutrition;
+using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -36,12 +37,9 @@ namespace NeoIsisJob.Views
         {
             if (e.ClickedItem is WorkoutModel selectedWorkout)
             {
-                SelectedWorkoutViewModel selectedWorkoutViewModel = App.Services.GetService<SelectedWorkoutViewModel>();
-                // selectedWorkoutViewModel.SelectedWorkout = selectedWorkout;
-                if (DataContext is WorkoutViewModel viewModel)
-                {
-                    await viewModel.SelectedWorkoutViewModel.SetSelectedWorkoutAsync(selectedWorkout);
-                }
+                Debug.WriteLine($"Selected workout: {selectedWorkout.Name}");
+                var selectedWorkoutViewModel = App.Services.GetService<SelectedWorkoutViewModel>();
+                await selectedWorkoutViewModel.SetSelectedWorkoutAsync(selectedWorkout);
                 this.Frame.Navigate(typeof(SelectedWorkoutPage));
             }
         }
@@ -119,7 +117,6 @@ namespace NeoIsisJob.Views
             {
                 if (DataContext is WorkoutViewModel viewModel)
                 {
-                    // viewModel.SelectedWorkout = workout;
                     await viewModel.SelectedWorkoutViewModel.SetSelectedWorkoutAsync(workout);
                     WorkoutNameTextBox.Text = workout.Name;
                     EditWorkoutPopup.IsOpen = true;
