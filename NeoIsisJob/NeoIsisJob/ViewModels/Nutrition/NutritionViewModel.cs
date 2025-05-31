@@ -10,12 +10,12 @@ namespace NeoIsisJob.ViewModels.Nutrition
 {
     public class NutritionViewModel : INotifyPropertyChanged
     {
-        private readonly MealServiceProxy mealServiceProxy;
+        private readonly MealAPIServiceProxy mealServiceProxy;
         private MealFilter _currentFilter;
 
         public NutritionViewModel()
         {
-            this.mealServiceProxy = new MealServiceProxy();
+            this.mealServiceProxy = new MealAPIServiceProxy();
             this._currentFilter = new MealFilter();
         }
 

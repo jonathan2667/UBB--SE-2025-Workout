@@ -67,7 +67,7 @@ namespace NeoIsisJob.Views.Statistics
             try
             {
                 // Get meal service to load available meals
-                var mealService = new MealServiceProxy();
+                var mealService = new MealAPIServiceProxy();
                 var availableMeals = await mealService.GetAllAsync();
 
                 if (!availableMeals.Any())

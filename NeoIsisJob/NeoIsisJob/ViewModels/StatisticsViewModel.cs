@@ -22,7 +22,7 @@ namespace NeoIsisJob.ViewModels
     {
         private readonly IUserNutritionService nutritionService;
         private readonly IWaterTrackingService waterTrackingService;
-        private readonly MealServiceProxy mealService;
+        private readonly MealAPIServiceProxy mealService;
 
         // Local persistence for data
         private static readonly string LocalDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WorkoutApp", "WaterIntake.json");
@@ -48,7 +48,7 @@ namespace NeoIsisJob.ViewModels
         {
             this.nutritionService = nutritionService ?? throw new ArgumentNullException(nameof(nutritionService));
             this.waterTrackingService = waterTrackingService ?? throw new ArgumentNullException(nameof(waterTrackingService));
-            this.mealService = new MealServiceProxy();
+            this.mealService = new MealAPIServiceProxy();
 
             // Initialize collections
             this.TodayMealLogs = new ObservableCollection<UserMealLogModel>();
