@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -472,18 +473,10 @@ namespace NeoIsisJob.Views
 
         private async Task<string> GetWorkoutName(int workoutId)
         {
-            using (var conn = new DatabaseHelper().GetConnection())
-            {
-                await conn.OpenAsync();
-                string query = "SELECT Name FROM Workouts WHERE Wid = @WorkoutId";
+            var workouts = await calendarService.GetWorkoutsAsync();
+            var workoutDetails = workouts.FirstOrDefault(w => w.WID == workoutId);
 
-                using (var cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@WorkoutId", workoutId);
-                    var result = await cmd.ExecuteScalarAsync();
-                    return result?.ToString();
-                }
-            }
+            return workoutDetails?.Name ?? "Unknown Workout";
         }
     }
 }
