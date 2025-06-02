@@ -15,7 +15,7 @@ namespace Workout.Server.Controllers
             this.personalTrainerService = personalTrainerService;
         }
 
-        [HttpGet("api/personaltrainer")]
+        [HttpGet]
         public async Task<IActionResult> GetAllPersonalTrainers()
         {
             try

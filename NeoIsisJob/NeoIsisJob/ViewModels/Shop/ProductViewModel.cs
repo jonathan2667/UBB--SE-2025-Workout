@@ -216,92 +216,41 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
         // --- Methods for UI Interaction (Executed by Commands or x:Bind) ---
 
         /// <summary>
-        /// Loads the product data asynchronously from the service based on the provided ID.
-        /// This method is called after the ViewModel is created, typically from the UI's navigation event.
+        /// Loads a product by its ID.
         /// </summary>
         /// <param name="id">The ID of the product to load.</param>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task LoadProductAsync(int id)
         {
-            Debug.WriteLine($"ProductViewModel: LoadProductAsync called with ID: {id}"); // Added logging
-            this.productId = id; // Store the product ID
-            this.IsUpdateModalOpen = false; // Ensure modal is closed when loading a new product
-
+            Debug.WriteLine($"[ProductViewModel] LoadProductAsync called with ID: {id}");
             try
             {
-                // Use the injected service to get the product by ID
-                this.product = await this.productService.GetByIdAsync(this.productId);
-
-                if (this.product != null)
+                this.productId = id;
+                var loadedProduct = await this.productService.GetByIdAsync(id);
+                Debug.WriteLine($"[ProductViewModel] Loaded product: {loadedProduct?.ID} - {loadedProduct?.Name}");
+                if (loadedProduct == null)
                 {
-                    Debug.WriteLine($"ProductViewModel: Product ID {id} loaded successfully."); // Added logging
-
-                    this.category = this.product.Category; // Store the category for later use
-
-                    // Update ViewModel properties based on the loaded Product model
-                    // SetProperty will raise PropertyChanged event for UI updates
-                    this.Name = this.product.Name;
-                    this.Price = this.product.Price; // Setting Price will also update FormattedPrice
-                    this.Stock = this.product.Stock;
-
-                    // Access CategoryID from the Category object within the Product model
-                    this.CategoryID = this.product.Category?.ID ?? 0; // Use null conditional operator in case Category is null
-                    this.CategoryName = this.product.Category?.Name ?? "Unknown Category"; // Also add Category Name
-                    this.Size = this.product.Size;
-                    this.Color = this.product.Color;
-                    this.Description = this.product.Description;
-                    this.PhotoURL = this.product.PhotoURL;
-
-                    // ID is already set or derived
-                    Debug.WriteLine($"ProductViewModel: Properties updated after loading: Name={this.Name}, Price={this.Price}, Stock={this.Stock}, CategoryID={this.CategoryID}, CategoryName={this.CategoryName}"); // Added logging
-
-                    // Load related products after the main product is loaded
-                    if (this.product.Category != null)
-                    {
-                        await this.LoadRelatedProductsAsync(this.product.Category.ID, this.product.ID, 3); // Get 3 related products
-                    }
-                    else
-                    {
-                        // Handle case where product has no category
-                        this.RelatedProducts.Clear(); // Clear related products if no category
-                    }
+                    Debug.WriteLine($"[ProductViewModel] No product found with ID: {id}");
+                    throw new InvalidOperationException($"No product found with ID: {id}");
                 }
-                else
-                {
-                    Debug.WriteLine($"ProductViewModel: Product ID {id} not found."); // Added logging
-
-                    // Handle case where product is not found
-                    this.Name = "Product Not Found";
-                    this.Description = $"Product with ID {this.productId} could not be loaded.";
-
-                    // Reset other properties or show default values
-                    this.Price = 0; // Setting Price will also update FormattedPrice
-                    this.Stock = 0;
-                    this.CategoryID = 0;
-                    this.CategoryName = "N/A";
-                    this.Size = "N/A";
-                    this.Color = "N/A";
-                    this.PhotoURL = null;
-                    this.RelatedProducts.Clear(); // Clear related products if main product not found
-                }
+                this.product = loadedProduct;
+                this.Name = loadedProduct.Name;
+                this.Price = loadedProduct.Price;
+                this.Stock = loadedProduct.Stock;
+                this.CategoryID = loadedProduct.CategoryID;
+                this.CategoryName = loadedProduct.Category?.Name ?? "Unknown Category";
+                this.Size = loadedProduct.Size;
+                this.Color = loadedProduct.Color;
+                this.Description = loadedProduct.Description;
+                this.PhotoURL = loadedProduct.PhotoURL;
+                Debug.WriteLine($"[ProductViewModel] ViewModel properties updated: ID={this.product.ID}, Name={this.Name}");
+                await this.LoadRelatedProductsAsync(loadedProduct.CategoryID, loadedProduct.ID, 4);
             }
             catch (Exception ex)
             {
-                // Handle loading errors (e.g., log the error, show an error message in the UI)
-                this.Name = "Error Loading Product";
-                this.Description = $"Failed to load product with ID {this.productId}. Error: {ex.Message}";
-                Debug.WriteLine($"ProductViewModel: Error loading product {this.productId}: {ex}"); // Added logging
-
-                // Reset other properties or show default values
-                this.Price = 0; // Setting Price will also update FormattedPrice
-                this.Stock = 0;
-                this.CategoryID = 0;
-                this.CategoryName = "N/A";
-                this.Size = "N/A";
-                this.Color = "N/A";
-                this.PhotoURL = null;
-                this.RelatedProducts.Clear(); // Clear related products on error
+                Debug.WriteLine($"[ProductViewModel] Error loading product: {ex}");
+                throw;
             }
-            Debug.WriteLine($"ProductViewModel: LoadProductAsync finished for ID: {id}"); // Added logging
         }
 
         /// <summary>
@@ -389,77 +338,70 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
         }
 
         /// <summary>
-        /// Executes the command/method to save the changes to the product.
-        /// Called from the modal's Save button.
+        /// Executes the command to save product changes.
         /// Made public to be accessible from XAML x:Bind.
         /// </summary>
         /// <returns>A Task representing the asynchronous save operation.</returns>
         public async Task ExecuteSaveAsync() // Made public
         {
-            Debug.WriteLine("ProductViewModel: ExecuteSaveAsync called. Attempting to save product."); // Added logging
+            Debug.WriteLine("ProductViewModel: ExecuteSaveAsync called."); // Added logging
+
             if (this.product == null)
             {
-                Debug.WriteLine("ProductViewModel: Attempted to save a product that was not loaded correctly."); // Added logging
-                this.IsUpdateModalOpen = false; // Close the modal
-                return;
+                Debug.WriteLine("ProductViewModel: ExecuteSaveAsync - No product is selected."); // Added logging
+                throw new InvalidOperationException("No product is selected.");
             }
-
-            // Create an updated Product model from the ViewModel properties
-            var updatedProduct = new ProductModel(
-                name: this.Name,
-                price: this.Price,
-                stock: this.Stock,
-                // Need to create a Category object from ViewModel properties
-                // Assuming CategoryName is just for display and CategoryID is used for saving
-                categoryId: this.CategoryID, // Pass both ID and Name
-                size: this.Size,
-                color: this.Color,
-                description: this.Description,
-                photoURL: this.PhotoURL
-            );
-
-            updatedProduct.ID = this.ID; // Set the ID of the updated product to the current product ID
-            updatedProduct.Category = this.category;
-
-            Debug.WriteLine($"ProductViewModel: Attempting to save with values: Name={updatedProduct.Name}, Price={updatedProduct.Price}, Stock={updatedProduct.Stock}, CategoryID={updatedProduct.CategoryID}"); // Added logging
 
             try
             {
+                // Create a new ProductModel with the current ViewModel state
+                var updatedProduct = new ProductModel
+                {
+                    ID = this.product.ID,
+                    Name = this.Name,
+                    Price = this.Price,
+                    Stock = this.Stock,
+                    CategoryID = this.CategoryID,
+                    Category = new CategoryModel { ID = this.CategoryID, Name = this.CategoryName },
+                    Size = this.Size,
+                    Color = this.Color,
+                    Description = this.Description,
+                    PhotoURL = this.PhotoURL
+                };
+
+                Debug.WriteLine($"ProductViewModel: ExecuteSaveAsync - Updating product with ID: {updatedProduct.ID}"); // Added logging
+
                 // Call the service to update the product
-                Debug.WriteLine($"ProductViewModel: Calling productService.UpdateAsync({this.product.ID})..."); // Added logging
-                ProductModel resultProduct = await this.productService.UpdateAsync(updatedProduct);
-                Debug.WriteLine($"ProductViewModel: productService.UpdateAsync returned."); // Added logging
+                var result = await this.productService.UpdateAsync(updatedProduct);
+                Debug.WriteLine($"ProductViewModel: ExecuteSaveAsync - Update completed"); // Added logging
 
-                // Update the underlying product model in the ViewModel
-                this.product = resultProduct;
-
-                // Update ViewModel properties from the result in case the service modified them (e.g., calculated fields)
-                // These properties are already bound to the UI, so updating them will refresh the display
-                this.Name = this.product.Name;
-                this.Price = this.product.Price;
-                this.Stock = this.product.Stock;
-                this.CategoryID = this.product.CategoryID;
-                this.CategoryName = this.product.Category?.Name ?? "Unknown Category";
-                this.Size = this.product.Size;
-                this.Color = this.product.Color;
-                this.Description = this.product.Description;
-                this.PhotoURL = this.product.PhotoURL;
-
-                Debug.WriteLine($"ProductViewModel: Properties updated after save: Name={this.Name}, Price={this.Price}, Stock={this.Stock}, CategoryID={this.CategoryID}, CategoryName={this.CategoryName}"); // Added logging
-
-                Debug.WriteLine($"ProductViewModel: Product ID {this.product.ID} updated successfully."); // Added logging
-
-                this.IsUpdateModalOpen = false; // Close the modal on success
-                Debug.WriteLine("ProductViewModel: IsUpdateModalOpen set to false."); // Added logging
-
-                // Optionally, show a success message to the user (e.g., using a InfoBar)
+                if (result != null)
+                {
+                    // Update the product field with the new state
+                    this.product = result;
+                    // Update ViewModel properties from the result
+                    this.Name = result.Name;
+                    this.Price = result.Price;
+                    this.Stock = result.Stock;
+                    this.CategoryID = result.CategoryID;
+                    this.CategoryName = result.Category?.Name ?? "Unknown Category";
+                    this.Size = result.Size;
+                    this.Color = result.Color;
+                    this.Description = result.Description;
+                    this.PhotoURL = result.PhotoURL;
+                    Debug.WriteLine($"ProductViewModel: ExecuteSaveAsync - Product updated successfully: ID={this.product.ID}, Name={this.product.Name}"); // Added logging
+                }
+                else
+                {
+                    Debug.WriteLine("ProductViewModel: ExecuteSaveAsync - Failed to update product."); // Added logging
+                    throw new InvalidOperationException("Failed to update product.");
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ProductViewModel: Error saving product ID {this.product.ID}: {ex}"); // Added logging
-
+                Debug.WriteLine($"ProductViewModel: ExecuteSaveAsync - Error updating product: {ex}"); // Added logging
+                throw; // Re-throw to let the caller handle the error
             }
-            Debug.WriteLine("ProductViewModel: ExecuteSaveAsync finished."); // Added logging
         }
 
         /// <summary>
@@ -610,7 +552,27 @@ namespace NeoIsisJob.ViewModels.Shop // Using the singular 'ViewModel' namespace
         /// <returns>The selected product.</returns>
         public ProductModel GetSelectedProduct()
         {
-            return this.product ?? throw new InvalidOperationException("No product is selected.");
+            Debug.WriteLine($"[ProductViewModel] GetSelectedProduct called. product?.ID={this.product?.ID}, Name={this.Name}");
+            if (this.product == null)
+            {
+                Debug.WriteLine("[ProductViewModel] GetSelectedProduct - No product is selected.");
+                throw new InvalidOperationException("No product is selected.");
+            }
+            var currentProduct = new ProductModel
+            {
+                ID = this.product.ID,
+                Name = this.Name,
+                Price = this.Price,
+                Stock = this.Stock,
+                CategoryID = this.CategoryID,
+                Category = new CategoryModel { ID = this.CategoryID, Name = this.CategoryName },
+                Size = this.Size,
+                Color = this.Color,
+                Description = this.Description,
+                PhotoURL = this.PhotoURL
+            };
+            Debug.WriteLine($"[ProductViewModel] GetSelectedProduct - Returning product with ID: {currentProduct.ID}, Name: {currentProduct.Name}");
+            return currentProduct;
         }
 
         // --- Basic ICommand Implementation (RelayCommand) ---

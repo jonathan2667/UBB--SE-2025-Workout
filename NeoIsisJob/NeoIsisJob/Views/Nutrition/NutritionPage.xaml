@@ -10,24 +10,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-        <!-- Top Navigation -->
-        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
-                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
-                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
-                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
-                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
-                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
-                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
-                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
-                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
-            </NavigationView.MenuItems>
-            <Frame x:Name="contentFrame"/>
-        </NavigationView>
 
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -51,8 +37,14 @@
                                        AddMealCompleted="AddMealButton_AddMealCompleted"/>
             </Grid>
 
+            <!-- Filter Component -->
+            <component:MealFilterComponent Grid.Row="1"
+                                         x:Name="MealFilter"
+                                         Margin="20,0,20,10"
+                                         FilterChanged="MealFilter_FilterChanged"/>
+
             <!-- Meal List -->
-            <Border Grid.Row="1"
+            <Border Grid.Row="2"
                     Margin="20,0,20,20"
                     Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
                     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
@@ -61,7 +53,8 @@
                 <component:MealListComponent x:Name="MealList"
                                            Margin="10"
                                            MealClicked="MealList_MealClicked"
-                                           MealDeleted="MealList_MealDeleted"/>
+                                           MealDeleted="MealList_MealDeleted"
+                                           MealLiked="MealList_MealLiked"/>
             </Border>
         </Grid>
     </StackPanel>

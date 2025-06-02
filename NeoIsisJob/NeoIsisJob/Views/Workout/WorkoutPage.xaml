@@ -10,24 +10,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid x:Name="RootGrid">
-        <!-- Top Navigation -->
-        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
-                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
-                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
-                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
-                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
-                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
-                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
-                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
-                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
-            </NavigationView.MenuItems>
-            <Frame x:Name="contentFrame"/>
-        </NavigationView>
-
         <!-- Main Content -->
-        <StackPanel Margin="10,60,10,10" Spacing="10">
+        <StackPanel Margin="10,10,10,10" Spacing="10">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <!--<Button Content="Filter" Width="100"/>-->
                 <Button Content="Create" Width="100" Click="CreateButton_Click"/>
@@ -56,15 +40,17 @@
             <GridView x:Name="WorkoutGrid" ItemsSource="{Binding Workouts}" Margin="10" IsItemClickEnabled="True" ItemClick="GoToSelectedWorkoutPage_Click">
                 <GridView.ItemTemplate >
                     <DataTemplate>
-                        <StackPanel Width="342" Height="200" Background="White" Padding="10" CornerRadius="10">
-                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Margin="0,5,0,0"/>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Delete" 
-                                        Command="{Binding ElementName=This, Path=DataContext.DeleteWorkoutCommand}"
-                                        CommandParameter="{Binding WID}"/>           
-                                <Button Content="Edit" Click="EditWorkoutButton_Click"/>
+                        <Border Width="342" Height="200" Background="White" Padding="10" CornerRadius="10">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Margin="0,5,0,0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Delete" 
+                                            Command="{Binding ElementName=This, Path=DataContext.DeleteWorkoutCommand}"
+                                            CommandParameter="{Binding WID}"/>           
+                                    <Button Content="Edit" Click="EditWorkoutButton_Click"/>
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
+                        </Border>
                     </DataTemplate>
                 </GridView.ItemTemplate>
             </GridView>

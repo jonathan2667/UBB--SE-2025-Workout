@@ -10,110 +10,93 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <Grid>
-        <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap" />
-                <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap" />
-                <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap" />
-                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap" />
-                <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap" />
-                <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
-                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
-                <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
-                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
-            </NavigationView.MenuItems>
+        <TextBlock Grid.Row="0" 
+                  Text="{Binding YearText}" 
+                  FontSize="45" 
+                  HorizontalAlignment="Center" 
+                  Margin="0,10,0,15"
+                  FontWeight="SemiBold"/>
 
-            <Grid Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" 
-                          Text="{Binding YearText}" 
-                          FontSize="45" 
-                          HorizontalAlignment="Center" 
-                          Margin="0,10,0,15"
-                          FontWeight="SemiBold"/>
+            <Button Grid.Column="0" 
+                   Content="&lt;"
+                   Command="{Binding PreviousMonthCommand}"
+                   HorizontalAlignment="Right" 
+                   Margin="0,0,30,0" 
+                   FontSize="24"
+                   Width="45"
+                   Height="45"/>
 
-                <Grid Grid.Row="1" Margin="0,0,0,20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" 
+                      Text="{Binding MonthText}"
+                      FontSize="35" 
+                      VerticalAlignment="Center"
+                      FontWeight="SemiBold"/>
 
-                    <Button Grid.Column="0" 
-                           Content="&lt;"
-                           Command="{Binding PreviousMonthCommand}"
-                           HorizontalAlignment="Right" 
-                           Margin="0,0,30,0" 
-                           FontSize="24"
-                           Width="45"
-                           Height="45"/>
+            <Button Grid.Column="2" 
+                   Content="&gt;" 
+                   Command="{Binding NextMonthCommand}"
+                   HorizontalAlignment="Left" 
+                   Margin="30,0,0,0" 
+                   FontSize="24"
+                   Width="45"
+                   Height="45"/>
+        </Grid>
 
-                    <TextBlock Grid.Column="1" 
-                              Text="{Binding MonthText}"
-                              FontSize="35" 
-                              VerticalAlignment="Center"
-                              FontWeight="SemiBold"/>
+        <Grid Grid.Row="2" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="2" 
-                           Content="&gt;" 
-                           Command="{Binding NextMonthCommand}"
-                           HorizontalAlignment="Left" 
-                           Margin="30,0,0,0" 
-                           FontSize="24"
-                           Width="45"
-                           Height="45"/>
-                </Grid>
+            <TextBlock Grid.Column="0" Text="Sun" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="1" Text="Mon" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="2" Text="Tue" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="3" Text="Wed" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="4" Text="Thu" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="5" Text="Fri" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="6" Text="Sat" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
+        </Grid>
 
-                <Grid Grid.Row="2" Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+        <Grid x:Name="CalendarDaysGrid" Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Calendar days will be populated in code-behind -->
+        </Grid>
 
-                    <TextBlock Grid.Column="0" Text="Sun" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="1" Text="Mon" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="2" Text="Tue" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="3" Text="Wed" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="4" Text="Thu" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="5" Text="Fri" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                    <TextBlock Grid.Column="6" Text="Sat" HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold"/>
-                </Grid>
-
-                <Grid x:Name="CalendarDaysGrid" Grid.Row="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- Calendar days will be populated in code-behind -->
-                </Grid>
-        
-            </Grid>
-        </NavigationView>
     </Grid>
 </Page>

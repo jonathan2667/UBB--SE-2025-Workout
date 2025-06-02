@@ -33,15 +33,20 @@ namespace Workout.Core.Data
 
         public DbSet<WishlistItemModel> WishlistItems { get; set; }
 
+        public DbSet<UserFavoriteMealModel> UserFavoriteMeals { get; set; }
+
         public DbSet<OrderModel> Orders { get; set; }
 
         public DbSet<OrderItemModel> OrderItems { get; set; }
         public DbSet<MealModel> Meals { get; set; }
         public DbSet<IngredientModel> Ingredients { get; set; }
 
+        // Meal Statistics & Water Tracking DbSets
+        public DbSet<UserDailyNutritionModel> UserDailyNutrition { get; set; }
+        public DbSet<UserWaterIntakeModel> UserWaterIntake { get; set; }
+        public DbSet<UserMealLogModel> UserMealLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-
         {
             // Configure composite keys
             modelBuilder.Entity<CompleteWorkoutModel>()
@@ -141,6 +146,18 @@ namespace Workout.Core.Data
                 .HasForeignKey(w => w.ProductID)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<UserFavoriteMealModel>()
+                .HasOne(fm => fm.User)
+                .WithMany()
+                .HasForeignKey(fm => fm.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserFavoriteMealModel>()
+                .HasOne(fm => fm.Meal)
+                .WithMany()
+                .HasForeignKey(fm => fm.MealID)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<OrderModel>()
                 .HasOne(o => o.User)
                 .WithMany(u => u.Orders)
@@ -165,6 +182,31 @@ namespace Workout.Core.Data
             .WithMany(i => i.Meals)
             .UsingEntity(j => j.ToTable("MealIngredients"));
 
+            // Define meal statistics and water tracking relationships
+            modelBuilder.Entity<UserDailyNutritionModel>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserWaterIntakeModel>()
+                .HasOne(w => w.User)
+                .WithMany()
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserMealLogModel>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserMealLogModel>()
+                .HasOne(m => m.Meal)
+                .WithMany()
+                .HasForeignKey(m => m.MealId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Table mappings
             modelBuilder.Entity<UserModel>().ToTable("Users");
             modelBuilder.Entity<WorkoutModel>().ToTable("Workouts");
@@ -187,6 +229,11 @@ namespace Workout.Core.Data
             modelBuilder.Entity<WishlistItemModel>().ToTable("WishlistItem");
             modelBuilder.Entity<OrderModel>().ToTable("Order");
             modelBuilder.Entity<OrderItemModel>().ToTable("OrderItem");
+
+            // Meal statistics and water tracking table mappings
+            modelBuilder.Entity<UserDailyNutritionModel>().ToTable("UserDailyNutrition");
+            modelBuilder.Entity<UserWaterIntakeModel>().ToTable("UserWaterIntake");
+            modelBuilder.Entity<UserMealLogModel>().ToTable("UserMealLogs");
 
             // Seed data
             modelBuilder.Entity<MuscleGroupModel>().HasData(
@@ -304,6 +351,11 @@ namespace Workout.Core.Data
             modelBuilder.Entity<WishlistItemModel>().HasData(
                 new WishlistItemModel { ID = 1, UserID = 1, ProductID = 1 },
                 new WishlistItemModel { ID = 2, UserID = 2, ProductID = 1 });
+
+            modelBuilder.Entity<UserFavoriteMealModel>().HasData(
+                new UserFavoriteMealModel { ID = 1, UserID = 1, MealID = 1 },
+                new UserFavoriteMealModel { ID = 2, UserID = 1, MealID = 2 }
+            );
 
             modelBuilder.Entity<OrderModel>().HasData(
                 new OrderModel

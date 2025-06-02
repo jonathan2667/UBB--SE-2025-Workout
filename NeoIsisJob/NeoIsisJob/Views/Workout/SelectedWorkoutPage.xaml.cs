@@ -24,17 +24,11 @@ namespace NeoIsisJob.Views.Workout
     /// </summary>
     public sealed partial class SelectedWorkoutPage : Page
     {
-        private SelectedWorkoutViewModel selectedWorkoutViewModel;
-
-        public SelectedWorkoutViewModel ViewModel { get; }
-
         public SelectedWorkoutPage()
         {
             this.InitializeComponent();
-            // take the view model from the app(it is registered as singleton)
-            this.ViewModel = App.Services.GetService<SelectedWorkoutViewModel>();
-            // set is as data context for the page
-            this.DataContext = this.ViewModel;
+            // Get the ViewModel from the service provider
+            this.DataContext = App.Services.GetService<SelectedWorkoutViewModel>();
         }
 
         public void BackButton_Click(object sender, RoutedEventArgs e)

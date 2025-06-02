@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using Workout.Core.Models;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Nutrition;
+using NeoIsisJob.Views.Statistics;
 
 namespace NeoIsisJob.Views
 {
@@ -248,47 +250,69 @@ namespace NeoIsisJob.Views
         // Navigation methods - you already have these implemented
         public void GoToMainPage_Tap(object sender, RoutedEventArgs e)
         {
-            // this.Frame.Navigate(typeof(MainPage));
+            // Clear the content frame and show the main page content
+            contentFrame.Content = null;
+            mainPageContent.Visibility = Visibility.Visible;
         }
 
         public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(WorkoutPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(WorkoutPage));
         }
 
         public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(CalendarPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(CalendarPage));
         }
 
         public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(ClassPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(ClassPage));
         }
 
         public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(RankingPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(RankingPage));
         }
 
         public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
         }
 
         public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(WishlistPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(WishlistPage));
         }
 
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(CartPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(CartPage));
         }
 
         public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(NutritionPage));
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(NutritionPage));
+        }
+
+        public void GoToFavouriteMealsPage_Tap(object sender, RoutedEventArgs e)
+        {
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.FavouriteMealsPage));
+        }
+
+        public void GoToStatisticsPage_Tap(object sender, RoutedEventArgs e)
+        {
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(StatisticsPage));
         }
     }
 }

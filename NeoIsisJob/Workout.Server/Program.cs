@@ -36,6 +36,12 @@ builder.Services.AddScoped<IRankingsRepository, RankingsRepository>();
 builder.Services.AddScoped<ICalendarRepository, CalendarRepository>();
 builder.Services.AddScoped<IRepository<MealModel>, MealRepository>();
 
+// Add meal statistics and water tracking repositories
+builder.Services.AddScoped<UserFavoriteMealRepository>();
+builder.Services.AddScoped<IUserDailyNutritionRepository, UserDailyNutritionRepository>();
+builder.Services.AddScoped<IUserWaterIntakeRepository, UserWaterIntakeRepository>();
+builder.Services.AddScoped<IUserMealLogRepository, UserMealLogRepository>();
+
 // Add corresponding services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
@@ -52,6 +58,11 @@ builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IService<MealModel>, MealService>();
 
+// Add meal statistics and water tracking services  
+builder.Services.AddScoped<UserFavoriteMealService>();
+builder.Services.AddScoped<IUserNutritionService, UserNutritionService>();
+builder.Services.AddScoped<IWaterTrackingService, WaterTrackingService>();
+
 builder.Services.AddScoped<IRepository<ProductModel>, ProductRepository>();
 builder.Services.AddScoped<IRepository<CategoryModel>, CategoryRepo>();
 builder.Services.AddScoped<IRepository<CartItemModel>, CartRepository>();
@@ -63,8 +74,6 @@ builder.Services.AddScoped<IService<CategoryModel>, CategoryService>();
 builder.Services.AddScoped<IService<CartItemModel>, CartService>();
 builder.Services.AddScoped<IService<WishlistItemModel>, WishlistService>();
 builder.Services.AddScoped<IService<OrderModel>, OrderService>();
-
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
