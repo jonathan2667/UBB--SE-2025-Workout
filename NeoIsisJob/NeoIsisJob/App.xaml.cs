@@ -54,7 +54,7 @@ namespace NeoIsisJob
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    {"ApiSettings:BaseUrl", "http://localhost:5261"}
+                    {"ApiSettings:BaseUrl", "http://172.30.241.79:5261"}
                 })
                 .Build();
             serviceCollection.AddSingleton<IConfiguration>(configuration);
@@ -86,7 +86,7 @@ namespace NeoIsisJob
             // Configure ApiSettings options
             serviceCollection.Configure<ApiSettings>(options => 
             {
-                options.BaseUrl = "http://localhost:5261";
+                options.BaseUrl = "http://172.30.241.79:5261";
             });
 
             // Register view models

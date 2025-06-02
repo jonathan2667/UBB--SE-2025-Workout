@@ -8,6 +8,6 @@ namespace NeoIsisJob.Configuration
         /// <summary>
         /// Gets or sets the base URL for API calls.
         /// </summary>
-        public string BaseUrl { get; set; } = "http://localhost:5261";
+        public string BaseUrl { get; set; } = "http://172.30.241.79:5261";
     }
 } 
