@@ -10,12 +10,17 @@ namespace Workout.Web.Controllers
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly ILogger<WorkoutTypeController> _logger;
-        private string apiUrl = "http://localhost:5261/api/WorkoutType";
+        private readonly IConfiguration _configuration;
+        private string apiUrl;
 
-        public WorkoutTypeController(IHttpClientFactory clientFactory, ILogger<WorkoutTypeController> logger)
+        public WorkoutTypeController(IHttpClientFactory clientFactory, ILogger<WorkoutTypeController> logger, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
             _logger = logger;
+            _configuration = configuration;
+            
+            var baseUrl = _configuration["ApiSettings:BaseUrl"] ?? "http://172.30.241.79:5261";
+            apiUrl = $"{baseUrl}/api/WorkoutType";
         }
 
         // GET: WorkoutType

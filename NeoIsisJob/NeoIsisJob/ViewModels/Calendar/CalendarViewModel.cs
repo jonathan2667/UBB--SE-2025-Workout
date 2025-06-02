@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Workout.Core.Models;
 using Workout.Core.Data;
-using Workout.Core.Services;
 using Workout.Core.IServices;
 using NeoIsisJob.Proxy;
 using NeoIsisJob.Helpers;

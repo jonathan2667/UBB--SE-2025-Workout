@@ -1,34 +1,34 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Workout.Core.Models;
-using Workout.Core.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace NeoIsisJob.Proxy
 {
+    /// <summary>
+    /// Legacy proxy for favorite meals. This is now redirected to use UserFavoriteMealServiceProxy for proper API communication.
+    /// </summary>
     public class FavoriteMealServiceProxy
     {
-        private readonly UserFavoriteMealService _favoriteMealService;
-        private readonly int userId = 1; // Replace with actual user ID from session/auth
+        private readonly UserFavoriteMealServiceProxy _userFavoriteMealProxy;
 
         public FavoriteMealServiceProxy()
         {
-            _favoriteMealService = App.Services.GetRequiredService<UserFavoriteMealService>();
+            _userFavoriteMealProxy = new UserFavoriteMealServiceProxy();
         }
 
         public async Task<IEnumerable<UserFavoriteMealModel>> GetAllAsync()
         {
-            return await _favoriteMealService.GetUserFavoritesAsync(userId);
+            return await _userFavoriteMealProxy.GetAllAsync();
         }
 
         public async Task<UserFavoriteMealModel> CreateAsync(UserFavoriteMealModel favoriteMeal)
         {
-            return await _favoriteMealService.AddToFavoritesAsync(favoriteMeal.UserID, favoriteMeal.MealID);
+            return await _userFavoriteMealProxy.CreateAsync(favoriteMeal);
         }
 
         public async Task<bool> DeleteAsync(int mealId)
         {
-            return await _favoriteMealService.RemoveFromFavoritesAsync(userId, mealId);
+            return await _userFavoriteMealProxy.DeleteAsync(mealId);
         }
     }
 } 

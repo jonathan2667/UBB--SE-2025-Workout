@@ -213,6 +213,12 @@ namespace Workout.Core.Services
         }
 
         /// <inheritdoc/>
+        public async Task<int> GetTodayWaterIntakeAsync(int userId)
+        {
+            return await this.GetDailyWaterIntakeAsync(userId, DateTime.Today);
+        }
+
+        /// <inheritdoc/>
         public async Task<bool> DeleteWaterIntakeAsync(int userId, int entryId)
         {
             try

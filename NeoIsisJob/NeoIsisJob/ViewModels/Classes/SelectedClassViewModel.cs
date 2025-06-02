@@ -5,7 +5,6 @@ using System.Diagnostics;
 // using NeoIsisJob.Models;
 // using NeoIsisJob.Services;
 using Workout.Core.Models;
-using Workout.Core.Services;
 using Workout.Core.IServices;
 using NeoIsisJob.Proxy;
 

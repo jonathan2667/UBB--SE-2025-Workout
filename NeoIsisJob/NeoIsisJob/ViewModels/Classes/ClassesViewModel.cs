@@ -11,7 +11,6 @@ using System.Net.Http;
 // using NeoIsisJob.Services;
 using NeoIsisJob.Commands;
 using Workout.Core.Models;
-using Workout.Core.Services;
 using Workout.Core.IServices;
 using NeoIsisJob.Helpers;
 using Refit;
