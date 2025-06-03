@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application
+    x:Class="NeoIsisJob.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NeoIsisJob"
+    xmlns:helpers="using:NeoIsisJob.Helpers">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <!-- Other merged dictionaries here -->
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Other app resources here  -->
+            
+            <!-- Value Converters -->
+            <helpers:BoolNegationConverter x:Key="BoolNegationConverter"/>
+            <helpers:StringToBoolConverter x:Key="StringToBoolConverter"/>
+            <helpers:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+            <helpers:DoubleToStringConverter x:Key="DoubleToStringConverter"/>
+            <helpers:BoolToStatusIconConverter x:Key="BoolToStatusIconConverter"/>
+            <helpers:BoolToStatusColorConverter x:Key="BoolToStatusColorConverter"/>
+            <helpers:BoolToStatusTextConverter x:Key="BoolToStatusTextConverter"/>
+            <helpers:BoolToCheckConverter x:Key="BoolToCheckConverter"/>
+            <helpers:DateToStringConverter x:Key="DateToStringConverter"/>
+            <helpers:TimeToStringConverter x:Key="TimeToStringConverter"/>
+            <helpers:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,120 @@
+﻿@model ServerMVCProject.Models.CreatePostViewModel
+
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+@if (ViewBag.Message != null)
+{
+        <div style="background-color: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 15px; color: white; font-weight: bold;">
+        @ViewBag.Message
+        </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+        <div style="background-color: #dc3545; padding: 10px; border-radius: 6px; margin-bottom: 15px; color: white; font-weight: bold;">
+        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+                    <div>@modelError.ErrorMessage</div>
+        }
+        </div>
+}
+
+<!-- Top Navigation -->
+<div style="display: flex; justify-content: space-between; align-items: center; background-color: #2f333a; padding: 15px 30px; color: white; font-family: sans-serif;">
+    <a href="/posts" style="text-decoration: none; color: #00ADB5; font-size: 1.2em;">Home</a>
+    <a href="/groups" style="text-decoration: none; color: #00ADB5; font-size: 1.2em;">Groups</a>
+</div>
+
+<form asp-action="Create" method="post" style="background-color: #2f333a; padding: 30px; border-radius: 15px; max-width: 800px; margin: auto; color: white; font-family: sans-serif;">
+    <h2 style="color: #00ADB5;">Post Title</h2>
+    <input asp-for="Title" maxlength="50" placeholder="Enter your post title..." class="form-control"
+           style="background-color: #d9d9d9; border-radius: 6px; border: none; padding: 10px; width: 100%;" />
+    <small id="titleCharCount" style="float: right; color: gray;">0/50</small>
+    <span asp-validation-for="Title" class="text-danger"></span>
+
+    <h2 style="color: #00ADB5; margin-top: 20px;">Description</h2>
+    <textarea asp-for="Content" maxlength="250" rows="6" placeholder="Write your post description..." class="form-control"
+              style="background-color: #d9d9d9; border-radius: 6px; border: none; padding: 10px; width: 100%;"></textarea>
+    <small id="descCharCount" style="float: right; color: gray;">0/250</small>
+    <span asp-validation-for="Content" class="text-danger"></span>
+
+    <h2 style="color: #00ADB5; margin-top: 20px;">Visibility</h2>
+    <select asp-for="Visibility" id="visibilitySelect" class="form-control"
+            style="background-color: #d9d9d9; border-radius: 6px; padding: 10px;">
+        <option value="1">Private</option>
+        <option value="2">Friends</option>
+        <option value="3">Public</option>
+        <option value="4">Groups</option>
+    </select>
+    <span asp-validation-for="Visibility" class="text-danger"></span>
+
+    <!-- Group dropdown (only visible if "Groups" selected) -->
+    <div id="groupDropdownContainer" style="margin-top: 20px; display: none;">
+        <h2 style="color: #00ADB5;">Select Group</h2>
+        <select asp-for="GroupId" asp-items="@(ViewBag.UserGroups as List<SelectListItem>)"
+                class="form-control"
+                style="background-color: #d9d9d9; border-radius: 6px; padding: 10px;">
+            <option value="0">-- Select a Group --</option>
+        </select>
+        <span asp-validation-for="GroupId" class="text-danger"></span>
+    </div>
+
+    <h2 style="color: #00ADB5; margin-top: 20px;">Tags</h2>
+    <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <label style="background-color: #d9d9d9; border-radius: 6px; padding: 10px 16px;">
+            <input type="radio" asp-for="Tag" value="3" /> Misc
+        </label>
+        <label style="background-color: #d9d9d9; border-radius: 6px; padding: 10px 16px;">
+            <input type="radio" asp-for="Tag" value="1" /> Food
+        </label>
+        <label style="background-color: #d9d9d9; border-radius: 6px; padding: 10px 16px;">
+            <input type="radio" asp-for="Tag" value="2" /> Workout
+        </label>
+        <label style="background-color: #d9d9d9; border-radius: 6px; padding: 10px 16px;">
+            <input type="radio" asp-for="Tag" value="4" /> Blessed
+        </label>
+    </div>
+    <span asp-validation-for="Tag" class="text-danger"></span>
+
+    <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 12px;">
+        <a href="/posts" class="btn btn-secondary" style="border-radius: 6px;">Cancel</a>
+        <button type="submit" class="btn" style="background-color: #00ADB5; color: white; border-radius: 6px;">Post</button>
+    </div>
+</form>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            const titleInput = document.querySelector('[name="Title"]');
+            const descInput = document.querySelector('[name="Content"]');
+            const titleCounter = document.getElementById('titleCharCount');
+            const descCounter = document.getElementById('descCharCount');
+            const visibilitySelect = document.getElementById('visibilitySelect');
+            const groupDropdown = document.getElementById('groupDropdownContainer');
+            const groupSelect = document.querySelector('[name="GroupId"]');
+
+            titleInput.addEventListener('input', () => {
+                titleCounter.textContent = `${titleInput.value.length}/50`;
+            });
+
+            descInput.addEventListener('input', () => {
+                descCounter.textContent = `${descInput.value.length}/250`;
+            });
+
+            function handleVisibilityChange() {
+                if (visibilitySelect.value === '4') {
+                    groupDropdown.style.display = 'block';
+                } else {
+                    groupDropdown.style.display = 'none';
+                    groupSelect.value = '0'; // Ensure GroupId = 0
+                }
+            }
+
+            // Initial setup
+            handleVisibilityChange();
+
+            visibilitySelect.addEventListener('change', handleVisibilityChange);
+        </script>
+}

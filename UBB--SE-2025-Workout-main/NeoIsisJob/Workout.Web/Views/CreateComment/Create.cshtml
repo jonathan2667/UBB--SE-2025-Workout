@@ -1,0 +1,46 @@
+﻿@model ServerMVCProject.Models.CreateCommentViewModel
+
+@{
+    ViewData["Title"] = "Create Comment";
+}
+
+<h2>Create Comment for Post #@Model.PostId</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+
+@if (!ViewContext.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var modelError in ViewContext.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@modelError.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Content" class="control-label">Comment Text</label>
+        <textarea asp-for="Content" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    <!-- Ensure PostId is passed with the form -->
+    <input type="hidden" asp-for="PostId" />
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+        <a href="@Url.Action("Details", "Post", new { id = Model.PostId })" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

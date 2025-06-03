@@ -1,0 +1,70 @@
+@model Workout.Web.Models.WorkoutModel
+
+@{
+    ViewData["Title"] = "Workout Details";
+}
+
+<div class="container mt-4">
+    <!-- Header with Back Button and Title -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex align-items-center">
+            <a asp-action="Index" class="btn btn-secondary me-4">Back</a>
+            <h1 class="text-center flex-grow-1">@Model.Name</h1>
+        </div>
+    </div>
+    
+    <!-- Workout Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Workout Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.Name)</div>
+                        <div class="col-sm-8">@Html.DisplayFor(model => model.Name)</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 fw-bold">@Html.DisplayNameFor(model => model.WorkoutTypeName)</div>
+                        <div class="col-sm-8">@Html.DisplayFor(model => model.WorkoutTypeName)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Exercises</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Exercise Name</th>
+                                <th>Sets</th>
+                                <th>Reps Per Set</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    Exercises information not available in this view
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="row mb-3">
+        <div class="col-12 text-center">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning" style="width: 120px;">Edit</a>
+            <a asp-action="Index" class="btn btn-secondary ms-2" style="width: 120px;">Back to List</a>
+        </div>
+    </div>
+</div> 

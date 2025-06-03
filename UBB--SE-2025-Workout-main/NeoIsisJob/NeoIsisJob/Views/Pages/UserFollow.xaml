@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="DesktopProject.Pages.UserFollow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DesktopProject.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="White">
+
+
+    <Grid Padding="20">
+        <StackPanel>
+            
+            <!-- Back Button -->
+            <Button Content="← Back"
+                Click="BackButton_Click"
+                Width="80"
+                Margin="0,0,0,10"
+                Background="Black"
+                Foreground="White">
+                <Button.Resources>
+                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Black"/>
+                    <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White"/>
+                </Button.Resources>
+            </Button>
+
+            <!-- Search Box -->
+            <TextBox x:Name="SearchBox" PlaceholderText="Search users..." Margin="0,0,0,10" TextChanged="SearchBox_TextChanged"/>
+
+            <!-- Scrollable list of users -->
+            <ScrollViewer Height="500">
+                <StackPanel x:Name="UserListPanel" />
+            </ScrollViewer>
+
+        </StackPanel>
+
+    </Grid>
+
+</Page>

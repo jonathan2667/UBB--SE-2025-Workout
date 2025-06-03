@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="NeoIsisJob.Views.Shop.Pages.FavouriteMealsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NeoIsisJob.Views.Shop.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:components="using:NeoIsisJob.Views.Shop.Components"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <StackPanel>
+       
+
+        <StackPanel Orientation="Vertical" Height="610">
+            <TextBlock
+            Text="Favourite Meals"
+            FontSize="24"
+            FontWeight="Bold"
+            HorizontalAlignment="Left"
+            Margin="20,20,0,10"/>
+            <components:VerticalFavoriteMealItemListComponent 
+                x:Name="FavoriteMealListControl"
+                FavoriteMealItemClicked="FavoriteMealListControl_FavoriteMealItemClicked"
+                FavoriteMealItemRemoved="FavoriteMealListControl_FavoriteMealItemRemoved"
+                Margin="20,0,0,0"
+                Width="850"
+                Height="Auto"/>
+        </StackPanel>
+    </StackPanel>
+</Page> 

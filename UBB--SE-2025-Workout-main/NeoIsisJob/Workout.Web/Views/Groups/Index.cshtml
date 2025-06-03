@@ -1,0 +1,49 @@
+﻿@model List<ServerLibraryProject.Models.Group>
+
+@{
+    ViewData["Title"] = "Groups";
+    string userIdStr = Context.Session.GetString("UserId");
+    long? userId = !string.IsNullOrEmpty(userIdStr) ? long.Parse(userIdStr) : (long?)null;
+	var groupService = (ServerLibraryProject.Interfaces.IGroupService)Context.RequestServices.GetService(typeof(ServerLibraryProject.Interfaces.IGroupService));
+    var userService = (ServerLibraryProject.Interfaces.IUserService)Context.RequestServices.GetService(typeof(ServerLibraryProject.Interfaces.IUserService));
+}
+
+<h2>Groups</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Group</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+			bool isInGroup = userId.HasValue && groupService.GetUserGroups(userId.Value).Any(g => g.Id == group.Id);
+            <tr>
+                <td>@group.Name</td>
+                <td>@group.Description</td>
+                <td>
+                    @if (userId.HasValue)
+                    {
+                        <form asp-action="@(isInGroup ? "Exit" : "Join")" asp-route-id="@group.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-@(isInGroup ? "danger" : "success")">
+                                @(isInGroup ? "Exit Group" : "Join Group")
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Login required</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
