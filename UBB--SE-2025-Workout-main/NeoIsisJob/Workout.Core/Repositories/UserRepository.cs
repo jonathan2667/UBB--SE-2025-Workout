@@ -1,4 +1,4 @@
-namespace ServerLibraryProject.Repositories
+namespace Workout.Core.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,6 +6,7 @@ namespace ServerLibraryProject.Repositories
     using ServerLibraryProject.DbRelationshipEntities;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.Models;
 
     /// <summary>
     /// Repository for managing user-related operations in the database.
@@ -102,23 +103,23 @@ namespace ServerLibraryProject.Repositories
 
             }
         }
-        public List<User> GetAll()
+        public List<UserModel> GetAll()
         {
             return dbContext.Users.ToList();
         }
 
 
-        public User GetById(long id)
+        public UserModel GetById(long id)
         {
             try
             {
-                return dbContext.Users.First(u => u.Id == id);
+                return dbContext.Users.First(u => u.ID == id);
 
             }
             catch { throw new Exception("User not found"); }
         }
 
-        public User GetByUsername(string username)
+        public UserModel GetByUsername(string username)
         {
             try
             {
@@ -130,16 +131,16 @@ namespace ServerLibraryProject.Repositories
             }
         }
 
-        public List<User> GetUserFollowers(long id)
+        public List<UserModel> GetUserFollowers(long id)
 
         {
-            List<User> userFollowers = new List<User>();
+            List<UserModel> userFollowers = new List<UserModel>();
             List<UserFollower> followers = dbContext.UserFollowers
                 .Where(uf => uf.UserId == id)
                 .ToList();
             foreach (UserFollower userFollower in followers)
             {
-                User? user = dbContext.Users.FirstOrDefault(u => u.Id == userFollower.FollowerId);
+                UserModel? user = dbContext.Users.FirstOrDefault(u => u.ID == userFollower.FollowerId);
                 if (user != null)
                 {
                     userFollowers.Add(user);
@@ -149,17 +150,17 @@ namespace ServerLibraryProject.Repositories
             return userFollowers;
         }
 
-        public List<User> GetUserFollowing(long id)
+        public List<UserModel> GetUserFollowing(long id)
         {
             var userFollowers = dbContext.UserFollowers
                .Where(uf => uf.UserId == id);
             return dbContext.Users
-                .Where(u => userFollowers.Any(uf => uf.FollowerId == u.Id))
+                .Where(u => userFollowers.Any(uf => uf.FollowerId == u.ID))
                 .ToList();
         }
 
 
-        public User Save(User entity)
+        public UserModel Save(UserModel entity)
         {
             try
             {

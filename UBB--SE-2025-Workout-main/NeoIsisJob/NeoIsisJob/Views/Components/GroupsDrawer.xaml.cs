@@ -4,9 +4,10 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using ServerLibraryProject.Interfaces;
+using NeoIsisJob;
 using System;
 using System.Linq;
+using Workout.Core.IServices;
 
 namespace DesktopProject.Components
 {
@@ -37,7 +38,7 @@ namespace DesktopProject.Components
             GroupsList.Children.Clear();
 
             var groups = groupService.GetAllGroups();
-            var userGroups = groupService.GetUserGroups(controller.CurrentUser.Id);
+            var userGroups = groupService.GetUserGroups(controller.CurrentUser.ID);
             var userGroupIds = userGroups.Select(g => g.Id).ToHashSet(); // Fast lookup
 
             foreach (var group in groups)
@@ -109,7 +110,7 @@ namespace DesktopProject.Components
             long groupId = (long)button.Tag;
             try
             {
-                userService.JoinGroup(controller.CurrentUser.Id, groupId);
+                userService.JoinGroup(controller.CurrentUser.ID, groupId);
             }
             catch (Exception ex)
             {
@@ -128,7 +129,7 @@ namespace DesktopProject.Components
             long groupId = (long)button.Tag;
             try
             {
-                userService.ExitGroup(controller.CurrentUser.Id, groupId);
+                userService.ExitGroup(controller.CurrentUser.ID, groupId);
             }
             catch (Exception ex)
             {

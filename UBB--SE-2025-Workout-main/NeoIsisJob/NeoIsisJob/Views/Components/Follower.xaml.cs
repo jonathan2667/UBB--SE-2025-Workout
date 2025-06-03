@@ -6,21 +6,26 @@ namespace DesktopProject.Components
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using NeoIsisJob;
+    using NeoIsisJob.Proxy;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     /// <summary>
     /// Represents a user control for displaying a follower in the social app.
     /// </summary>
     public sealed partial class Follower : UserControl
     {
-        private readonly User user;
+        private readonly UserModel user;
 
         private readonly AppController controller;
 
         private readonly Frame navigationFrame;
 
-        private IUserService userServiceProxy;
+        //private IUserService userServiceProxy;
+        private UserServiceProxy userServiceProxy;
 
         private IPostRepository postRepository;
 
@@ -35,7 +40,7 @@ namespace DesktopProject.Components
         /// <param name="isFollowing">Indicates whether the current user is following this user.</param>
         /// <param name="user">The user object associated with the follower.</param>
         /// <param name="frame">The navigation frame for navigating to user pages.</param>
-        public Follower(string username, bool isFollowing, User user, Frame frame = null)
+        public Follower(string username, bool isFollowing, UserModel user, Frame frame = null)
         {
             this.InitializeComponent();
 
@@ -57,10 +62,10 @@ namespace DesktopProject.Components
         /// <returns>True if the user is followed; otherwise, false.</returns>
         private bool IsFollowed()
         {
-            List<User> following = this.userServiceProxy.GetUserFollowing(this.controller.CurrentUser.Id);
-            foreach (User user in following)
+            List<UserModel> following = this.userServiceProxy.GetUserFollowing(this.controller.CurrentUser.ID);
+            foreach (UserModel user in following)
             {
-                if (user.Id == this.user.Id)
+                if (user.ID == this.user.ID)
                 {
                     return true;
                 }
@@ -88,11 +93,11 @@ namespace DesktopProject.Components
             this.Button.Content = this.Button.Content.ToString() == "Follow" ? "Unfollow" : "Follow";
             if (!this.IsFollowed())
             {
-                this.userServiceProxy.FollowUserById(this.controller.CurrentUser.Id, this.user.Id);
+                this.userServiceProxy.FollowUserById(this.controller.CurrentUser.ID, this.user.ID);
             }
             else
             {
-                this.userServiceProxy.UnfollowUserById(controller.CurrentUser.Id, user.Id);
+                this.userServiceProxy.UnfollowUserById(controller.CurrentUser.ID, user.ID);
             }
         }
     }
@@ -110,14 +115,14 @@ namespace DesktopProject.Components
         /// <summary>
         /// Gets the selected user.
         /// </summary>
-        public User SelectedUser { get; }
+        public UserModel SelectedUser { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserPageNavigationArgs"/> class.
         /// </summary>
         /// <param name="controller">The application controller.</param>
         /// <param name="selectedUser">The selected user.</param>
-        public UserPageNavigationArgs(AppController controller, User selectedUser)
+        public UserPageNavigationArgs(AppController controller, UserModel selectedUser)
         {
             Controller = controller;
             SelectedUser = selectedUser;

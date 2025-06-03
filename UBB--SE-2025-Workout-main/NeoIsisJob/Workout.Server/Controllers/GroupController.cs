@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ServerLibraryProject.Interfaces;
-using ServerLibraryProject.Models;
+using Workout.Core.IServices;
+using Workout.Core.Models;
 
 namespace ServerAPIProject.Controllers
 {

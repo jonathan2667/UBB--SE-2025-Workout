@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 using Workout.Core.IRepositories;
+using ServerLibraryProject.Models;
+using System.Net.Http.Json;
+using System.Diagnostics;
 
 namespace Workout.Core.Services
 {
@@ -81,6 +84,66 @@ namespace Workout.Core.Services
                 return -2; // User not found
             
             return user.Password == password ? user.ID : -1; // -1 for wrong password
+        }
+
+        public UserModel GetUserByUsername(string username)
+        {
+            this._userRepo.GetUserByUsernameAsync(username)
+                .ContinueWith(task =>
+                {
+                    if (task.IsFaulted)
+                    {
+                        throw task.Exception ?? new Exception("An error occurred while fetching the user.");
+                    }
+
+                    return task.Result;
+                });
+            return null; // This should be replaced with actual user retrieval logic
+        }
+
+        public void JoinGroup(long userId, long groupId)
+        {
+            this._userRepo.JoinGroup(userId, groupId);
+        }
+
+        public void ExitGroup(long userId, long groupId)
+        {
+            this._userRepo.ExitGroup(userId, groupId);
+        }
+
+        public List<UserModel> GetUserFollowing(long id)
+        {
+            return this._userRepo.GetUserFollowing(id);
+        }
+
+        public void FollowUserById(long userId, long whoToFollowId)
+        {
+            if (this._userRepo.GetUserByIdAsync((int)userId) == null)
+            {
+                throw new Exception("User does not exist");
+            }
+
+            if (this._userRepo.GetUserByIdAsync((int)whoToFollowId) == null)
+            {
+                throw new Exception("User to follow does not exist");
+            }
+
+            this._userRepo.Follow(userId, whoToFollowId);
+        }
+
+        public void UnfollowUserById(long userId, long whoToUnfollowId)
+        {
+            if (this._userRepo.GetUserByIdAsync((int)userId) == null)
+            {
+                throw new Exception("User does not exist");
+            }
+
+            if (this._userRepo.GetUserByIdAsync((int)whoToUnfollowId) == null)
+            {
+                throw new Exception("User to unfollow does not exist");
+            }
+
+            this._userRepo.Unfollow(userId, whoToUnfollowId);
         }
     }
 }

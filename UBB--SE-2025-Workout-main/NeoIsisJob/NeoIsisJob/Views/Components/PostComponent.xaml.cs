@@ -8,6 +8,7 @@ namespace DesktopProject.Components
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Media;
+    using NeoIsisJob;
     using ServerLibraryProject.Enums;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
@@ -140,7 +141,7 @@ namespace DesktopProject.Components
         {
             if (AppController.CurrentUser != null)
             {
-                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.Id, PostId = postId, Type = ReactionType.Like });
+                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.ID, PostId = postId, Type = ReactionType.Like });
                 this.LoadReactionCounts();
             }
         }
@@ -149,7 +150,7 @@ namespace DesktopProject.Components
         {
             if (this.AppController.CurrentUser != null)
             {
-                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.Id, PostId = postId, Type = ReactionType.Love });
+                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.ID, PostId = postId, Type = ReactionType.Love });
                 this.LoadReactionCounts();
             }
         }
@@ -158,7 +159,7 @@ namespace DesktopProject.Components
         {
             if (this.AppController.CurrentUser != null)
             {
-                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.Id, PostId = postId, Type = ReactionType.Laugh });
+                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.ID, PostId = postId, Type = ReactionType.Laugh });
                 this.LoadReactionCounts();
             }
         }
@@ -167,7 +168,7 @@ namespace DesktopProject.Components
         {
             if (AppController.CurrentUser != null)
             {
-                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.Id, PostId = postId, Type = ReactionType.Anger });
+                this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.ID, PostId = postId, Type = ReactionType.Anger });
                 this.LoadReactionCounts();
             }
         }

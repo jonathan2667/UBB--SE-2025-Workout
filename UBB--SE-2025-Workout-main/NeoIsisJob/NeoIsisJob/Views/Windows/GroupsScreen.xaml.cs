@@ -5,6 +5,7 @@ namespace DesktopProject.Windows
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
+    using NeoIsisJob;
 
     public sealed partial class GroupsScreen : Page
     {

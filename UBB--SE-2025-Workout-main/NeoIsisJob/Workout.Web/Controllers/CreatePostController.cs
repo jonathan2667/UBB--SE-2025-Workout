@@ -7,6 +7,7 @@ namespace ServerMVCProject.Controllers
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
     using ServerMVCProject.Models;
+    using Workout.Core.IServices;
 
     [Route("posts")]
     public class CreatePostController : Controller

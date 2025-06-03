@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using NeoIsisJob;
 using ServerLibraryProject.Interfaces;
-using ServerLibraryProject.Models;
+using Workout.Core.IServices;
+using Workout.Core.Models;
 
 
 namespace DesktopProject.Pages
@@ -68,8 +70,8 @@ namespace DesktopProject.Pages
         private void PopulateMembers()
         {
             this.MembersList.Children.Clear();
-            List<User> members = groupService.GetUsersFromGroup(GroupId);
-            foreach (User member in members)
+            List<UserModel> members = groupService.GetUsersFromGroup(GroupId);
+            foreach (UserModel member in members)
             {
                 this.MembersList.Children.Add(new Member(member, this.Frame, GroupId));
             }

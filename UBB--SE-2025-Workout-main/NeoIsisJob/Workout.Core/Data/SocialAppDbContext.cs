@@ -3,6 +3,7 @@
     using Microsoft.EntityFrameworkCore;
     using ServerLibraryProject.DbRelationshipEntities;
     using ServerLibraryProject.Models;
+    using Workout.Core.Models;
 
     public class SocialAppDbContext : DbContext
     {
@@ -23,7 +24,7 @@
 
         public DbSet<Reaction> Reactions { get; set; } = default!;
 
-        public DbSet<User> Users { get; set; } = default!;
+        public DbSet<UserModel> Users { get; set; } = default!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,7 +33,7 @@
                 .HasKey(groupUser => new { groupUser.UserId, groupUser.GroupId });
             modelBuilder.Entity<GroupUser>(entity =>
             {
-                entity.HasOne<User>()
+                entity.HasOne<UserModel>()
                     .WithMany()
                     .HasForeignKey(groupUser => groupUser.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
@@ -46,18 +47,18 @@
                 .HasKey(userFollower => new { userFollower.UserId, userFollower.FollowerId });
             modelBuilder.Entity<UserFollower>(entity =>
             {
-                entity.HasOne<User>()
+                entity.HasOne<UserModel>()
                     .WithMany()
                     .HasForeignKey(userFollower => userFollower.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne<User>()
+                entity.HasOne<UserModel>()
                     .WithMany()
                     .HasForeignKey(userFollower => userFollower.FollowerId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<UserModel>(entity =>
             {
                 //entity.ToTable("Users", tableBuilder =>
                 //{ 
@@ -77,7 +78,7 @@
                 .HasConversion<int>();
             modelBuilder.Entity<Reaction>(entity =>
             {
-                entity.HasOne<User>()
+                entity.HasOne<UserModel>()
                     .WithMany()
                     .HasForeignKey(reaction => reaction.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
@@ -101,7 +102,7 @@
                 .IsRequired(false); // GroupId is optional, so it can be null
             modelBuilder.Entity<Post>(entity =>
             {
-                entity.HasOne<User>()
+                entity.HasOne<UserModel>()
                     .WithMany()
                     .HasForeignKey(post => post.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
@@ -119,7 +120,7 @@
                     .WithMany()
                     .HasForeignKey(comment => comment.PostId)
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne<User>()
+                entity.HasOne<UserModel>()
                     .WithMany()
                     .HasForeignKey(comment => comment.UserId)
                     .OnDelete(DeleteBehavior.NoAction);

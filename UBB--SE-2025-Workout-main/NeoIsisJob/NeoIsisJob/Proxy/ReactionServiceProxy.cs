@@ -1,4 +1,4 @@
-﻿namespace DesktopProject.Proxies
+﻿namespace NeoIsisJob.Proxy
 {
     using System;
     using System.Collections.Generic;
@@ -59,6 +59,5 @@
 
             throw new Exception($"Failed to add reaction: {response.StatusCode}");
         }
-
     }
 }

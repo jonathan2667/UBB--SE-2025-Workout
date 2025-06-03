@@ -1,5 +1,4 @@
-
-﻿namespace DesktopProject.Proxies
+namespace NeoIsisJob.Proxy
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +14,7 @@
         public CommentServiceProxy()
         {
 
-            this.httpClient = new HttpClient
+            httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7106/api/comments/"),
             };
@@ -35,7 +34,7 @@
                 CreatedDate = DateTime.UtcNow,
             };
 
-            var response = this.httpClient.PostAsJsonAsync(string.Empty, comment).Result;
+            var response = httpClient.PostAsJsonAsync(string.Empty, comment).Result;
             if (response.IsSuccessStatusCode)
             {
                 return response.Content.ReadFromJsonAsync<Comment>().Result;
@@ -58,7 +57,7 @@
         /// </summary>
         public List<Comment> GetAllComments()
         {
-            var response = this.httpClient.GetAsync("").Result;
+            var response = httpClient.GetAsync("").Result;
             if (response.IsSuccessStatusCode)
             {
                 return response.Content.ReadFromJsonAsync<List<Comment>>().Result;

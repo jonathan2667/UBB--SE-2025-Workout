@@ -1,7 +1,9 @@
 using ServerLibraryProject.Interfaces;
-using ServerLibraryProject.Models;
+using Workout.Core.IRepositories;
+using Workout.Core.IServices;
+using Workout.Core.Models;
 
-namespace ServerLibraryProject.Services
+namespace Workout.Core.Services
 {
     public class GroupService : IGroupService
     {
@@ -24,7 +26,7 @@ namespace ServerLibraryProject.Services
             return groupRepository.GetGroupsForUser(userId);
         }
 
-        public List<User> GetUsersFromGroup(long groupId)
+        public List<UserModel> GetUsersFromGroup(long groupId)
         {
             return groupRepository.GetUsersFromGroup(groupId);
         }

@@ -7,17 +7,19 @@ namespace DesktopProject.Components
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using NeoIsisJob;
     using ServerLibraryProject.Models;
+    using Workout.Core.Models;
 
     public sealed partial class Member : UserControl
     {
-        private readonly User member;
+        private readonly UserModel member;
         private readonly AppController controller;
         private readonly Frame navigationFrame;
         private readonly long groupId;
         private readonly bool isAdmin;
 
-        public Member(User member, Frame frame, long groupId)
+        public Member(UserModel member, Frame frame, long groupId)
         {
             this.InitializeComponent();
             this.member = member;
@@ -28,7 +30,7 @@ namespace DesktopProject.Components
 
             this.MemberName.Text = member.Username;
             this.SetImage();
-            if (isAdmin && member.Id != this.controller.CurrentUser.Id) // Don’t show Remove for self
+            if (isAdmin && member.ID != this.controller.CurrentUser.ID) // Don’t show Remove for self
                 this.RemoveButton.Visibility = Visibility.Visible;
 
             this.PointerPressed += this.Member_Click;

@@ -1,4 +1,4 @@
-﻿namespace ServerLibraryProject.Models
+﻿namespace Workout.Core.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;

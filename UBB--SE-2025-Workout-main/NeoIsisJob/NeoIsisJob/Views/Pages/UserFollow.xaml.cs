@@ -2,26 +2,32 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using NeoIsisJob;
+using NeoIsisJob.Proxy;
 using ServerLibraryProject.Interfaces;
 using ServerLibraryProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Workout.Core.IServices;
+using Workout.Core.Models;
 
 namespace DesktopProject.Pages
 {
     public sealed partial class UserFollow : Page
     {
-        private readonly IUserService userService;
+        //private readonly IUserService userService;
+        private readonly UserServiceProxy userService;
         private readonly AppController controller;
-        private List<User> allUsers = new();
+        private List<UserModel> allUsers = new();
         private HashSet<long> followingIds = new();
 
         public UserFollow()
         {
             this.InitializeComponent();
 
-            userService = App.Services.GetService<IUserService>();
+            //userService = App.Services.GetService<IUserService>();
+            userService = new UserServiceProxy();
             controller = App.Services.GetService<AppController>();
 
             LoadUsers();
@@ -31,16 +37,16 @@ namespace DesktopProject.Pages
         {
             UserListPanel.Children.Clear();
 
-            var currentUserId = controller.CurrentUser.Id;
+            var currentUserId = controller.CurrentUser.ID;
 
             // All other users except current
-            allUsers = userService.GetAllUsers()
-                .Where(u => u.Id != currentUserId &&
+            allUsers = userService.GetAllUsersAsync().Result
+                .Where(u => u.ID != currentUserId &&
                             u.Username.Contains(search, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             followingIds = userService.GetUserFollowing(currentUserId)
-                                      .Select(u => u.Id)
+                                      .Select(u => (long)u.ID)
                                       .ToHashSet();
 
             foreach (var user in allUsers)
@@ -64,14 +70,14 @@ namespace DesktopProject.Pages
 
                 var button = new Button
                 {
-                    Content = followingIds.Contains(user.Id) ? "Unfollow" : "Follow",
-                    Background = new SolidColorBrush(followingIds.Contains(user.Id)
+                    Content = followingIds.Contains(user.ID) ? "Unfollow" : "Follow",
+                    Background = new SolidColorBrush(followingIds.Contains(user.ID)
                         ? Microsoft.UI.Colors.OrangeRed
                         : Microsoft.UI.Colors.Green),
                     Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
                     Width = 80,
                     Height = 30,
-                    Tag = user.Id
+                    Tag = user.ID
                 };
 
                 // Remove hover flicker by setting style directly
@@ -96,7 +102,7 @@ namespace DesktopProject.Pages
         {
             var button = sender as Button;
             long targetId = (long)button.Tag;
-            long currentUserId = controller.CurrentUser.Id;
+            long currentUserId = controller.CurrentUser.ID;
 
             if (followingIds.Contains(targetId))
             {

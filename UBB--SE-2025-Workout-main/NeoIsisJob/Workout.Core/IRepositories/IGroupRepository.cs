@@ -1,7 +1,7 @@
-﻿using ServerLibraryProject.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Workout.Core.Models;
 
-namespace ServerLibraryProject.Interfaces
+namespace Workout.Core.IRepositories
 
 {
     public interface IGroupRepository
@@ -14,7 +14,7 @@ namespace ServerLibraryProject.Interfaces
 
         List<Group> GetGroupsForUser(long userId);
 
-        List<User> GetUsersFromGroup(long id);
+        List<UserModel> GetUsersFromGroup(long id);
 
         void SaveGroup(Group entity);
 

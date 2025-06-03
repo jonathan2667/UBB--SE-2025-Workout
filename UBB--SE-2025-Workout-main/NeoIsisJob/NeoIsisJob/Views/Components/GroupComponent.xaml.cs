@@ -1,7 +1,7 @@
 namespace DesktopProject.Components
 {
     using Microsoft.UI.Xaml.Controls;
-    using ServerLibraryProject.Models;
+    using Workout.Core.Models;
 
     public sealed partial class GroupComponent : UserControl
     {

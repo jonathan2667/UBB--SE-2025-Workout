@@ -1,11 +1,11 @@
-﻿@model List<ServerLibraryProject.Models.Group>
+﻿@model List<Workout.Core.Models.Group>
 
 @{
     ViewData["Title"] = "Groups";
     string userIdStr = Context.Session.GetString("UserId");
     long? userId = !string.IsNullOrEmpty(userIdStr) ? long.Parse(userIdStr) : (long?)null;
-	var groupService = (ServerLibraryProject.Interfaces.IGroupService)Context.RequestServices.GetService(typeof(ServerLibraryProject.Interfaces.IGroupService));
-    var userService = (ServerLibraryProject.Interfaces.IUserService)Context.RequestServices.GetService(typeof(ServerLibraryProject.Interfaces.IUserService));
+    var groupService = (Workout.Core.IServices.IGroupService)Context.RequestServices.GetService(typeof(Workout.Core.IServices.IGroupService));
+    var userService = (Workout.Core.IServices.IUserService)Context.RequestServices.GetService(typeof(Workout.Core.IServices.IUserService));
 }
 
 <h2>Groups</h2>

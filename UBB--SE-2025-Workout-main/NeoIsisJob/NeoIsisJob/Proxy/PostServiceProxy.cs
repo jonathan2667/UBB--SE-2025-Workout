@@ -1,4 +1,4 @@
-namespace DesktopProject.Proxies
+namespace NeoIsisJob.Proxy
 {
     using System;
     using System.Collections.Generic;

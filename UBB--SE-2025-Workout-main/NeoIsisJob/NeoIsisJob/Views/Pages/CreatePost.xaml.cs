@@ -11,9 +11,12 @@ namespace DesktopProject.Pages
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
+    using NeoIsisJob;
     using ServerLibraryProject.Enums;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -61,7 +64,7 @@ namespace DesktopProject.Pages
                 throw new InvalidOperationException("CurrentUser is not set in the AppController.");
             }
 
-            this.userGroups = this.groupService.GetUserGroups(this.controller.CurrentUser.Id);
+            this.userGroups = this.groupService.GetUserGroups(this.controller.CurrentUser.ID);
             this.GroupsListBox.ItemsSource = this.userGroups;
         }
 
@@ -179,7 +182,7 @@ namespace DesktopProject.Pages
             {
                 Title = this.TitleInput.Text.Trim(),
                 Content = this.DescriptionInput.Text.Trim(),
-                UserId = this.controller.CurrentUser.Id,
+                UserId = this.controller.CurrentUser.ID,
                 CreatedDate = DateTime.Now,
                 Visibility = visibility,
                 Tag = this.GetSelectedTag(),
@@ -198,12 +201,11 @@ namespace DesktopProject.Pages
             }
             else
             {
-                post.GroupId = null; 
+                post.GroupId = null;
             }
 
             return post;
         }
-
 
         private PostTag GetSelectedTag()
         {

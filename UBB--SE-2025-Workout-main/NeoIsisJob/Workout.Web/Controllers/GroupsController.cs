@@ -1,8 +1,10 @@
-﻿namespace ServerMVCProject.Controllers
+﻿using Workout.Core.Models;
+
+namespace ServerMVCProject.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using ServerLibraryProject.Interfaces;
-    using CommonGroup = ServerLibraryProject.Models.Group;
+    using Workout.Core.IServices;
+    using CommonGroup = Group;
 
     [Route("groups")]
     public class GroupsController : Controller

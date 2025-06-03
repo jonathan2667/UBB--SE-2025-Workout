@@ -130,7 +130,7 @@ namespace Workout.Web.Controllers
             {
                 if (user.Username != null && user.Password != null)
                 {
-                    long result = this._userService.AddUser(user.Username, user.Password, "");
+                    long result = this._userService.AddUserAsync(user.Username, user.Password, "").Result;
 
                     this.HttpContext.Session.SetString("UserId", result.ToString());
 
@@ -164,10 +164,10 @@ namespace Workout.Web.Controllers
                     try
                     {
 
-                        User findUser = this._userService.GetUserByUsername(user.Username);
+                        UserModel findUser = this._userService.GetUserByUsername(user.Username);
                         if (findUser.Password.Equals(user.Password))
                         {
-                            this.HttpContext.Session.SetString("UserId", findUser.Id.ToString());
+                            this.HttpContext.Session.SetString("UserId", findUser.ID.ToString());
 
                         }
                         else
@@ -213,12 +213,12 @@ namespace Workout.Web.Controllers
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
 
             long userId = long.Parse(userIdStr);
-            var allUsers = _userService.GetAllUsers()
-                .Where(u => u.Id != userId &&
+            var allUsers = _userService.GetAllUsersAsync().Result
+                .Where(u => u.ID != userId &&
                             u.Username.Contains(search ?? "", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            var following = _userService.GetUserFollowing(userId).Select(u => u.Id).ToHashSet();
+            var following = _userService.GetUserFollowing(userId).Select(u => u.ID).ToHashSet();
 
             ViewData["Following"] = following;
             ViewData["CurrentUserId"] = userId;
@@ -236,7 +236,7 @@ namespace Workout.Web.Controllers
             long userId = long.Parse(userIdStr);
             var following = _userService.GetUserFollowing(userId);
 
-            bool isFollowing = following.Any(u => u.Id == targetId);
+            bool isFollowing = following.Any(u => u.ID == targetId);
             try
             {
                 if (isFollowing)

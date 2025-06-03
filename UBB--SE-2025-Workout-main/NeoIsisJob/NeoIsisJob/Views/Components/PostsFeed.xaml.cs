@@ -5,6 +5,8 @@ namespace DesktopProject.Components
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using NeoIsisJob;
+    using NeoIsisJob.Proxy;
 
     public sealed partial class PostsFeed : UserControl
     {
@@ -37,7 +39,7 @@ namespace DesktopProject.Components
             }
             else
             {
-                userId = controller.CurrentUser.Id;
+                userId = controller.CurrentUser.ID;
             }
 
             this.postViewModel.PopulatePostsHomeFeed(userId);

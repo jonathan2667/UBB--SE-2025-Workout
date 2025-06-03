@@ -6,6 +6,7 @@ namespace DesktopProject.Components
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using NeoIsisJob;
 
     public sealed partial class TopBar : UserControl
     {
@@ -26,7 +27,7 @@ namespace DesktopProject.Components
         private async void SetPhoto()
         {
             var controller = App.Services.GetService<AppController>();
-            if (controller?.CurrentUser != null && !string.IsNullOrEmpty(controller.CurrentUser.PhotoURL))
+            if (controller?.CurrentUser != null && !string.IsNullOrEmpty(string.Empty))
             {
                 //UserImage.Source = await AppController.DecodeBase64ToImageAsync(controller.CurrentUser.Image);
             }

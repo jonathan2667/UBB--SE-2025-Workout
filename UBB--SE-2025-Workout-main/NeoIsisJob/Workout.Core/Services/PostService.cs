@@ -6,6 +6,7 @@
     using ServerLibraryProject.Enums;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IRepositories;
 
     /// <summary>
     /// Service for managing posts.

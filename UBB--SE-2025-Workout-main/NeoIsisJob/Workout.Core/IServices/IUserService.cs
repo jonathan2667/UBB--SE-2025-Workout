@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using ServerLibraryProject.Models;
 using Workout.Core.Models;
 
 namespace Workout.Core.IServices
@@ -38,5 +41,17 @@ namespace Workout.Core.IServices
         /// Authenticates a user and returns user ID if successful.
         /// </summary>
         Task<long> LoginAsync(string username, string password);
+
+        UserModel GetUserByUsername(string username);
+
+        public void JoinGroup(long userId, long groupId);
+
+        public void ExitGroup(long userId, long groupId);
+
+        public List<UserModel> GetUserFollowing(long id);
+
+        void FollowUserById(long userId, long whoToFollowId);
+
+        void UnfollowUserById(long userId, long whoToUnfollowId);
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Workout.Core.IRepositories;
 using Workout.Core.Models;
 using Workout.Core.Data;
+using ServerLibraryProject.DbRelationshipEntities;
 
 namespace Workout.Core.Repositories
 {
@@ -68,6 +69,122 @@ namespace Workout.Core.Repositories
         public async Task<List<UserModel>> GetAllUsersAsync()
         {
             return await context.Users.ToListAsync();
+        }
+
+        public List<UserModel> GetUserFollowers(long id)
+
+        {
+            List<UserModel> userFollowers = new List<UserModel>();
+            List<UserFollower> followers = context.UserFollowers
+                .Where(uf => uf.UserId == id)
+                .ToList();
+            foreach (UserFollower userFollower in followers)
+            {
+                UserModel? user = context.Users.FirstOrDefault(u => u.ID == userFollower.FollowerId);
+                if (user != null)
+                {
+                    userFollowers.Add(user);
+                }
+            }
+
+            return userFollowers;
+        }
+
+        public List<UserModel> GetUserFollowing(long id)
+        {
+            var userFollowers = context.UserFollowers
+               .Where(uf => uf.UserId == id);
+            return context.Users
+                .Where(u => userFollowers.Any(uf => uf.FollowerId == u.ID))
+                .ToList();
+        }
+
+        public UserModel Save(UserModel entity)
+        {
+            try
+            {
+                if (context.Users.FirstOrDefault(u => u.Username.Equals(entity.Username)) != null)
+                {
+                    throw new Exception("User already exists");
+                }
+
+                context.Users.Add(entity);
+                context.SaveChanges();
+                return entity;
+            }
+            catch
+            {
+                throw new Exception("Error saving the user");
+            }
+
+        }
+
+        public void JoinGroup(long userId, long groupId)
+        {
+            try
+            {
+                GroupUser groupUser = new GroupUser
+                {
+                    UserId = userId,
+                    GroupId = groupId
+                };
+                context.GroupUsers.Add(groupUser);
+                context.SaveChanges();
+            }
+            catch
+            {
+                throw new Exception("Error joining the group");
+            }
+        }
+
+        public void ExitGroup(long userId, long groupId)
+        {
+            try
+            {
+                // Find the GroupUser entry that matches the user and group
+                GroupUser? groupUser = context.GroupUsers
+                    .FirstOrDefault(gu => gu.UserId == userId && gu.GroupId == groupId);
+
+                if (groupUser != null)
+                {
+                    context.GroupUsers.Remove(groupUser);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("User is not a member of the group");
+                }
+            }
+            catch
+            {
+                throw new Exception("Error exiting the group");
+            }
+        }
+
+        public void Unfollow(long userId, long whoToUnfollowId)
+        {
+            try
+            {
+                context.UserFollowers.Remove(new UserFollower(userId, whoToUnfollowId));
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error unfollowing user: " + ex.Message);
+            }
+        }
+
+        public void Follow(long userId, long whoToFollowId)
+        {
+            try
+            {
+                context.UserFollowers.Add(new UserFollower(userId, whoToFollowId));
+                context.SaveChanges();
+            }
+            catch
+            {
+                throw new Exception("Error following user"); 
+            }
         }
     }
 }

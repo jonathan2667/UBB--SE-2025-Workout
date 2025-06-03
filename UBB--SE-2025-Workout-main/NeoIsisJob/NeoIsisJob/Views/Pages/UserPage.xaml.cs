@@ -3,12 +3,16 @@ namespace DesktopProject.Pages
     using System;
     using DesktopProject;
     using DesktopProject.Proxies;
-    using DesktopProject.Services;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
+    using NeoIsisJob;
+    using NeoIsisJob.Proxy;
+    using NeoIsisJob.Services;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     public sealed partial class UserPage : Page
     {
@@ -16,7 +20,8 @@ namespace DesktopProject.Pages
 
         public string Password { get; set; } = string.Empty;
 
-        private readonly IUserService userService;
+        //private readonly IUserService userService;
+        private readonly UserServiceProxy userService;
 
         private UserPageService userPageService = new UserPageService();
 
@@ -54,10 +59,10 @@ namespace DesktopProject.Pages
                 try
                 {
 
-                    User findUser = this.userService.GetUserByUsername(this.Username);
+                    UserModel findUser = this.userService.GetUserByUsername(this.Username);
                     if (findUser.Password.Equals(this.Password))
                     {
-                        App.Services.GetService<AppController>().CurrentUser = this.userService.GetById(findUser.Id);
+                        App.Services.GetService<AppController>().CurrentUser = this.userService.GetUserAsync(findUser.ID).Result;
                         this.Frame.Navigate(typeof(HomeScreen));
 
                     }
@@ -87,7 +92,7 @@ namespace DesktopProject.Pages
             {
                 userId = this.userPageService.InsertNewUser(this.Username, this.Password);
 
-                App.Services.GetService<AppController>().CurrentUser = this.userService.GetById(userId);
+                App.Services.GetService<AppController>().CurrentUser = this.userService.GetUserAsync((int)userId).Result;
                 this.Frame.Navigate(typeof(HomeScreen), this);
             }
         }

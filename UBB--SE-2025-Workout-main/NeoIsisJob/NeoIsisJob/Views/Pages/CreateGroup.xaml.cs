@@ -12,8 +12,10 @@ namespace DesktopProject.Pages
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Media;
     using Microsoft.UI.Xaml.Navigation;
-    using ServerLibraryProject.Interfaces;
+    using NeoIsisJob;
+    using NeoIsisJob.Proxy;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -22,7 +24,8 @@ namespace DesktopProject.Pages
     {
         private AppController controller;
         private IGroupService groupService;
-        private IUserService userService;
+        //private IUserService userService;
+        private UserServiceProxy userService;
         private string image = string.Empty;
 
         /// <summary>

@@ -5,8 +5,8 @@ namespace DesktopProject.Proxies
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Json;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     public class GroupServiceProxy : IGroupService
     {
@@ -42,13 +42,13 @@ namespace DesktopProject.Proxies
             throw new Exception($"Failed to get groups: {response.StatusCode}");
         }
 
-        public List<User> GetUsersFromGroup(long groupId)
+        public List<UserModel> GetUsersFromGroup(long groupId)
         {
 
             var response = this.httpClient.GetAsync($"{groupId}/users").Result;
             if (response.IsSuccessStatusCode)
             {
-                return response.Content.ReadFromJsonAsync<List<User>>().Result;
+                return response.Content.ReadFromJsonAsync<List<UserModel>>().Result;
             }
             throw new Exception($"Failed to get users from group: {response.StatusCode}");
         }

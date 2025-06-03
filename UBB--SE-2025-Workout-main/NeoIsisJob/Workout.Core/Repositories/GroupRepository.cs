@@ -1,11 +1,11 @@
-namespace ServerLibraryProject.Repositories
+namespace Workout.Core.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
     using ServerLibraryProject.Data;
     using ServerLibraryProject.DbRelationshipEntities;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
+    using Workout.Core.IRepositories;
+    using Workout.Core.Models;
 
     /// <summary>
     /// Repository for managing groups.
@@ -33,7 +33,7 @@ namespace ServerLibraryProject.Repositories
             }
             catch
             {
-                throw new System.Exception("Group not found.");
+                throw new Exception("Group not found.");
             }
         }
 
@@ -65,7 +65,7 @@ namespace ServerLibraryProject.Repositories
             }
             catch
             {
-                throw new System.Exception("User not found or has no groups.");
+                throw new Exception("User not found or has no groups.");
             }
 
         }
@@ -76,13 +76,13 @@ namespace ServerLibraryProject.Repositories
         /// </summary>
         /// <param name="groupId">The ID of the group.</param>
         /// <returns>A list of users in the group.</returns>
-        public List<User> GetUsersFromGroup(long groupId)
+        public List<UserModel> GetUsersFromGroup(long groupId)
         {
             try
             {
                 var usersQuery = from user in dbContext.Users
                                  join groupUser in dbContext.GroupUsers
-                                 on user.Id equals groupUser.UserId
+                                 on user.ID equals groupUser.UserId
                                  where groupUser.GroupId == groupId
                                  select user;
 
@@ -90,7 +90,7 @@ namespace ServerLibraryProject.Repositories
             }
             catch
             {
-                throw new System.Exception("Group not found or has no users.");
+                throw new Exception("Group not found or has no users.");
             }
 
         }
@@ -107,7 +107,7 @@ namespace ServerLibraryProject.Repositories
                 dbContext.SaveChanges();
             }catch
             {
-                throw new System.Exception("Group could not be saved.");
+                throw new Exception("Group could not be saved.");
             }
 
 
