@@ -26,7 +26,7 @@ namespace NeoIsisJob.Proxy
             };
         }
 
-        public void AddPost(string title, string content, long userId, long? groupId, PostVisibility postVisibility, PostTag postTag)
+        public void AddPost(string title, string content, int userId, long? groupId, PostVisibility postVisibility, PostTag postTag)
         {
             Post newPost = new Post
             {
@@ -116,7 +116,7 @@ namespace NeoIsisJob.Proxy
         /// </summary>
         /// <param name="userId">The user ID.</param>
         /// <returns>A list of posts, or an empty list if none are found.</returns>
-        public List<Post> GetPostsByUserId(long userId)
+        public List<Post> GetPostsByUserId(int userId)
         {
             var response = this.httpClient.GetAsync($"user/{userId}").Result;
 
@@ -153,7 +153,7 @@ namespace NeoIsisJob.Proxy
         /// </summary>
         /// <param name="userId">The user's ID.</param>
         /// <returns>A list of home feed posts, or an empty list if none are found.</returns>
-        public List<Post> GetPostsHomeFeed(long userId)
+        public List<Post> GetPostsHomeFeed(int userId)
         {
             var response = this.httpClient.GetAsync($"user/{userId}/homefeed").Result;
 

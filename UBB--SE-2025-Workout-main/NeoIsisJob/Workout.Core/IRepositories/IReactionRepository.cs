@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
         /// <param name="postId">The ID of the post.</param>
-        void Delete(long userId, long postId);
+        void Delete(int userId, long postId);
 
         /// <summary>
         /// Retrieves all reactions.
@@ -35,7 +35,7 @@
         /// <param name="userId">The ID of the user.</param>
         /// <param name="postId">The ID of the post.</param>
         /// <returns>The reaction for the specified user and post.</returns>
-        Reaction? GetReaction(long userId, long postId);
+        Reaction? GetReaction(int userId, long postId);
 
         /// <summary>
         /// Saves a new reaction to the repository.
@@ -49,6 +49,6 @@
         /// <param name="userId">The ID of the user.</param>
         /// <param name="postId">The ID of the post.</param>
         /// <param name="type">The new reaction type.</param>
-        void Update(long userId, long postId, ReactionType type);
+        void Update(int userId, long postId, ReactionType type);
     }
 }

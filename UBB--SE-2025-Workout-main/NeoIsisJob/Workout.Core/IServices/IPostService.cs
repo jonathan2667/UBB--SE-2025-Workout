@@ -5,11 +5,11 @@
 
     public interface IPostService
     {
-        void AddPost(string title, string content, long userId, long? groupId, PostVisibility postVisibility, PostTag postTag);
+        void AddPost(string title, string content, int userId, long? groupId, PostVisibility postVisibility, PostTag postTag);
 
         //void DeletePost(long id);
 
-        List<Post> GetPostsByUserId(long userId);
+        List<Post> GetPostsByUserId(int userId);
 
         List<Post> GetAllPosts();
 
@@ -19,7 +19,7 @@
 
         //List<Post> GetPostsGroupsFeed(long userId);
 
-        List<Post> GetPostsHomeFeed(long userId);
+        List<Post> GetPostsHomeFeed(int userId);
 
         //void UpdatePost(long id, string title, string description, PostVisibility visibility, PostTag tag);
 

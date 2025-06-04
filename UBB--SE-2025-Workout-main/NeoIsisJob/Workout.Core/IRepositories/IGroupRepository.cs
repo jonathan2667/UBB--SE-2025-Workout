@@ -12,7 +12,7 @@ namespace Workout.Core.IRepositories
 
         Group GetGroupById(long id);
 
-        List<Group> GetGroupsForUser(long userId);
+        List<Group> GetGroupsForUser(int userId);
 
         List<UserModel> GetUsersFromGroup(long id);
 

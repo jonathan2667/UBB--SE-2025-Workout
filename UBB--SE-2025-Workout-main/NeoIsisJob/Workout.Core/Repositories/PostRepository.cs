@@ -76,7 +76,7 @@ namespace ServerLibraryProject.Repositories
         //    return false;
         //}
 
-        public List<Post> GetPostsHomeFeed(long userId)
+        public List<Post> GetPostsHomeFeed(int userId)
         {
             var postsQuery = from post in dbContext.Posts
                              where post.UserId == userId
@@ -92,7 +92,7 @@ namespace ServerLibraryProject.Repositories
             return postsQuery.ToList();
         }
 
-        public List<Post> GetPostsGroupsFeed(long userId)
+        public List<Post> GetPostsGroupsFeed(int userId)
         {
             var postsQuery = from post in dbContext.Posts
                              where dbContext.GroupUsers.Any(groupUser =>
@@ -103,7 +103,7 @@ namespace ServerLibraryProject.Repositories
             return postsQuery.ToList();
         }
 
-        public List<Post> GetPostsByUserId(long userId)
+        public List<Post> GetPostsByUserId(int userId)
         {
             return dbContext.Posts
                 .Where(p => p.UserId == userId)

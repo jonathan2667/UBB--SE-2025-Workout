@@ -23,7 +23,7 @@ namespace NeoIsisJob.Proxy
         /// <summary>
         /// Adds a new comment.
         /// </summary>
-        public Comment AddComment(string content, long userId, long postId)
+        public Comment AddComment(string content, int userId, long postId)
         {
             var comment = new Comment
             {

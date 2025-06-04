@@ -32,7 +32,7 @@
             return new List<Reaction>();
         }
 
-        public Reaction? GetReaction(long userId, long postId)
+        public Reaction? GetReaction(int userId, long postId)
         {
             var response = this.httpClient.GetAsync($"{userId}/{postId}").Result;
 

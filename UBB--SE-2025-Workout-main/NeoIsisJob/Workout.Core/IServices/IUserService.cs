@@ -44,14 +44,14 @@ namespace Workout.Core.IServices
 
         UserModel GetUserByUsername(string username);
 
-        public void JoinGroup(long userId, long groupId);
+        public void JoinGroup(int userId, long groupId);
 
-        public void ExitGroup(long userId, long groupId);
+        public void ExitGroup(int userId, long groupId);
 
-        public List<UserModel> GetUserFollowing(long id);
+        public List<UserModel> GetUserFollowing(int id);
 
-        void FollowUserById(long userId, long whoToFollowId);
+        void FollowUserById(int userId, int whoToFollowId);
 
-        void UnfollowUserById(long userId, long whoToUnfollowId);
+        void UnfollowUserById(int userId, int whoToUnfollowId);
     }
 }

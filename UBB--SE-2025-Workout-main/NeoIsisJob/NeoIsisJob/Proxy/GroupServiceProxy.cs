@@ -32,7 +32,7 @@ namespace DesktopProject.Proxies
             throw new Exception($"Failed to get group: {response.StatusCode}");
         }
 
-        public List<Group> GetUserGroups(long userId)
+        public List<Group> GetUserGroups(int userId)
         {
             var response = this.httpClient.GetAsync($"{userId}/groups").Result;
             if (response.IsSuccessStatusCode)

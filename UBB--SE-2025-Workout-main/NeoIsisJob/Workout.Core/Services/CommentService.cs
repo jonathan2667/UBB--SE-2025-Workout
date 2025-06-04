@@ -34,7 +34,7 @@ namespace ServerLibraryProject.Services
         /// <param name="userId">The ID of the user adding the comment.</param>
         /// <param name="postId">The ID of the post to which the comment is added.</param>
         /// <returns>The created Comment object.</returns>
-        public Comment AddComment(string content, long userId, long postId)
+        public Comment AddComment(string content, int userId, long postId)
         {
             if (content == null || content.Length == 0)
             {

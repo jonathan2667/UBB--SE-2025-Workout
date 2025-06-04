@@ -7,7 +7,7 @@
     public class Reaction
     {
         [Column("user_id")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
         [Column("post_id")]
         public long PostId { get; set; }

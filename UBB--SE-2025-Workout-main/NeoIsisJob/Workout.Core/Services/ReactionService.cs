@@ -55,7 +55,7 @@
             return reactionRepository.GetReactionsByPostId(postId);
         }
 
-        public Reaction GetReaction(long userId, long postId)
+        public Reaction GetReaction(int userId, long postId)
         {
             return this.reactionRepository.GetReaction(userId, postId);
         }

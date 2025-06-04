@@ -21,18 +21,18 @@ namespace Workout.Core.IRepositories
 
         Task<List<UserModel>> GetAllUsersAsync();
 
-        List<UserModel> GetUserFollowers(long id);
+        List<UserModel> GetUserFollowers(int id);
 
-        List<UserModel> GetUserFollowing(long id);
+        List<UserModel> GetUserFollowing(int id);
 
         UserModel Save(UserModel entity);
 
-        void Unfollow(long userId, long whoToUnfollowId);
+        void Unfollow(int userId, int whoToUnfollowId);
 
-        void JoinGroup(long userId, long groupId);
+        void JoinGroup(int userId, long groupId);
 
-        void ExitGroup(long userId, long groupId);
+        void ExitGroup(int userId, long groupId);
 
-        public void Follow(long userId, long whoToFollowId);
+        public void Follow(int userId, int whoToFollowId);
     }
 }

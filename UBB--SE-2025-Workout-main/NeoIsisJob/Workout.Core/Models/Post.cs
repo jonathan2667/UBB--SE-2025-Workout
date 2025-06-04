@@ -24,7 +24,7 @@
         required public DateTime CreatedDate { get; set; }
 
         [Column("user_id")]
-        required public long UserId { get; set; }
+        required public int UserId { get; set; }
 
         [Column("group_id")]
         public long? GroupId { get; set; }

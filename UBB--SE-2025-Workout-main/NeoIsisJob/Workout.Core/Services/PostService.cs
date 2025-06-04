@@ -40,7 +40,7 @@
         /// <param name="postVisibility">The visibility of the post.</param>
         /// <param name="postTag">The tag of the post.</param>
         /// <returns>The created post.</returns>
-        public void AddPost(string title, string content, long userId, long? groupId, PostVisibility postVisibility, PostTag postTag)
+        public void AddPost(string title, string content, int userId, long? groupId, PostVisibility postVisibility, PostTag postTag)
         {
             if (title == null || title.Length == 0)
             {
@@ -117,7 +117,7 @@
         /// </summary>
         /// <param name="userId">The ID of the user whose posts to retrieve.</param>
         /// <returns>A list of posts by the specified user.</returns>
-        public List<Post> GetPostsByUserId(long userId)
+        public List<Post> GetPostsByUserId(int userId)
         {
             return this.postRepository.GetPostsByUserId(userId);
         }
@@ -137,7 +137,7 @@
         /// </summary>
         /// <param name="userId">The ID of the user whose home feed to retrieve.</param>
         /// <returns>A list of posts for the user's home feed.</returns>
-        public List<Post> GetPostsHomeFeed(long userId)
+        public List<Post> GetPostsHomeFeed(int userId)
         {
             return this.postRepository.GetPostsHomeFeed(userId);
         }

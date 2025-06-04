@@ -101,22 +101,22 @@ namespace Workout.Core.Services
             return null; // This should be replaced with actual user retrieval logic
         }
 
-        public void JoinGroup(long userId, long groupId)
+        public void JoinGroup(int userId, long groupId)
         {
             this._userRepo.JoinGroup(userId, groupId);
         }
 
-        public void ExitGroup(long userId, long groupId)
+        public void ExitGroup(int userId, long groupId)
         {
             this._userRepo.ExitGroup(userId, groupId);
         }
 
-        public List<UserModel> GetUserFollowing(long id)
+        public List<UserModel> GetUserFollowing(int id)
         {
             return this._userRepo.GetUserFollowing(id);
         }
 
-        public void FollowUserById(long userId, long whoToFollowId)
+        public void FollowUserById(int userId, int whoToFollowId)
         {
             if (this._userRepo.GetUserByIdAsync((int)userId) == null)
             {
@@ -131,7 +131,7 @@ namespace Workout.Core.Services
             this._userRepo.Follow(userId, whoToFollowId);
         }
 
-        public void UnfollowUserById(long userId, long whoToUnfollowId)
+        public void UnfollowUserById(int userId, int whoToUnfollowId)
         {
             if (this._userRepo.GetUserByIdAsync((int)userId) == null)
             {

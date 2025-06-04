@@ -16,6 +16,7 @@ namespace DesktopProject.Pages
     using NeoIsisJob.Proxy;
     using ServerLibraryProject.Models;
     using Workout.Core.IServices;
+    using Workout.Core.Models; // added this for groups
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
