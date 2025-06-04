@@ -2,10 +2,10 @@ namespace Workout.Core.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
-    using ServerLibraryProject.Data;
     using ServerLibraryProject.DbRelationshipEntities;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.Data;
     using Workout.Core.Models;
 
     /// <summary>
@@ -13,13 +13,13 @@ namespace Workout.Core.Repositories
     /// </summary>
     public class UserRepository : IUserRepository
     {
-        private readonly SocialAppDbContext dbContext;
+        private readonly WorkoutDbContext dbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserRepository"/> class.
         /// </summary>
         /// <param name="context">The database context to be used.</param>
-        public UserRepository(SocialAppDbContext context)
+        public UserRepository(WorkoutDbContext context)
         {
             dbContext = context;
         }

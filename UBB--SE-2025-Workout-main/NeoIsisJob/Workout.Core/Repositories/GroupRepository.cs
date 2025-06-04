@@ -2,8 +2,8 @@ namespace Workout.Core.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
-    using ServerLibraryProject.Data;
     using ServerLibraryProject.DbRelationshipEntities;
+    using Workout.Core.Data;
     using Workout.Core.IRepositories;
     using Workout.Core.Models;
 
@@ -12,9 +12,9 @@ namespace Workout.Core.Repositories
     /// </summary>
     public class GroupRepository : IGroupRepository
     {
-        private readonly SocialAppDbContext dbContext;
+        private readonly WorkoutDbContext dbContext;
 
-        public GroupRepository(SocialAppDbContext context)
+        public GroupRepository(WorkoutDbContext context)
         {
             dbContext = context;
         }

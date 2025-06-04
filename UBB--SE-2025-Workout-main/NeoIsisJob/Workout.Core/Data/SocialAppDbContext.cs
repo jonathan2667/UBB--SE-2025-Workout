@@ -1,4 +1,4 @@
-﻿namespace ServerLibraryProject.Data
+﻿/*namespace ServerLibraryProject.Data
 {
     using Microsoft.EntityFrameworkCore;
     using ServerLibraryProject.DbRelationshipEntities;
@@ -130,4 +130,4 @@
                 .HasDefaultValueSql("GETDATE()");
         }
     }
-}
+}*/

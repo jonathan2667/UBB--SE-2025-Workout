@@ -1,14 +1,14 @@
 ﻿namespace ServerLibraryProject.Repositories
 {
-    using ServerLibraryProject.Data;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.Data;
 
     public class CommentRepository : ICommentRepository
     {
-        private readonly SocialAppDbContext dbContext;
+        private readonly WorkoutDbContext dbContext;
 
-        public CommentRepository(SocialAppDbContext context)
+        public CommentRepository(WorkoutDbContext context)
         {
             this.dbContext = context;
         }

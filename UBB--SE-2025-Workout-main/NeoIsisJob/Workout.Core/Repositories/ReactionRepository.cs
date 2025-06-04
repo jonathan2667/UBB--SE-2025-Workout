@@ -2,10 +2,10 @@ namespace ServerLibraryProject.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
-    using ServerLibraryProject.Data;
     using ServerLibraryProject.Enums;
     using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.Data;
 
 
     /// <summary>
@@ -13,9 +13,9 @@ namespace ServerLibraryProject.Repositories
     /// </summary>
     public class ReactionRepository : IReactionRepository
     {
-        private readonly SocialAppDbContext dbContext;
+        private readonly WorkoutDbContext dbContext;
 
-        public ReactionRepository(SocialAppDbContext context)
+        public ReactionRepository(WorkoutDbContext context)
         {
             dbContext = context;
         }

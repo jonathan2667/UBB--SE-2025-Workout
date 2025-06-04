@@ -1,7 +1,8 @@
-﻿using ServerLibraryProject.Data;
+﻿
 using ServerLibraryProject.Enums;
 using ServerLibraryProject.Interfaces;
 using ServerLibraryProject.Models;
+using Workout.Core.Data;
 
 namespace ServerLibraryProject.Repositories
 {
@@ -10,9 +11,9 @@ namespace ServerLibraryProject.Repositories
     /// </summary>
     public class PostRepository : IPostRepository
     {
-        private readonly SocialAppDbContext dbContext;
+        private readonly WorkoutDbContext dbContext;
 
-        public PostRepository(SocialAppDbContext context)
+        public PostRepository(WorkoutDbContext context)
         {
             this.dbContext = context;
         }
