@@ -22,7 +22,7 @@ namespace ServerAPIProject.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Group> GetGroupById(long id)
+        public ActionResult<Group> GetGroupById(int id)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace ServerAPIProject.Controllers
         }
 
         [HttpGet("{id}/users")]
-        public ActionResult<List<User>> GetUsersFromGroup(long id)
+        public ActionResult<List<UserModel>> GetUsersFromGroup(int id)
         {
             return Ok(groupService.GetUsersFromGroup(id));
         }
@@ -57,7 +57,7 @@ namespace ServerAPIProject.Controllers
         }
 
         [HttpGet("{userId}/groups")]
-        public ActionResult<List<Group>> GetGroupsForUser(long userId)
+        public ActionResult<List<Group>> GetGroupsForUser(int userId)
         {
             return Ok(groupService.GetUserGroups(userId));
         }
