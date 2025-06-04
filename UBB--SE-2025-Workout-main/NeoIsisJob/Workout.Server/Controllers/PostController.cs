@@ -50,7 +50,7 @@
         }
 
         [HttpGet("user/{userId}")]
-        public ActionResult<List<Post>> GetPostsByUserId(long userId)
+        public ActionResult<List<Post>> GetPostsByUserId(int userId)
         {
             try
             {
@@ -76,7 +76,7 @@
         }
 
         [HttpGet("user/{userId}/homefeed")]
-        public ActionResult<List<Post>> GetHomeFeed(long userId)
+        public ActionResult<List<Post>> GetHomeFeed(int userId)
         {
             try
             {
@@ -125,7 +125,7 @@
         }
 
         [HttpGet("{postId}/user/{userId}/reaction")]
-        public ActionResult<Reaction> GetUserPostReaction(long userId, long postId)
+        public ActionResult<Reaction> GetUserPostReaction(int userId, long postId)
         {
             try
             {

@@ -47,7 +47,7 @@ namespace ServerMVCProject.Controllers
             string userIdStr = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
             try
             {
                 this.userService.JoinGroup(userId, id);
@@ -66,7 +66,7 @@ namespace ServerMVCProject.Controllers
             string userIdStr = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
             try
             {
                 this.userService.ExitGroup(userId, id);

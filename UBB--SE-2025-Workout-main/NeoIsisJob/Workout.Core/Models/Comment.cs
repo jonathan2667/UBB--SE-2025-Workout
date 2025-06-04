@@ -12,7 +12,7 @@
         public long Id { get; set; }
       
         [Column("user_id")]
-        required public long UserId { get; set; }
+        required public int UserId { get; set; }
 
         [Column("post_id")]
         required public long PostId { get; set; }

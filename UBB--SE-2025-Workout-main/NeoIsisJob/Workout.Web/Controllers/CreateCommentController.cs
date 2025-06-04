@@ -57,7 +57,7 @@
                 }
 
                 var userIdString = HttpContext.Session.GetString("UserId");
-                long userId;
+                int userId;
 
                 if (string.IsNullOrEmpty(userIdString))
                 {
@@ -66,7 +66,7 @@
                 }
                 else
                 {
-                    userId = long.Parse(userIdString);
+                    userId = int.Parse(userIdString);
                 }
 
                 if (!ModelState.IsValid)

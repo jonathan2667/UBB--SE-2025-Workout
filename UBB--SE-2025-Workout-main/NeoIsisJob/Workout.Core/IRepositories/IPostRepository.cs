@@ -9,9 +9,9 @@ namespace ServerLibraryProject.Interfaces
         List<Post> GetAllPosts();
         List<Post> GetPostsByGroupId(long groupId);
         Post GetPostById(long postId);
-        List<Post> GetPostsByUserId(long userId);
-        List<Post> GetPostsGroupsFeed(long userId);
-        List<Post> GetPostsHomeFeed(long userId);
+        List<Post> GetPostsByUserId(int userId);
+        List<Post> GetPostsGroupsFeed(int userId);
+        List<Post> GetPostsHomeFeed(int userId);
         void SavePost(Post entity);
         //bool UpdatePostById(long postId, string title, string content, PostVisibility visibility, PostTag tag);
     }

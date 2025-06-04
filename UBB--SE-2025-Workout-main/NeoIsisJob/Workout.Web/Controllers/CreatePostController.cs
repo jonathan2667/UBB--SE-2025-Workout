@@ -27,7 +27,7 @@ namespace ServerMVCProject.Controllers
         {
             string userIdStr = HttpContext.Session.GetString("UserId");
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
 
             var userGroups = this.groupService.GetUserGroups(userId);
 
@@ -49,7 +49,7 @@ namespace ServerMVCProject.Controllers
             string userIdStr = this.HttpContext.Session.GetString("UserId");
           
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
 
             var userGroups = this.groupService.GetUserGroups(userId);
             ViewBag.UserGroups = userGroups.Select(g => new SelectListItem

@@ -37,7 +37,7 @@
         }
 
 
-        public void AddPost(string title, string? content, long userId, long? groupId, PostVisibility postVisibility, PostTag postTag)
+        public void AddPost(string title, string? content, int userId, long? groupId, PostVisibility postVisibility, PostTag postTag)
         {
             this.postService.AddPost(title, content, userId, groupId, postVisibility, postTag);
         }
@@ -90,7 +90,7 @@
         /// Gets posts by user ID.
         /// </summary>
         /// <param name="userId">The ID of the user whose posts to retrieve.</param>
-        public void PopulatePostsByUserId(long userId)
+        public void PopulatePostsByUserId(int userId)
         {
             var posts = this.postService.GetPostsByUserId(userId);
         }
@@ -106,7 +106,7 @@
         //    var posts = this.postService.GetPostsGroupsFeed(userId);
         //}
 
-        public void PopulatePostsHomeFeed(long userId)
+        public void PopulatePostsHomeFeed(int userId)
         {
             var posts = this.postService.GetPostsHomeFeed(userId);
             this.PopulatePosts(posts);

@@ -106,6 +106,8 @@ builder.Services.AddScoped<IService<MealModel>, MealService>();
 builder.Services.AddScoped<IUserNutritionService, UserNutritionService>();
 builder.Services.AddScoped<IWaterTrackingService, WaterTrackingService>();
 
+// Social App services
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();

@@ -25,7 +25,7 @@ namespace ServerLibraryProject.Repositories
         /// </summary>
         /// <param name="userId">The ID of the user.</param>
         /// <param name="postId">The ID of the post.</param>
-        public void Delete(long userId, long postId)
+        public void Delete(int userId, long postId)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace ServerLibraryProject.Repositories
         /// <param name="userId">The ID of the user.</param>
         /// <param name="postId">The ID of the post.</param>
         /// <returns>The reaction for the specified user and post.</returns>
-        public Reaction GetReaction(long userId, long postId)
+        public Reaction GetReaction(int userId, long postId)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace ServerLibraryProject.Repositories
         /// <param name="userId">The ID of the user.</param>
         /// <param name="postId">The ID of the post.</param>
         /// <param name="type">The new reaction type.</param>
-        public void Update(long userId, long postId, ReactionType type)
+        public void Update(int userId, long postId, ReactionType type)
         {
             try
             {

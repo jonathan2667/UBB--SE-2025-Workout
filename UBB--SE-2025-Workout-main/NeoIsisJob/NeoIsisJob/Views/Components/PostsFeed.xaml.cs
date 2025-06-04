@@ -32,7 +32,7 @@ namespace DesktopProject.Components
         private void LoadPosts()
         {
             var controller = App.Services.GetService<AppController>();
-            long userId;
+            int userId;
             if (controller.CurrentUser == null)
             {
                 userId = -1;
@@ -67,7 +67,7 @@ namespace DesktopProject.Components
             this.postViewModel.PopulatePostsByGroupId(groupId);
         }
 
-        public void PopulatePostsByUserId(long userId)
+        public void PopulatePostsByUserId(int userId)
         {
             this.postViewModel.PopulatePostsByUserId(userId);
         }

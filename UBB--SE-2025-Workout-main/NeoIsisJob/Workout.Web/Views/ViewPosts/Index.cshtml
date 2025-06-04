@@ -16,7 +16,7 @@
     int totalPages = (int)Math.Ceiling(Model.Count / (double)pageSize);
 
     string? userIdString = HttpContextAccessor.HttpContext?.Session.GetString("UserId");
-    long.TryParse(userIdString, out long userId);
+    int.TryParse(userIdString, out int userId);
 }
 
 @Html.AntiForgeryToken()

@@ -21,7 +21,7 @@ namespace Workout.Core.Services
             return groupRepository.GetGroupById(id);
         }
 
-        public List<Group> GetUserGroups(long userId)
+        public List<Group> GetUserGroups(int userId)
         {
             return groupRepository.GetGroupsForUser(userId);
         }

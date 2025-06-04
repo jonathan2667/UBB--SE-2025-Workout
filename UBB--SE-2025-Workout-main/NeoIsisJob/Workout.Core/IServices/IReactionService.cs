@@ -12,6 +12,6 @@ namespace ServerLibraryProject.Interfaces
 
         void AddReaction(Reaction reaction);
 
-        Reaction GetReaction(long userId, long postId);
+        Reaction GetReaction(int userId, long postId);
     }
 }

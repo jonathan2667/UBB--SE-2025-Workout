@@ -7,12 +7,12 @@
     public class UserFollower
     {
         [Column("user_id")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
         [Column("follower_id")]
-        public long FollowerId { get; set; }
+        public int FollowerId { get; set; } // this should probably be int too
         public UserFollower() { }
-        public UserFollower(long userId, long whoToFollow) { 
+        public UserFollower(int userId, int whoToFollow) { 
             UserId = userId;
             FollowerId = whoToFollow;
         }

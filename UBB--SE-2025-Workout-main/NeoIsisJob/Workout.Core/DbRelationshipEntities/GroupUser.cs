@@ -6,7 +6,7 @@
     public class GroupUser
     {
         [Column("user_id")]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
 
         [Column("group_id")]
         public long GroupId { get; set; }

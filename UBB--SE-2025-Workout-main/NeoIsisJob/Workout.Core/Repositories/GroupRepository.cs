@@ -51,7 +51,7 @@ namespace Workout.Core.Repositories
         /// </summary>
         /// <param name="userId">The ID of the user whose groups to retrieve.</param>
         /// <returns>A list of groups the user belongs to.</returns>
-        public List<Group> GetGroupsForUser(long userId)
+        public List<Group> GetGroupsForUser(int userId)
         {
             try
             {

@@ -6,7 +6,7 @@ namespace Workout.Core.IServices
     {
         Group GetGroupById(long id);
 
-        List<Group> GetUserGroups(long userId);
+        List<Group> GetUserGroups(int userId);
 
         List<UserModel> GetUsersFromGroup(long groupId);
 

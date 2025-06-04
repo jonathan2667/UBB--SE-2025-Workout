@@ -10,7 +10,7 @@ namespace ServerLibraryProject.Interfaces
 
         List<Comment> GetCommentsByPostId(long postId);
 
-        Comment AddComment(string content, long userId, long postId);
+        Comment AddComment(string content, int userId, long postId);
 
         //void DeleteComment(long commentId);
 

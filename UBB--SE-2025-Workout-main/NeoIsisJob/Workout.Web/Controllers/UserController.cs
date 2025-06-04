@@ -212,7 +212,7 @@ namespace Workout.Web.Controllers
             var userIdStr = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
             var allUsers = _userService.GetAllUsersAsync().Result
                 .Where(u => u.ID != userId &&
                             u.Username.Contains(search ?? "", StringComparison.OrdinalIgnoreCase))
@@ -228,12 +228,12 @@ namespace Workout.Web.Controllers
         }
 
         [HttpPost("FollowToggle/{targetId}")]
-        public IActionResult FollowToggle(long targetId)
+        public IActionResult FollowToggle(int targetId)
         {
             var userIdStr = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdStr)) return Unauthorized();
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
             var following = _userService.GetUserFollowing(userId);
 
             bool isFollowing = following.Any(u => u.ID == targetId);

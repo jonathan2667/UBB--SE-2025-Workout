@@ -32,7 +32,7 @@ public class IndexModel : PageModel
         {
             string userIdStr = HttpContext.Session.GetString("UserId");
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
 
             if (!Enum.TryParse<ReactionType>(type, out var reactionType))
                 return new JsonResult(new { success = false, error = "Invalid reaction type" });
@@ -77,7 +77,7 @@ public class IndexModel : PageModel
             return new JsonResult(new { success = false, error = "Invalid AJAX request: handler not matched." });
         }
 
-        long userId = 1; // Hardcoded user ID for testing
+        int userId = 1; // Hardcoded user ID for testing
 
         var reactionType = Enum.Parse<ReactionType>(type);
         var existing = _reactionRepository.GetReaction(userId, postId);

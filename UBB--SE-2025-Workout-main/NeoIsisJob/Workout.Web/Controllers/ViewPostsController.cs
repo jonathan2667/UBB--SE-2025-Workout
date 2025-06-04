@@ -24,7 +24,7 @@ namespace ServerMVCProject.Controllers
         {
             string userIdStr = this.HttpContext.Session.GetString("UserId");
 
-            long userId = long.Parse(userIdStr);
+            int userId = int.Parse(userIdStr);
 
             List<Post> posts = this.postService.GetPostsHomeFeed(userId);
             return this.View(posts);
@@ -36,7 +36,7 @@ namespace ServerMVCProject.Controllers
         {
             try
             {
-                long userId = 1; // Hardcoded user ID for testing
+                int userId = 1; // Hardcoded user ID for testing
                 if (!Enum.TryParse<ReactionType>(type, out var reactionType))
                     return Json(new { success = false, error = "Invalid reaction type" });
 

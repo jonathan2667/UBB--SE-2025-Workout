@@ -71,7 +71,7 @@ namespace Workout.Core.Repositories
             return await context.Users.ToListAsync();
         }
 
-        public List<UserModel> GetUserFollowers(long id)
+        public List<UserModel> GetUserFollowers(int id)
 
         {
             List<UserModel> userFollowers = new List<UserModel>();
@@ -90,7 +90,7 @@ namespace Workout.Core.Repositories
             return userFollowers;
         }
 
-        public List<UserModel> GetUserFollowing(long id)
+        public List<UserModel> GetUserFollowing(int id)
         {
             var userFollowers = context.UserFollowers
                .Where(uf => uf.UserId == id);
@@ -119,7 +119,7 @@ namespace Workout.Core.Repositories
 
         }
 
-        public void JoinGroup(long userId, long groupId)
+        public void JoinGroup(int userId, long groupId)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void ExitGroup(long userId, long groupId)
+        public void ExitGroup(int userId, long groupId)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void Unfollow(long userId, long whoToUnfollowId)
+        public void Unfollow(int userId, int whoToUnfollowId)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace Workout.Core.Repositories
             }
         }
 
-        public void Follow(long userId, long whoToFollowId)
+        public void Follow(int userId, int whoToFollowId)
         {
             try
             {

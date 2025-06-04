@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Groups";
     string userIdStr = Context.Session.GetString("UserId");
-    long? userId = !string.IsNullOrEmpty(userIdStr) ? long.Parse(userIdStr) : (long?)null;
+    int? userId = !string.IsNullOrEmpty(userIdStr) ? int.Parse(userIdStr) : (int?)null;
     var groupService = (Workout.Core.IServices.IGroupService)Context.RequestServices.GetService(typeof(Workout.Core.IServices.IGroupService));
     var userService = (Workout.Core.IServices.IUserService)Context.RequestServices.GetService(typeof(Workout.Core.IServices.IUserService));
 }

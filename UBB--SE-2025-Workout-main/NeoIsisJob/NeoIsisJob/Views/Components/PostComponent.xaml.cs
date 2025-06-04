@@ -18,7 +18,7 @@ namespace DesktopProject.Components
     {
         private string title;
         private PostVisibility visibility;
-        private long userId;
+        private int userId;
         private string content;
         private DateTime createdDate;
         private long postId;
@@ -68,7 +68,7 @@ namespace DesktopProject.Components
             this.AppController = App.Services.GetService<AppController>();
         }
 
-        public PostComponent(string title, PostVisibility visibility, long userId, string content, DateTime createdDate, PostTag tag, long postId = 0)
+        public PostComponent(string title, PostVisibility visibility, int userId, string content, DateTime createdDate, PostTag tag, long postId = 0)
         {
             this.title = title;
             this.DataContext = this;
