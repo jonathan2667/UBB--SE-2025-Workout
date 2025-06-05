@@ -32,10 +32,6 @@
 
         <!-- MAIN CONTENT AREA -->
         <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
 
             <!-- LEFT SIDE -->
             <StackPanel Orientation="Horizontal">
@@ -69,26 +65,7 @@
                                                     Padding="10"/>
             </StackPanel>
 
-            <!-- RIGHT SIDE: Offers -->
-            <StackPanel Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Margin="10"
-                    Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                <StackPanel Padding="15">
-                    <TextBlock Text="Special Offer!" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                    <Image Source="https://example.com/offer1.jpg" Height="150" Width="150" Margin="0,10"/>
-                    <TextBlock Text="Discount on Protein Powder!" FontSize="14" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
-                </StackPanel>
 
-                <StackPanel Padding="15">
-                    <TextBlock Text="Limited Time Deal!" FontSize="18" FontWeight="Bold" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                    <Image Source="https://example.com/offer2.jpg" Height="150" Width="150" Margin="0,10"/>
-                    <TextBlock Text="Get 2 for 1 on Sports Equipment!" FontSize="14" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap"/>
-                </StackPanel>
-            </StackPanel>
         </Grid>
     </Grid>
 </Page>

@@ -39,12 +39,184 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Left Content -->
-                    <Grid Grid.Column="0" Margin="40">
-                        <!-- Your original main content here -->
-                        <TextBlock Text="Welcome to NeoIsis"
-                                   Style="{ThemeResource SubtitleTextBlockStyle}"
-                                   Margin="0,0,0,16" />
-                    </Grid>
+                    <ScrollViewer Grid.Column="0" Margin="40">
+                        <StackPanel Spacing="24">
+                            <!-- Main Welcome Section -->
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="Elevate Your Fitness Journey" 
+                                           Style="{ThemeResource TitleTextBlockStyle}"
+                                           FontWeight="Bold"
+                                           Foreground="{ThemeResource SystemAccentColor}" />
+                                
+                                <TextBlock Text="Welcome to NeoIsis - where fitness meets personalization. Track progress, crush goals, and transform your body with customized workouts tailored to your needs."
+                                           Style="{ThemeResource BodyTextBlockStyle}"
+                                           TextWrapping="Wrap"
+                                           Opacity="0.9" />
+                            </StackPanel>
+
+                            <!-- Feature Cards Grid -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Daily Workouts Card -->
+                                <Border Grid.Row="0" Grid.Column="0" 
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16"
+                                        Margin="0,0,8,8">
+                                    <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                        <Border Background="{ThemeResource SystemAccentColorLight1}"
+                                                Width="48" Height="48"
+                                                CornerRadius="24">
+                                            <SymbolIcon Symbol="Calendar" 
+                                                        Foreground="{ThemeResource SystemAccentColor}"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Daily Workouts" 
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Schedule personalized routines tailored to your fitness level"
+                                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   TextWrapping="Wrap"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Opacity="0.8"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Progress Tracking Card -->
+                                <Border Grid.Row="0" Grid.Column="1"
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16"
+                                        Margin="8,0,0,8">
+                                    <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                        <Border Background="#E3F2FD"
+                                                Width="48" Height="48"
+                                                CornerRadius="24">
+                                            <SymbolIcon Symbol="Target" 
+                                                        Foreground="#1976D2"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Track Progress" 
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Monitor your fitness journey with detailed analytics and insights"
+                                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   TextWrapping="Wrap"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Opacity="0.8"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Rankings Card -->
+                                <Border Grid.Row="1" Grid.Column="0"
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16"
+                                        Margin="0,8,8,0">
+                                    <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                        <Border Background="#FFF3E0"
+                                                Width="48" Height="48"
+                                                CornerRadius="24">
+                                            <SymbolIcon Symbol="Like" 
+                                                        Foreground="#F57C00"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Muscle Rankings" 
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Level up your muscle groups and achieve new ranks"
+                                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   TextWrapping="Wrap"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Opacity="0.8"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Join Classes Card -->
+                                <Border Grid.Row="1" Grid.Column="1"
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16"
+                                        Margin="8,8,0,0">
+                                    <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                        <Border Background="#E8F5E8"
+                                                Width="48" Height="48"
+                                                CornerRadius="24">
+                                            <SymbolIcon Symbol="People" 
+                                                        Foreground="#388E3C"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Join Classes" 
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Participate in group activities with professional trainers"
+                                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                                   TextWrapping="Wrap"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Opacity="0.8"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Quick Navigation Section -->
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="Explore More" 
+                                           Style="{ThemeResource SubtitleTextBlockStyle}"
+                                           HorizontalAlignment="Center"
+                                           FontWeight="SemiBold"/>
+                                
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Center" 
+                                            Spacing="12">
+                                    <Button Style="{ThemeResource AccentButtonStyle}" 
+                                            Click="GoToWorkoutPage_Tap">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <SymbolIcon Symbol="Play"/>
+                                            <TextBlock Text="Workouts"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Click="GoToClassPage_Tap">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <SymbolIcon Symbol="People"/>
+                                            <TextBlock Text="Classes"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button Click="GoToRankingPage_Tap">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <SymbolIcon Symbol="Like"/>
+                                            <TextBlock Text="Rankings"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
 
                     <!-- Right Panel - Workout Card -->
                     <Grid Grid.Column="1" Margin="0,12,12,12">

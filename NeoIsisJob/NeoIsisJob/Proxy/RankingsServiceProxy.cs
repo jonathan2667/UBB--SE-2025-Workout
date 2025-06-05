@@ -20,7 +20,7 @@ namespace NeoIsisJob.Proxy
         {
             try
             {
-                var results = await GetAsync<IList<RankingModel>>($"{EndpointName}/user/{userId}");
+                var results = await GetAsync<IList<RankingModel>>($"{EndpointName}/{userId}");
                 return results ?? new List<RankingModel>();
             }
             catch (Exception ex)

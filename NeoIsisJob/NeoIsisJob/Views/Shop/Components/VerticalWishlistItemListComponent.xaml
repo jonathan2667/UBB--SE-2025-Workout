@@ -8,7 +8,7 @@
     xmlns:model="using:Workout.Core.Models"
     mc:Ignorable="d">
 
-    <StackPanel Background="Gray">
+    <StackPanel Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
         <ListView
              x:Name="ProductListView"
              ItemsSource="{x:Bind WishlistItemList, Mode=OneWay}"
@@ -16,7 +16,8 @@
              IsItemClickEnabled="True"
              ItemClick="ProductList_ItemClick"
              Height="540"
-             Width="700">
+             Width="700"
+             Background="Transparent">
 
             <ListView.ItemTemplate>
                 <!-- Inside ListView.ItemTemplate -->
@@ -42,21 +43,21 @@
                         VerticalAlignment="Center"/>
 
                         <!-- Product Name -->
-                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" Foreground="White">
-                         <Run Text="Name: " FontWeight="Bold" FontSize="16"/>
-                         <Run Text="{x:Bind Product.Name, Mode=OneWay}" FontSize="16"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
+                         <Run Text="Name: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                         <Run Text="{x:Bind Product.Name, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
                         </TextBlock>
 
                         <!-- Product Color -->
-                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" Foreground="White">
-                         <Run Text="Color: " FontWeight="Bold" FontSize="16"/>
-                         <Run Text="{x:Bind Product.Color, Mode=OneWay}" FontSize="16"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,5">
+                         <Run Text="Color: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                         <Run Text="{x:Bind Product.Color, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
                         </TextBlock>
 
                         <!-- Product Price -->
-                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,5" Foreground="White">
-                         <Run Text="Price: " FontWeight="Bold" FontSize="16"/>
-                         <Run Text="{x:Bind Product.Price, Mode=OneWay}" FontSize="16"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
+                         <Run Text="Price: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemAccentColor}"/>
+                         <Run Text="{x:Bind Product.Price, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemAccentColor}"/>
                         </TextBlock>
 
                         <!-- Remove Button -->

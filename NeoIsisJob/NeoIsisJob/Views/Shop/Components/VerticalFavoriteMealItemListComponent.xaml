@@ -8,7 +8,7 @@
     xmlns:model="using:Workout.Core.Models"
     mc:Ignorable="d">
 
-    <StackPanel Background="Gray">
+    <StackPanel Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
         <ListView
              x:Name="MealListView"
              ItemsSource="{x:Bind FavoriteMealList, Mode=OneWay}"
@@ -16,7 +16,8 @@
              IsItemClickEnabled="True"
              ItemClick="MealList_ItemClick"
              Height="540"
-             Width="700">
+             Width="700"
+             Background="Transparent">
 
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="model:UserFavoriteMealModel">
