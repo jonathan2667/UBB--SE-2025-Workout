@@ -20,20 +20,51 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="model:UserFavoriteMealModel">
-                    <Grid Padding="10">
+                    <Grid Padding="10" Margin="0,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Bind Meal.Name, Mode=OneWay}" FontWeight="Bold" FontSize="18"/>
-                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{x:Bind Meal.Directions, Mode=OneWay}"/>
-                        <Button Grid.Column="2" Grid.Row="0" Content="Remove" Click="RemoveButton_Click" Tag="{x:Bind MealID}"/>
+
+                        <!-- Meal Image -->
+                        <Border Grid.Column="0" 
+                                Width="80" 
+                                Height="80" 
+                                CornerRadius="8"
+                                Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+                            <Image Source="{x:Bind Meal.ImageUrl, Mode=OneWay}" 
+                                   Stretch="UniformToFill"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Meal Details -->
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind Meal.Name, Mode=OneWay}" 
+                                     FontWeight="Bold" 
+                                     FontSize="18"
+                                     Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                            
+                            <TextBlock Text="{x:Bind Meal.Type, Mode=OneWay}" 
+                                     FontSize="14"
+                                     Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                     Margin="0,2,0,5"/>
+                            
+                            <TextBlock Text="{x:Bind Meal.Directions, Mode=OneWay}" 
+                                     FontSize="12"
+                                     Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                     TextWrapping="Wrap"
+                                     MaxLines="2"/>
+                        </StackPanel>
+
+                        <!-- Remove Button -->
+                        <Button Grid.Column="2" 
+                                Content="Remove" 
+                                Click="RemoveButton_Click" 
+                                Tag="{x:Bind MealID}"
+                                Style="{ThemeResource AccentButtonStyle}"
+                                VerticalAlignment="Center"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

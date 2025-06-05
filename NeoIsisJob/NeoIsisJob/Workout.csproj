@@ -50,6 +50,9 @@
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="images\grilled_chicken_salad.jpg" />
+    <Content Include="images\quinoa_veggie_bowl.jpg" />
+    <Content Include="images\oatmeal_banana_pancakes.jpg" />
   </ItemGroup>
 
   <ItemGroup>

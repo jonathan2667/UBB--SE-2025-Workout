@@ -28,7 +28,19 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                        <!-- Meal Image -->
+                        <Border Grid.Column="0" 
+                                Width="80" 
+                                Height="80" 
+                                CornerRadius="8"
+                                Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+                            <Image Source="{Binding ImageUrl}" 
+                                   Stretch="UniformToFill"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
                             <TextBlock Text="{Binding Name}" 
                                      FontSize="16" 
                                      FontWeight="SemiBold"
