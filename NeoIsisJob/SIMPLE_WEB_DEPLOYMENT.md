@@ -1,7 +1,7 @@
 # Simple Web Application Deployment Guide - Remote Desktop IIS
 
 ## Overview
-Deploy **Workout.Web** (MVC application) to IIS on remote desktop `172.30.241.79`. The web application includes all Core services and will connect directly to the database.
+Deploy **Workout.Web** (MVC application) to IIS on remote desktop `172.30.248.145`. The web application includes all Core services and will connect directly to the database.
 
 ## Current Configuration ✅
 - **Database**: `WIN-IVAPD6T4EJF\MSSQLSERVER01` 
@@ -94,7 +94,7 @@ Start-Process "http://localhost:8080"
 ### 5.2 External Test (from your development machine)
 Open browser and navigate to:
 ```
-http://172.30.241.79:8080
+http://172.30.248.145:8080
 ```
 
 ### 5.3 Test All Features
@@ -136,7 +136,7 @@ Add to `appsettings.json` temporarily:
 
 ## Your Application URLs
 
-- **Web Application**: `http://172.30.241.79:8080`
+- **Web Application**: `http://172.30.248.145:8080`
 - **From Remote Desktop**: `http://localhost:8080`
 
 ## Architecture Benefits
@@ -156,7 +156,7 @@ dotnet publish Workout.Web --configuration Release --output "publish\WebApp" --s
 New-NetFirewallRule -DisplayName "Workout Web App" -Direction Inbound -Protocol TCP -LocalPort 8080 -Action Allow
 
 # 3. Test External Access
-# Browse to: http://172.30.241.79:8080
+# Browse to: http://172.30.248.145:8080
 ```
 
 Your web application is now deployed and accessible externally! 🚀 

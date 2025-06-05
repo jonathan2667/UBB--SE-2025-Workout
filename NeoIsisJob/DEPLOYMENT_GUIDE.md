@@ -25,7 +25,7 @@ External Web Access ───────> Remote Desktop Web App ──> SQL Se
 - **.NET Version**: 8.0
 - **Deployment Type**: Self-contained
 - **Database**: SQL Server Express
-- **Remote Desktop IP**: `172.30.241.79`
+- **Remote Desktop IP**: `172.30.248.145`
 
 ## Step 1: Prepare Remote Desktop Environment
 
@@ -157,13 +157,13 @@ Start-Process "http://localhost:8080"
 
 ### 5.2 Test External Access
 From any external machine:
-- **Web Application**: `http://172.30.241.79:8080`
-- **API + Swagger**: `http://172.30.241.79:5261/swagger`
+- **Web Application**: `http://172.30.248.145:8080`
+- **API + Swagger**: `http://172.30.248.145:5261/swagger`
 
 ### 5.3 Test Desktop Application
 1. Build desktop app on development machine
 2. Run `NeoIsisJob.exe` 
-3. Verify it connects to `http://172.30.241.79:5261`
+3. Verify it connects to `http://172.30.248.145:5261`
 4. Test real-time data synchronization
 
 ## Step 6: Troubleshooting External Access
@@ -204,7 +204,7 @@ Invoke-RestMethod -Uri "http://localhost:5261/swagger"
 
 ✅ **Connection String**:
 ```
-Server=172.30.241.79\SQLEXPRESS;Database=Workout;Integrated Security=True;TrustServerCertificate=True
+Server=WIN-IVAPD6T4EJF\MSSQLSERVER01;Database=Workout;Integrated Security=True;TrustServerCertificate=True
 ```
 
 ✅ **Authentication**:
@@ -233,9 +233,9 @@ Your deployment correctly implements Neo-Isis architecture:
 ## Step 8: Final Verification Checklist
 
 - [ ] Remote desktop has IIS configured and running
-- [ ] Web app accessible at `http://172.30.241.79:8080`
+- [ ] Web app accessible at `http://172.30.248.145:8080`
 - [ ] API server running as Windows service
-- [ ] API accessible at `http://172.30.241.79:5261/swagger`
+- [ ] API accessible at `http://172.30.248.145:5261/swagger`
 - [ ] SQL Server Express accessible remotely
 - [ ] Desktop app connects from external machine
 - [ ] Real-time data sync between web and desktop
@@ -243,8 +243,8 @@ Your deployment correctly implements Neo-Isis architecture:
 
 ## Application URLs
 
-- **Web Application**: `http://172.30.241.79:8080`
-- **API + Swagger**: `http://172.30.241.79:5261/swagger`
+- **Web Application**: `http://172.30.248.145:8080`
+- **API + Swagger**: `http://172.30.248.145:5261/swagger`
 - **Desktop App**: Runs locally, connects to remote API
 
 ## Benefits of This Architecture

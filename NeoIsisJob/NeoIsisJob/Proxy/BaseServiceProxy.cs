@@ -22,7 +22,7 @@ namespace NeoIsisJob.Proxy
 
             // Read base URL (no trailing "/api")
             baseUrl = configuration?["ApiSettings:BaseUrl"]?.TrimEnd('/')
-                       ?? "http://localhost:5261";
+                       ?? "http://172.30.248.145:5261";
             Debug.WriteLine($"[BaseServiceProxy] Using base URL: {baseUrl}");
 
             // Point HttpClient at /api/
