@@ -3,7 +3,7 @@ namespace DesktopProject.Windows
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using NeoIsisJob.Views.Pages;
+    using NeoIsisJob.Views;
 
     public sealed partial class GroupsScreen : Page
     {
@@ -36,7 +36,7 @@ namespace DesktopProject.Windows
 
         private void UserClick(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(UserPage));
+            this.Frame.Navigate(typeof(LoginPage));
         }
 
         private void GroupsClick(object sender, RoutedEventArgs e)

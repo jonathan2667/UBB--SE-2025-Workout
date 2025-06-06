@@ -7,7 +7,7 @@ namespace DesktopProject.Components
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
     using NeoIsisJob.Proxy;
-    using NeoIsisJob.Views.Pages;
+    using NeoIsisJob.Views;
     using ServerLibraryProject.Interfaces;
     using Workout.Core.IServices;
     using Workout.Core.Models;
@@ -77,7 +77,7 @@ namespace DesktopProject.Components
         {
             if (this.navigationFrame != null)
             {
-                this.navigationFrame.Navigate(typeof(UserPage), new UserPageNavigationArgs(this.user));
+                this.navigationFrame.Navigate(typeof(LoginPage), new UserPageNavigationArgs(this.user));
             }
         }
 

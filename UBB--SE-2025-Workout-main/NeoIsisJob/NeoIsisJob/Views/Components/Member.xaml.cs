@@ -6,7 +6,7 @@ namespace DesktopProject.Components
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
-    using NeoIsisJob.Views.Pages;
+    using NeoIsisJob.Views;
     using Workout.Core.Models;
 
     public sealed partial class Member : UserControl
@@ -40,7 +40,7 @@ namespace DesktopProject.Components
 
         private void Member_Click(object sender, RoutedEventArgs e)
         {
-            this.navigationFrame.Navigate(typeof(UserPage), new UserPageNavigationArgs(this.member));
+            this.navigationFrame.Navigate(typeof(LoginPage), new UserPageNavigationArgs(this.member));
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)

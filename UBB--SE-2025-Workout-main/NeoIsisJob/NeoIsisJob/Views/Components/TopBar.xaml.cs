@@ -7,7 +7,6 @@ namespace DesktopProject.Components
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
     using NeoIsisJob.Views;
-    using NeoIsisJob.Views.Pages;
 
     public sealed partial class TopBar : UserControl
     {
@@ -68,7 +67,7 @@ namespace DesktopProject.Components
 
         private void UserClick(object sender, RoutedEventArgs e)
         {
-            frame.Navigate(typeof(UserPage));
+            frame.Navigate(typeof(LoginPage));
         }
 
         private void SeeUsersClick(object sender, RoutedEventArgs e)
