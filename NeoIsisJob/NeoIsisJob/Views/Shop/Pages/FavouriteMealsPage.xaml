@@ -9,23 +9,142 @@
     xmlns:components="using:NeoIsisJob.Views.Shop.Components"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <StackPanel>
-       
 
-        <StackPanel Orientation="Vertical" Height="610">
-            <TextBlock
-            Text="Favourite Meals"
-            FontSize="24"
-            FontWeight="Bold"
-            HorizontalAlignment="Left"
-            Margin="20,20,0,10"/>
-            <components:VerticalFavoriteMealItemListComponent 
-                x:Name="FavoriteMealListControl"
-                FavoriteMealItemClicked="FavoriteMealListControl_FavoriteMealItemClicked"
-                FavoriteMealItemRemoved="FavoriteMealListControl_FavoriteMealItemRemoved"
-                Margin="20,0,0,0"
-                Width="850"
-                Height="Auto"/>
-        </StackPanel>
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Professional Header Section -->
+        <Border Grid.Row="0" 
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="30,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title Section -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,20">
+                    <SymbolIcon Symbol="Favorite" Foreground="{ThemeResource SystemAccentColor}" Margin="0,0,15,0"/>
+                    <TextBlock Text="Favorite Meals" 
+                              FontSize="32" 
+                              FontWeight="Bold"
+                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Text="Your personalized nutrition collection" 
+                              FontSize="16" 
+                              FontWeight="Light"
+                              Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                              VerticalAlignment="Center"
+                              Margin="15,5,0,0"/>
+                </StackPanel>
+
+                <!-- Stats and Actions Bar -->
+                <Border Grid.Row="1" 
+                        Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+                        CornerRadius="12"
+                        Padding="20,15">
+                    <Grid>
+                        <!-- Stats Section -->
+                        <StackPanel Orientation="Horizontal" Spacing="30" VerticalAlignment="Center">
+                            <!-- Total Meals Stat -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Border Background="{ThemeResource SystemAccentColor}" 
+                                        CornerRadius="15" 
+                                        Width="30" 
+                                        Height="30">
+                                    <SymbolIcon Symbol="Emoji" Foreground="White"/>
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock Text="Total Meals" 
+                                              FontSize="12" 
+                                              Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="12" 
+                                              FontSize="16" 
+                                              FontWeight="SemiBold"
+                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Calories Stat -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Border Background="#FF4CAF50" 
+                                        CornerRadius="15" 
+                                        Width="30" 
+                                        Height="30">
+                                    <SymbolIcon Symbol="Home" Foreground="White"/>
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock Text="Avg Calories" 
+                                              FontSize="12" 
+                                              Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="425" 
+                                              FontSize="16" 
+                                              FontWeight="SemiBold"
+                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Meal Types Stat -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Border Background="#FFFF9800" 
+                                        CornerRadius="15" 
+                                        Width="30" 
+                                        Height="30">
+                                    <SymbolIcon Symbol="List" Foreground="White"/>
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock Text="Categories" 
+                                              FontSize="12" 
+                                              Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="5" 
+                                              FontSize="16" 
+                                              FontWeight="SemiBold"
+                                              Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Meals Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="30,20">
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="12"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    Padding="25">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Meals Header -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                        <SymbolIcon Symbol="List" Foreground="{ThemeResource SystemAccentColor}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Your Favorite Meals" 
+                                  FontSize="20" 
+                                  FontWeight="SemiBold"
+                                  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                    </StackPanel>
+
+                    <!-- Meals List -->
+                    <components:VerticalFavoriteMealItemListComponent Grid.Row="1"
+                                                                     x:Name="FavoriteMealListControl"
+                                                                     FavoriteMealItemClicked="FavoriteMealListControl_FavoriteMealItemClicked"
+                                                                     FavoriteMealItemRemoved="FavoriteMealListControl_FavoriteMealItemRemoved"/>
+                </Grid>
+            </Border>
+        </ScrollViewer>
+    </Grid>
 </Page> 

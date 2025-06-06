@@ -9,58 +9,109 @@
     xmlns:model="using:Workout.Core.Models"
     mc:Ignorable="d">
 
-    <StackPanel Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
         <ListView
             x:Name="ProductListView"
             ItemsSource="{x:Bind ProductList, Mode=OneWay}"
             SelectionMode="None"
             IsItemClickEnabled="True"
             ItemClick="ProductList_ItemClick"
-            Height="540"
-            Width="650"
-            Background="Transparent">
+            Background="Transparent"
+            ShowsScrollingPlaceholders="False">
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,0,0,15"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Style>
+            </ListView.ItemContainerStyle>
 
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="model:ProductModel">
-                    <Grid Padding="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="20"
+                            Margin="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Product Image -->
-                        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"
-                            Width="120" Height="120" Margin="0,0,10,0"
-                            Source="{x:Bind PhotoURL, Mode=OneWay}"
-                            Stretch="Uniform"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                            <!-- Product Image -->
+                            <Border Grid.Column="0" 
+                                    Width="100" 
+                                    Height="100" 
+                                    CornerRadius="12"
+                                    Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+                                    Margin="0,0,20,0">
+                                <Image Source="{x:Bind PhotoURL, Mode=OneWay}"
+                                       Stretch="UniformToFill"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                            </Border>
 
-                        <!-- Product Name -->
-                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
-                            <Run Text="Name: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                            <Run Text="{x:Bind Name, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                        </TextBlock>
+                            <!-- Product Details -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8">
+                                <!-- Product Name -->
+                                <TextBlock Text="{x:Bind Name, Mode=OneWay}" 
+                                          FontSize="18" 
+                                          FontWeight="SemiBold"
+                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                                          TextWrapping="Wrap"/>
 
-                        <!-- Product Color -->
-                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,5">
-                            <Run Text="Color: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-                            <Run Text="{x:Bind Color, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                        </TextBlock>
+                                <!-- Product Details Row -->
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <!-- Color -->
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <Ellipse Width="16" Height="16" Fill="{ThemeResource SystemAccentColor}"/>
+                                        <TextBlock Text="{x:Bind Color, Mode=OneWay}" 
+                                                  FontSize="14"
+                                                  Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    </StackPanel>
 
-                        <!-- Product Price -->
-                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
-                            <Run Text="Price: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemAccentColor}"/>
-                            <Run Text="{x:Bind Price, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemAccentColor}"/>
-                        </TextBlock>
-                    </Grid>
+                                    <!-- Category -->
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <SymbolIcon Symbol="Important" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                        <TextBlock Text="{x:Bind Category, Mode=OneWay}" 
+                                                  FontSize="14"
+                                                  Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Size if available -->
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <SymbolIcon Symbol="FullScreen" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{x:Bind Size, Mode=OneWay}" 
+                                              FontSize="14"
+                                              Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Price and Actions -->
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Spacing="10">
+                                <!-- Price -->
+                                <Border Background="{ThemeResource SystemAccentColor}"
+                                        CornerRadius="15"
+                                        Padding="12,6">
+                                    <TextBlock Text="{x:Bind Price, Mode=OneWay}" 
+                                              FontSize="16" 
+                                              FontWeight="Bold"
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"/>
+                                </Border>
+
+
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </StackPanel>
+    </ScrollViewer>
 </UserControl>

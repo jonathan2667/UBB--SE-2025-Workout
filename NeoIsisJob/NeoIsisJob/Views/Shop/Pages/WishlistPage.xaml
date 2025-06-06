@@ -10,19 +10,57 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     
-    <StackPanel Orientation="Vertical" Height="610">
-        <TextBlock
-        Text="Wishlist"
-        FontSize="24"
-        FontWeight="Bold"
-        HorizontalAlignment="Left"
-        Margin="20,20,0,10"/>
-        <component:VerticalWishlistItemListComponent 
-            x:Name="WishlistItemListControl"
-            WishlistItemClicked="VerticalWishlistItemListControl_WishlistItemClicked"
-            WishlistItemRemoved="VerticalWishlistItemListControl_WishlistItemRemoved"
-            Margin="20,0,0,0"
-            Width="850"
-            Height="Auto"/>
-    </StackPanel>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Professional Header Section -->
+        <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,24">
+            <TextBlock Text="My Wishlist" 
+                       Style="{ThemeResource TitleTextBlockStyle}"
+                       FontWeight="Bold"
+                       Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            
+            <TextBlock Text="Your saved items and favorites" 
+                       Style="{ThemeResource BodyTextBlockStyle}"
+                       Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                       Opacity="0.8"/>
+        </StackPanel>
+
+        <!-- Stats/Info Bar -->
+        <Border Grid.Row="1" 
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16"
+                Margin="0,0,0,16">
+            <Grid>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SymbolIcon Symbol="Favorite" 
+                                Foreground="{ThemeResource SystemAccentColor}"/>
+                    <TextBlock Text="Saved Items" 
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                </StackPanel>
+
+
+            </Grid>
+        </Border>
+
+        <!-- Wishlist Items -->
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <component:VerticalWishlistItemListComponent 
+                x:Name="WishlistItemListControl"
+                WishlistItemClicked="VerticalWishlistItemListControl_WishlistItemClicked"
+                WishlistItemRemoved="VerticalWishlistItemListControl_WishlistItemRemoved"
+                HorizontalAlignment="Stretch"/>
+        </ScrollViewer>
+    </Grid>
 </Page>

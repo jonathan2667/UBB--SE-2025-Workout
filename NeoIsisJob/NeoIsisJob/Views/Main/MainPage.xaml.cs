@@ -252,67 +252,85 @@ namespace NeoIsisJob.Views
         {
             // Clear the content frame and show the main page content
             contentFrame.Content = null;
+            contentFrame.Visibility = Visibility.Collapsed;
             mainPageContent.Visibility = Visibility.Visible;
         }
 
         public void GoToWorkoutPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(WorkoutPage));
         }
 
         public void GoToCalendarPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(CalendarPage));
         }
 
         public void GoToClassPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(ClassPage));
         }
 
         public void GoToRankingPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(RankingPage));
         }
 
         public void GoToShopHomePage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.MainPage));
         }
 
         public void GoToWishlistPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(WishlistPage));
         }
 
         public void GoToCartPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(CartPage));
         }
 
         public void GoToNutritionPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(NutritionPage));
         }
 
         public void GoToFavouriteMealsPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(NeoIsisJob.Views.Shop.Pages.FavouriteMealsPage));
         }
 
         public void GoToStatisticsPage_Tap(object sender, RoutedEventArgs e)
         {
             mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
             contentFrame.Navigate(typeof(StatisticsPage));
+        }
+
+        public void GoToLoginPage_Tap(object sender, RoutedEventArgs e)
+        {
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Visibility = Visibility.Visible;
+            contentFrame.Navigate(typeof(LoginPage));
         }
     }
 }

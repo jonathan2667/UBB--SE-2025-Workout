@@ -11,61 +11,149 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <!-- Define 2 rows: SearchBar on top, main content below -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Search bar row -->
             <RowDefinition Height="*"/>
-            <!-- Main content -->
         </Grid.RowDefinitions>
 
-        <!-- SEARCH BAR -->
-        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,10,0,10">
-            <AutoSuggestBox x:Name="SearchBoxControl"
-                        PlaceholderText="Cauta produs..."
-                        Width="300"
-                        QueryIcon="Find"
-                        TextChanged="SearchBox_TextChanged"/>
-        </StackPanel>
+        <!-- Professional Header Section -->
+        <Border Grid.Row="0" 
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="30,20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-        <component:AddProductButton HorizontalAlignment="Right" Margin="0,0,15,0"/>
+                        <!-- Title and Actions -->
+                        <Grid Grid.Row="0" Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-        <!-- MAIN CONTENT AREA -->
-        <Grid Grid.Row="1">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <SymbolIcon Symbol="Shop" Foreground="{ThemeResource SystemAccentColor}" Margin="0,0,15,0"/>
+                                <TextBlock Text="Shop" 
+                                          FontSize="32" 
+                                          FontWeight="Bold"
+                                          Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock Text="Discover premium fitness products" 
+                                          FontSize="16" 
+                                          FontWeight="Light"
+                                          Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                          VerticalAlignment="Center"
+                                          Margin="15,5,0,0"/>
+                            </StackPanel>
 
-            <!-- LEFT SIDE -->
-            <StackPanel Orientation="Horizontal">
-                <StackPanel x:Name="FilterOptionsPanel"
-                        Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
-                        BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Margin="10"
-                        Padding="10"
-                        Width="250">
+                            <component:AddProductButton Grid.Column="1" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <!-- Search and Filter Bar -->
+                        <Border Grid.Row="1" 
+                                Background="{ThemeResource SystemControlBackgroundAltHighBrush}"
+                                CornerRadius="25"
+                                Padding="20,12"
+                                HorizontalAlignment="Center"
+                                MinWidth="400">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <SymbolIcon Symbol="Find" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" Margin="0,0,10,0"/>
+                                <AutoSuggestBox x:Name="SearchBoxControl"
+                                               PlaceholderText="Search for products..."
+                                               Width="300"
+                                               BorderThickness="0"
+                                               Background="Transparent"
+                                               TextChanged="SearchBox_TextChanged"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="30,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Enhanced Filter Panel -->
+            <Border Grid.Column="0" 
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="20"
+                    Width="280"
+                    Margin="0,0,20,0">
+                <StackPanel>
+                    <!-- Filter Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <SymbolIcon Symbol="Filter" Foreground="{ThemeResource SystemAccentColor}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Filters" 
+                                  FontSize="20" 
+                                  FontWeight="SemiBold"
+                                  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                    </StackPanel>
+
+                    <!-- Filter Options -->
                     <component:CategoryFilter x:Name="CategoryFilterControl"
-                                          Margin="0,0,0,10"
-                                          CategoryChanged="CategorySelector_SelectionChanged"/>
+                                             Margin="0,0,0,15"
+                                             CategoryChanged="CategorySelector_SelectionChanged"/>
+                    
                     <component:ColorFilter x:Name="ColorFilterControl"
-                                       Margin="0,0,0,10"
-                                       ColorChanged="ColorSelector_SelectionChanged"/>
+                                          Margin="0,0,0,15"
+                                          ColorChanged="ColorSelector_SelectionChanged"/>
+                    
                     <component:SizeFilter x:Name="SizeFilterControl"
-                                      Margin="0,0,0,10"
-                                      SizeFilterChanged="SizeSelector_SelectionChanged"/>
+                                         Margin="0,0,0,20"
+                                         SizeFilterChanged="SizeSelector_SelectionChanged"/>
+
+                    <!-- Reset Button -->
                     <Button x:Name="ResetFiltersButton"
-                        Content="Reset Filters"
-                        Click="ResetFiltersButton_Click"
-                        Style="{ThemeResource AccentButtonStyle}"
-                        Margin="0,0,0,10"/>
+                           Click="ResetFiltersButton_Click"
+                           Style="{ThemeResource AccentButtonStyle}"
+                           HorizontalAlignment="Stretch"
+                           CornerRadius="8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <SymbolIcon Symbol="Refresh" Margin="0,0,8,0"/>
+                            <TextBlock Text="Reset Filters"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
+            </Border>
 
-                <component:VerticalProductListComponent x:Name="ProductListViewControl"
-                                                    ProductClicked="VerticalProductListControl_ProductClicked"
-                                                    Margin="10"
-                                                    Padding="10"/>
-            </StackPanel>
+            <!-- Product List Area -->
+            <Border Grid.Column="1" 
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="25">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
+                    <!-- Products Header -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                        <SymbolIcon Symbol="List" Foreground="{ThemeResource SystemAccentColor}" Margin="0,0,10,0"/>
+                        <TextBlock Text="Products" 
+                                  FontSize="20" 
+                                  FontWeight="SemiBold"
+                                  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                    </StackPanel>
 
+                    <!-- Product List -->
+                    <component:VerticalProductListComponent Grid.Row="1"
+                                                           x:Name="ProductListViewControl"
+                                                           ProductClicked="VerticalProductListControl_ProductClicked"/>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Page>

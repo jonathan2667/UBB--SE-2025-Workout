@@ -36,15 +36,49 @@
             <GridView x:Name="ClassesGrid" ItemsSource="{Binding Classes}" Margin="10" IsItemClickEnabled="True" >
                 <GridView.ItemTemplate >
                     <DataTemplate>
-                        <Border Width="342" Height="200" Background="White" Padding="10" CornerRadius="10">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Margin="0,5,0,0"/>
-                                <TextBlock Text="{Binding TrainerFullName}" FontSize="14" Foreground="Gray"/>
-
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Register" Command="{Binding DataContext.OpenRegisterPopupCommand, ElementName=ClassesGrid}" CommandParameter="{Binding}" 
-                        Margin="0,10,0,0"/>
+                        <Border Width="360" Height="260" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                BorderThickness="1" 
+                                Padding="16" 
+                                CornerRadius="8">
+                            <StackPanel Spacing="8">
+                                <!-- Class Name -->
+                                <TextBlock Text="{Binding Name}" 
+                                           FontSize="18" 
+                                           FontWeight="Bold" 
+                                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                
+                                <!-- Class Type -->
+                                <TextBlock Text="{Binding ClassType.Name}" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource SystemAccentColor}"/>
+                                
+                                <!-- Description -->
+                                <TextBlock Text="{Binding Description}" 
+                                           FontSize="13" 
+                                           TextWrapping="Wrap"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                           MaxLines="3"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,8,0,12"/>
+                                
+                                <!-- Trainer -->
+                                <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+                                    <SymbolIcon Symbol="Contact" 
+                                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <TextBlock Text="{Binding TrainerFullName}" 
+                                               FontSize="13" 
+                                               Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
                                 </StackPanel>
+
+                                <!-- Register Button -->
+                                <Button Content="Register" 
+                                        Command="{Binding DataContext.OpenRegisterPopupCommand, ElementName=ClassesGrid}" 
+                                        CommandParameter="{Binding}" 
+                                        Style="{ThemeResource AccentButtonStyle}"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,8,0,0"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

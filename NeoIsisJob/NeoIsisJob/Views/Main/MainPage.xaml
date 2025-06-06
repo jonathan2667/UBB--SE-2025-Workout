@@ -13,18 +13,22 @@
         <!-- Top Navigation with proper content area -->
         <NavigationView x:Name="nvSample" PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Main" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
+                <NavigationViewItem Content="Home" Tag="MainPage" Tapped="GoToMainPage_Tap"/>
+                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
                 <NavigationViewItem Content="Calendar" Tag="CalendarPage" Tapped="GoToCalendarPage_Tap"/>
                 <NavigationViewItem Content="Workouts" Tag="WorkoutPage" Tapped="GoToWorkoutPage_Tap"/>
-                <NavigationViewItem Content="Classes" Tag="ClassPage" Tapped="GoToClassPage_Tap"/>
+                <NavigationViewItem Content="Meals" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
+                <NavigationViewItem Content="My Favorites" Tag="FavouriteMealsPage" Tapped="GoToFavouriteMealsPage_Tap"/>
+                <NavigationViewItem Content="Statistics" Tag="StatisticsPage" Tapped="GoToStatisticsPage_Tap"/>
                 <NavigationViewItem Content="Rankings" Tag="RankingPage" Tapped="GoToRankingPage_Tap"/>
                 <NavigationViewItem Content="Shop" Tag="ShopHomePage" Tapped="GoToShopHomePage_Tap"/>
-                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
                 <NavigationViewItem Content="Cart" Tag="CartPage" Tapped="GoToCartPage_Tap"/>
-                <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
-                <NavigationViewItem Content="Statistics" Tag="StatisticsPage" Tapped="GoToStatisticsPage_Tap"/>
-                <NavigationViewItem Content="Favourite Meals" Tag="FavouriteMealsPage" Tapped="GoToFavouriteMealsPage_Tap"/>
+                <NavigationViewItem Content="Wishlist" Tag="WishlistPage" Tapped="GoToWishlistPage_Tap"/>
             </NavigationView.MenuItems>
+            
+            <NavigationView.PaneFooter>
+                <NavigationViewItem Content="Login" Tag="LoginPage" Tapped="GoToLoginPage_Tap" HorizontalAlignment="Right"/>
+            </NavigationView.PaneFooter>
             
             <!-- Content area that shows either the frame content or main page content -->
             <Grid>

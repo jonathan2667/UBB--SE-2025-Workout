@@ -9,6 +9,10 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <!-- The StringToVisibilityConverter is already defined globally in App.xaml -->
+    </Page.Resources>
+
     <Grid x:Name="RootGrid">
         <!-- Main Content -->
         <StackPanel Margin="10,10,10,10" Spacing="10">
@@ -40,14 +44,43 @@
             <GridView x:Name="WorkoutGrid" ItemsSource="{Binding Workouts}" Margin="10" IsItemClickEnabled="True" ItemClick="GoToSelectedWorkoutPage_Click">
                 <GridView.ItemTemplate >
                     <DataTemplate>
-                        <Border Width="342" Height="200" Background="White" Padding="10" CornerRadius="10">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Margin="0,5,0,0"/>
-                                <StackPanel Orientation="Horizontal">
+                        <Border Width="360" Height="220" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                BorderThickness="1" 
+                                Padding="16" 
+                                CornerRadius="8">
+                            <StackPanel Spacing="8">
+                                <!-- Workout Name -->
+                                <TextBlock Text="{Binding Name}" 
+                                           FontSize="18" 
+                                           FontWeight="Bold" 
+                                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+                                
+                                <!-- Workout Type (if available) -->
+                                <TextBlock Text="{Binding WorkoutType.Name}" 
+                                           FontSize="14" 
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource SystemAccentColor}"
+                                           Visibility="{Binding WorkoutType.Name, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                
+                                <!-- Description -->
+                                <TextBlock Text="{Binding Description}" 
+                                           FontSize="13" 
+                                           TextWrapping="Wrap"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                           MaxLines="3"
+                                           TextTrimming="CharacterEllipsis"
+                                           Margin="0,8,0,12"/>
+                                
+                                <!-- Action Buttons -->
+                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
                                     <Button Content="Delete" 
                                             Command="{Binding ElementName=This, Path=DataContext.DeleteWorkoutCommand}"
-                                            CommandParameter="{Binding WID}"/>           
-                                    <Button Content="Edit" Click="EditWorkoutButton_Click"/>
+                                            CommandParameter="{Binding WID}"
+                                            Style="{ThemeResource DefaultButtonStyle}"/>           
+                                    <Button Content="Edit" 
+                                            Click="EditWorkoutButton_Click"
+                                            Style="{ThemeResource AccentButtonStyle}"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

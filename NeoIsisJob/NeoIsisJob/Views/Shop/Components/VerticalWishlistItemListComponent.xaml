@@ -8,67 +8,98 @@
     xmlns:model="using:Workout.Core.Models"
     mc:Ignorable="d">
 
-    <StackPanel Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+    <StackPanel Background="Transparent">
         <ListView
              x:Name="ProductListView"
              ItemsSource="{x:Bind WishlistItemList, Mode=OneWay}"
              SelectionMode="None"
              IsItemClickEnabled="True"
              ItemClick="ProductList_ItemClick"
-             Height="540"
-             Width="700"
-             Background="Transparent">
+             Background="Transparent"
+             HorizontalAlignment="Stretch">
 
             <ListView.ItemTemplate>
-                <!-- Inside ListView.ItemTemplate -->
                 <DataTemplate x:DataType="model:WishlistItemModel">
-                    <Grid Padding="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <!-- Professional Card Layout -->
+                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="20"
+                            Margin="0,0,0,16">
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Product Image -->
-                        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"
-                        Width="120" Height="120" Margin="0,0,10,0"
-                        Source="{x:Bind Product.PhotoURL, Mode=OneWay}"
-                        Stretch="Uniform"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                            <!-- Product Image with Professional Frame -->
+                            <Border Grid.Column="0" 
+                                    Background="{ThemeResource SystemFillColorSolidNeutralBackgroundBrush}"
+                                    CornerRadius="8"
+                                    Width="100" 
+                                    Height="100" 
+                                    Margin="0,0,20,0">
+                                <Image Source="{x:Bind Product.PhotoURL, Mode=OneWay}"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                            </Border>
 
-                        <!-- Product Name -->
-                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
-                         <Run Text="Name: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                         <Run Text="{x:Bind Product.Name, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                        </TextBlock>
+                            <!-- Product Information -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="8">
+                                
+                                <!-- Product Name -->
+                                <TextBlock Text="{x:Bind Product.Name, Mode=OneWay}" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
 
-                        <!-- Product Color -->
-                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,5">
-                         <Run Text="Color: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
-                         <Run Text="{x:Bind Product.Color, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
-                        </TextBlock>
+                                <!-- Product Details -->
+                                <StackPanel Orientation="Horizontal" Spacing="16">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <SymbolIcon Symbol="Emoji" 
+                                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                        <TextBlock Text="{x:Bind Product.Color, Mode=OneWay}" 
+                                                   FontSize="14"
+                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <SymbolIcon Symbol="Important" 
+                                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                        <TextBlock Text="{x:Bind Product.Size, Mode=OneWay}" 
+                                                   FontSize="14"
+                                                   Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
 
-                        <!-- Product Price -->
-                        <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,5">
-                         <Run Text="Price: " FontWeight="Bold" FontSize="16" Foreground="{ThemeResource SystemAccentColor}"/>
-                         <Run Text="{x:Bind Product.Price, Mode=OneWay}" FontSize="16" Foreground="{ThemeResource SystemAccentColor}"/>
-                        </TextBlock>
+                                <!-- Price -->
+                                <TextBlock FontSize="20" 
+                                           FontWeight="Bold"
+                                           Foreground="{ThemeResource SystemAccentColor}">
+                                    <Run Text="$"/>
+                                    <Run Text="{x:Bind Product.Price, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
 
-                        <!-- Remove Button -->
-                        <Button Grid.RowSpan="3" Grid.Column="2"
-                         Content="Remove"
-                         Tag="{x:Bind ID}"
-                         Click="RemoveButton_Click"
-                         HorizontalAlignment="Right"
-                         Width="100"
-                         Margin="0,5,0,0"/>
-                    </Grid>
+                            <!-- Action Buttons -->
+                            <Button Grid.Column="2" 
+                                    VerticalAlignment="Center"
+                                    Style="{ThemeResource DefaultButtonStyle}"
+                                    Tag="{x:Bind ID}"
+                                    Click="RemoveButton_Click"
+                                    ToolTipService.ToolTip="Remove from wishlist"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Padding="8">
+                                <SymbolIcon Symbol="Delete" 
+                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"/>
+                            </Button>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
