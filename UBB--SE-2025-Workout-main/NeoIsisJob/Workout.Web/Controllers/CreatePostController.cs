@@ -73,7 +73,7 @@ namespace ServerMVCProject.Controllers
             {
                 postService.AddPost(newPost.Title, newPost.Content, newPost.UserId, newPost.GroupId, newPost.Visibility, newPost.Tag);
                 ViewBag.Message = "Post created successfully!";
-                return View(model);
+                return RedirectToAction("Index", "ViewPosts");
             }
             catch (Exception ex)
             {
