@@ -1,7 +1,8 @@
-{
-  "ExpandedNodes": [
-    ""
-  ],
-  "SelectedNode": "\\NeoIsisJob.sln (UBB--SE-2025-Workout-main\\NeoIsisJob\\NeoIsisJob.sln)",
-  "PreviewInSolutionExplorer": false
-}
+"ExpandedNodes": [
+    "",
+    "\\NeoIsisJob",
+    "\\NeoIsisJob\\Workout.Core",
+    "\\NeoIsisJob\\Workout.Core\\Data"
+],
+"SelectedNode": "\\NeoIsisJob.sln (UBB--SE-2025-Workout-main\\NeoIsisJob\\NeoIsisJob.sln)",
+"PreviewInSolutionExplorer": false

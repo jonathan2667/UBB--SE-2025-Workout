@@ -1,0 +1,36 @@
+@model Workout.Core.Models.UserClassModel
+
+@{
+    ViewData["Title"] = "User Class Details";
+}
+
+<h1>User Class Details</h1>
+
+<div>
+    <h4>User Class Registration</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            User ID
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UID)
+        </dd>
+        <dt class="col-sm-2">
+            Class ID
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CID)
+        </dd>
+        <dt class="col-sm-2">
+            Date
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-userId="@Model.UID" asp-route-classId="@Model.CID" asp-route-date="@Model.Date" class="btn btn-warning">Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div> 

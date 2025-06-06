@@ -1,0 +1,38 @@
+@model Workout.Core.Models.UserWorkoutModel
+
+@{
+    ViewData["Title"] = "Add Workout";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Add Workout for @Model.Date.ToString("MMMM d, yyyy")</h2>
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <input type="hidden" asp-for="UID" value="@Model.UID" />
+        <input type="hidden" asp-for="Date" value="@Model.Date.ToString("yyyy-MM-dd")" />
+        
+        <div class="form-group mb-3">
+            <label asp-for="WID" class="control-label">Workout</label>
+            <select asp-for="WID" class="form-control" asp-items="ViewBag.Workouts"></select>
+            <span asp-validation-for="WID" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group mb-3">
+            <div class="form-check">
+                <input class="form-check-input" asp-for="Completed" />
+                <label class="form-check-label" asp-for="Completed">Mark as Completed</label>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Add Workout</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
