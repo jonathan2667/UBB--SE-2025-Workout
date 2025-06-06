@@ -38,12 +38,10 @@ namespace Workout.Web.Controllers
             {
                 if (user.Username != null && user.Password != null)
                 {
-                    long result = this._userService.AddUserAsync(user.Username, user.Password, "").Result;
+                    long result = this._userService.AddUserAsync(user.Username, string.Empty, user.Password).Result;
 
                     this.HttpContext.Session.SetString("UserId", result.ToString());
 
-                    // at this point, the register is successful
-                    // here you redirect to Body Metrics page (for registering new user)
                     return this.RedirectToAction("Index", "Home");
                 }
                 else
