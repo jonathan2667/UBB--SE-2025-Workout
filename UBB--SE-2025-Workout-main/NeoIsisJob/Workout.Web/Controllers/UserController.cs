@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using ServerMVCProject.Models;
 using Workout.Core.IServices;
@@ -43,7 +44,7 @@ namespace Workout.Web.Controllers
 
                     // at this point, the register is successful
                     // here you redirect to Body Metrics page (for registering new user)
-                    return this.RedirectToAction("Index", "ViewPosts");
+                    return this.RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -94,7 +95,7 @@ namespace Workout.Web.Controllers
 
                     // at this point, the register is successful
                     // here you redirect to Main page (Dashboard)
-                    return this.RedirectToAction("Index", "ViewPosts");
+                    return this.RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -111,6 +112,15 @@ namespace Workout.Web.Controllers
 
                 return this.View("Error", errorModel);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] // optional but recommended
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(); // log out user
+            HttpContext.Session.Clear();      // clear session
+            return RedirectToAction("Index", "Login");
         }
 
         [HttpGet("Follow")]
