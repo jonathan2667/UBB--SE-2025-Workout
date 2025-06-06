@@ -1,11 +1,9 @@
 namespace DesktopProject.Windows
 {
-    using DesktopProject.Pages;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
-    using NeoIsisJob;
+    using NeoIsisJob.Views.Pages;
 
     public sealed partial class GroupsScreen : Page
     {
@@ -19,7 +17,6 @@ namespace DesktopProject.Windows
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var controller = App.Services.GetService<AppController>();
             TopBar.SetFrame(this.Frame);
             TopBar.SetGroups();
             GroupsDrawer.NavigationFrame = this.Frame;

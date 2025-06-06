@@ -1,15 +1,14 @@
 namespace DesktopProject.Components
 {
     using System.Collections.Generic;
-    using DesktopProject.Pages;
     using DesktopProject.Proxies;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
     using NeoIsisJob.Proxy;
+    using NeoIsisJob.Views.Pages;
     using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
     using Workout.Core.IServices;
     using Workout.Core.Models;
 
@@ -19,8 +18,6 @@ namespace DesktopProject.Components
     public sealed partial class Follower : UserControl
     {
         private readonly UserModel user;
-
-        private readonly AppController controller;
 
         private readonly Frame navigationFrame;
 
@@ -49,7 +46,6 @@ namespace DesktopProject.Components
             this.postService = App.Services.GetService<IPostService>();
 
             this.user = user;
-            this.controller = App.Services.GetService<AppController>();
             this.navigationFrame = frame ?? Window.Current.Content as Frame; // Fallback to app-level Frame if not provided
             this.Name.Text = username;
             this.Button.Content = this.IsFollowed() ? "Unfollow" : "Follow";
@@ -62,7 +58,7 @@ namespace DesktopProject.Components
         /// <returns>True if the user is followed; otherwise, false.</returns>
         private bool IsFollowed()
         {
-            List<UserModel> following = this.userServiceProxy.GetUserFollowing(this.controller.CurrentUser.ID);
+            List<UserModel> following = this.userServiceProxy.GetUserFollowing(AppController.CurrentUser.ID);
             foreach (UserModel user in following)
             {
                 if (user.ID == this.user.ID)
@@ -81,7 +77,7 @@ namespace DesktopProject.Components
         {
             if (this.navigationFrame != null)
             {
-                this.navigationFrame.Navigate(typeof(UserPage), new UserPageNavigationArgs(this.controller, this.user));
+                this.navigationFrame.Navigate(typeof(UserPage), new UserPageNavigationArgs(this.user));
             }
         }
 
@@ -93,11 +89,11 @@ namespace DesktopProject.Components
             this.Button.Content = this.Button.Content.ToString() == "Follow" ? "Unfollow" : "Follow";
             if (!this.IsFollowed())
             {
-                this.userServiceProxy.FollowUserById(this.controller.CurrentUser.ID, this.user.ID);
+                this.userServiceProxy.FollowUserById(AppController.CurrentUser.ID, this.user.ID);
             }
             else
             {
-                this.userServiceProxy.UnfollowUserById(controller.CurrentUser.ID, user.ID);
+                this.userServiceProxy.UnfollowUserById(AppController.CurrentUser.ID, user.ID);
             }
         }
     }
@@ -110,7 +106,6 @@ namespace DesktopProject.Components
         /// <summary>
         /// Gets the application controller.
         /// </summary>
-        public AppController Controller { get; }
 
         /// <summary>
         /// Gets the selected user.
@@ -122,9 +117,8 @@ namespace DesktopProject.Components
         /// </summary>
         /// <param name="controller">The application controller.</param>
         /// <param name="selectedUser">The selected user.</param>
-        public UserPageNavigationArgs(AppController controller, UserModel selectedUser)
+        public UserPageNavigationArgs(UserModel selectedUser)
         {
-            Controller = controller;
             SelectedUser = selectedUser;
         }
     }

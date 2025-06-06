@@ -2,7 +2,6 @@ namespace DesktopProject.Components
 {
     using DesktopProject.Proxies;
     using DesktopProject.ViewModels;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
@@ -31,15 +30,14 @@ namespace DesktopProject.Components
 
         private void LoadPosts()
         {
-            var controller = App.Services.GetService<AppController>();
             int userId;
-            if (controller.CurrentUser == null)
+            if (AppController.CurrentUser == null)
             {
                 userId = -1;
             }
             else
             {
-                userId = controller.CurrentUser.ID;
+                userId = AppController.CurrentUser.ID;
             }
 
             this.postViewModel.PopulatePostsHomeFeed(userId);

@@ -3,9 +3,9 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using DesktopProject.Components;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
+    using Workout.Core.Enums;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     public class PostViewModel
     {

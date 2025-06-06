@@ -4,10 +4,8 @@
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Json;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
-    using ServerLibraryProject.Interfaces;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     public class ReactionServiceProxy : IReactionService
     {
@@ -16,13 +14,13 @@
         public ReactionServiceProxy()
         {
             this.httpClient = new HttpClient();
-            this.httpClient.BaseAddress = new Uri("https://localhost:7106/api/reactions/");
+            this.httpClient.BaseAddress = new Uri("http://localhost:5261/api/reactions/");
         }
 
         public List<Reaction> GetReactionsByPostId(long postId)
         {
             var client = new HttpClient();
-            var response = client.GetAsync($"https://localhost:7106/api/posts/{postId}/reactions").Result!;
+            var response = client.GetAsync($"http://localhost:5261/api/posts/{postId}/reactions").Result!;
 
             if (response.IsSuccessStatusCode)
             {

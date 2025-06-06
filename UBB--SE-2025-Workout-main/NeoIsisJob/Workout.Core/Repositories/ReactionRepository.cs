@@ -2,10 +2,10 @@ namespace ServerLibraryProject.Repositories
 {
     using System.Collections.Generic;
     using System.Linq;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
     using Workout.Core.Data;
+    using Workout.Core.Enums;
+    using Workout.Core.IRepositories;
+    using Workout.Core.Models;
 
 
     /// <summary>

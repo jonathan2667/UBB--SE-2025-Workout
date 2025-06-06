@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using NeoIsisJob.Views;
+using NeoIsisJob.Views.Pages;
 
 namespace NeoIsisJob
 {
@@ -18,7 +18,7 @@ namespace NeoIsisJob
             AppMainFrame = this.MainFrame;
 
             // go directly to the main page
-            MainFrame.Navigate(typeof(MainPage));
+            MainFrame.Navigate(typeof(UserPage));
         }
     }
 }

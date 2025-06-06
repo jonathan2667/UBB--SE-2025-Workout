@@ -1,8 +1,9 @@
 ﻿namespace ServerAPIProject.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     [ApiController]
     [Route("api/posts")]

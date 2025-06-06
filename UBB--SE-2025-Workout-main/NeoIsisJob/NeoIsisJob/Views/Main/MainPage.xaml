@@ -24,6 +24,7 @@
                 <NavigationViewItem Content="Nutrition" Tag="NutritionPage" Tapped="GoToNutritionPage_Tap"/>
                 <NavigationViewItem Content="Statistics" Tag="StatisticsPage" Tapped="GoToStatisticsPage_Tap"/>
                 <NavigationViewItem Content="Favourite Meals" Tag="FavouriteMealsPage" Tapped="GoToFavouriteMealsPage_Tap"/>
+                <NavigationViewItem Content="Go To SocialApp" Tag="FavouriteMealsPage" Tapped="GoToSocialApp_Tap"/>
             </NavigationView.MenuItems>
             
             <!-- Content area that shows either the frame content or main page content -->

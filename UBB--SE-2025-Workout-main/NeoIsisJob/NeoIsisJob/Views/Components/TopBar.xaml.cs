@@ -3,10 +3,11 @@ namespace DesktopProject.Components
     using DesktopProject;
     using DesktopProject.Pages;
     using DesktopProject.Windows;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
+    using NeoIsisJob.Views;
+    using NeoIsisJob.Views.Pages;
 
     public sealed partial class TopBar : UserControl
     {
@@ -26,8 +27,7 @@ namespace DesktopProject.Components
 
         private async void SetPhoto()
         {
-            var controller = App.Services.GetService<AppController>();
-            if (controller?.CurrentUser != null && !string.IsNullOrEmpty(string.Empty))
+            if (AppController.CurrentUser != null && !string.IsNullOrEmpty(string.Empty))
             {
                 //UserImage.Source = await AppController.DecodeBase64ToImageAsync(controller.CurrentUser.Image);
             }
@@ -40,6 +40,12 @@ namespace DesktopProject.Components
             GroupsButton.Click += GroupsClick;
             CreatePostButton.Click += CreatePostButton_Click;
             SeeUsersButton.Click += SeeUsersClick;
+            GoNeo.Click += GoToNeo;
+        }
+
+        private void GoToNeo(object sender, RoutedEventArgs e)
+        {
+            frame.Navigate(typeof(MainPage));
         }
 
         private void HomeClick(object sender, RoutedEventArgs e)
@@ -63,12 +69,11 @@ namespace DesktopProject.Components
         private void UserClick(object sender, RoutedEventArgs e)
         {
             frame.Navigate(typeof(UserPage));
-
         }
+
         private void SeeUsersClick(object sender, RoutedEventArgs e)
         {
             frame.Navigate(typeof(UserFollow));
-
         }
 
         private void CreatePostButton_Click(object sender, RoutedEventArgs e)

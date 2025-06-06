@@ -1,12 +1,11 @@
 using System;
+using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Net;
-using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 namespace NeoIsisJob.Proxy
 {
@@ -22,7 +21,7 @@ namespace NeoIsisJob.Proxy
 
             // Read base URL (no trailing "/api")
             baseUrl = configuration?["ApiSettings:BaseUrl"]?.TrimEnd('/')
-                       ?? "http://localhost:7106";
+                       ?? "http://localhost:5261";
             Debug.WriteLine($"[BaseServiceProxy] Using base URL: {baseUrl}");
 
             // Point HttpClient at /api/
@@ -58,7 +57,7 @@ namespace NeoIsisJob.Proxy
             }
 
             // Deserialize the non-empty JSON
-            return JsonSerializer.Deserialize<T>(json, jsonOptions) !;
+            return JsonSerializer.Deserialize<T>(json, jsonOptions)!;
         }
         protected async Task<T> PostAsync<T>(string url, object data)
         {

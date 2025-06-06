@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DesktopProject;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-using Workout.Core.Models;
 using NeoIsisJob.Proxy;
-using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Nutrition;
+using NeoIsisJob.Views.Shop.Pages;
 using NeoIsisJob.Views.Statistics;
+using Workout.Core.Models;
 
 namespace NeoIsisJob.Views
 {
@@ -265,6 +265,13 @@ namespace NeoIsisJob.Views
         {
             mainPageContent.Visibility = Visibility.Collapsed;
             contentFrame.Navigate(typeof(CalendarPage));
+        }
+
+        public void GoToSocialApp_Tap(object sender, RoutedEventArgs e)
+        {
+            nvSample.MenuItems.Clear();
+            mainPageContent.Visibility = Visibility.Collapsed;
+            contentFrame.Navigate(typeof(HomeScreen));
         }
 
         public void GoToClassPage_Tap(object sender, RoutedEventArgs e)

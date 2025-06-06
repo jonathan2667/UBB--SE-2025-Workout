@@ -4,17 +4,12 @@
 namespace DesktopProject.Pages
 {
     using System;
-    using System.Linq;
     using DesktopProject.Proxies;
     using DesktopProject.Windows;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using Microsoft.UI.Xaml.Media;
     using Microsoft.UI.Xaml.Navigation;
-    using NeoIsisJob;
     using NeoIsisJob.Proxy;
-    using ServerLibraryProject.Models;
     using Workout.Core.IServices;
     using Workout.Core.Models; // added this for groups
 
@@ -23,7 +18,6 @@ namespace DesktopProject.Pages
     /// </summary>
     public sealed partial class CreateGroup : Page
     {
-        private AppController controller;
         private IGroupService groupService;
         //private IUserService userService;
         private UserServiceProxy userService;
@@ -47,7 +41,6 @@ namespace DesktopProject.Pages
 
             groupService = new GroupServiceProxy();
             userService = new UserServiceProxy();
-            controller = App.Services.GetService<AppController>();
         }
 
         /// <summary>
@@ -113,7 +106,7 @@ namespace DesktopProject.Pages
                 };
 
                 groupService.AddGroup(newGroup.Name, newGroup.Description ?? "");
-                Frame.Navigate(typeof(GroupsScreen), controller);
+                Frame.Navigate(typeof(GroupsScreen));
             }
             catch (Exception ex)
             {

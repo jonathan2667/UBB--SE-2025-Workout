@@ -1,9 +1,9 @@
 ﻿namespace ServerMVCProject.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using ServerLibraryProject.Models;
     using ServerMVCProject.Models;
-    using ServerLibraryProject.Interfaces;
+    using Workout.Core.IServices;
+    using Workout.Web.Filters;
 
     [Route("comments")]
     public class CreateCommentController : Controller
@@ -42,6 +42,7 @@
         }
 
         [Route("create")]
+        [AuthorizeUser]
         [HttpPost]
         public IActionResult Create(CreateCommentViewModel model)
         {

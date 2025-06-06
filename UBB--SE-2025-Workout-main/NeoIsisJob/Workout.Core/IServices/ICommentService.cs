@@ -1,7 +1,7 @@
-﻿using ServerLibraryProject.Models;
-
-namespace ServerLibraryProject.Interfaces
+﻿namespace Workout.Core.IServices
 {
+    using ServerLibraryProject.Models;
+
     public interface ICommentService
     {
         List<Comment> GetAllComments();

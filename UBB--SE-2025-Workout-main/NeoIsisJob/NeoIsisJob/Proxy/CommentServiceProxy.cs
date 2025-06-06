@@ -4,8 +4,8 @@ namespace NeoIsisJob.Proxy
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Net.Http.Json;
-    using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
 
     public class CommentServiceProxy : ICommentService
     {
@@ -16,7 +16,7 @@ namespace NeoIsisJob.Proxy
 
             httpClient = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7106/api/comments/"),
+                BaseAddress = new Uri("http://localhost:5261/api/comments/"),
             };
         }
 

@@ -1,4 +1,3 @@
-using ServerLibraryProject.Interfaces;
 using Workout.Core.IRepositories;
 using Workout.Core.IServices;
 using Workout.Core.Models;
@@ -8,9 +7,9 @@ namespace Workout.Core.Services
     public class GroupService : IGroupService
     {
         private readonly IGroupRepository groupRepository;
-        private readonly IUserRepository userRepository;
+        private readonly IUserRepo userRepository;
 
-        public GroupService(IGroupRepository groupRepository, IUserRepository userRepository)
+        public GroupService(IGroupRepository groupRepository, IUserRepo userRepository)
         {
             this.groupRepository = groupRepository;
             this.userRepository = userRepository;
@@ -18,17 +17,17 @@ namespace Workout.Core.Services
 
         public Group GetGroupById(long id)
         {
-            return groupRepository.GetGroupById(id);
+            return this.groupRepository.GetGroupById(id);
         }
 
         public List<Group> GetUserGroups(int userId)
         {
-            return groupRepository.GetGroupsForUser(userId);
+            return this.groupRepository.GetGroupsForUser(userId);
         }
 
         public List<UserModel> GetUsersFromGroup(long groupId)
         {
-            return groupRepository.GetUsersFromGroup(groupId);
+            return this.groupRepository.GetUsersFromGroup(groupId);
         }
 
         public Group AddGroup(string name, string desc)
@@ -44,7 +43,7 @@ namespace Workout.Core.Services
                 Description = desc,
             };
 
-            groupRepository.SaveGroup(group);
+            this.groupRepository.SaveGroup(group);
             return group;
         }
 
@@ -88,7 +87,7 @@ namespace Workout.Core.Services
 
         public List<Group> GetAllGroups()
         {
-            return groupRepository.GetAllGroups();
+            return this.groupRepository.GetAllGroups();
         }
     }
-} 
+}

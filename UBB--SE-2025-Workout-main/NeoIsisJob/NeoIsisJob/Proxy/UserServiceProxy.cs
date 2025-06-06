@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using ServerLibraryProject.Models;
 using Workout.Core.Models;
 
 namespace NeoIsisJob.Proxy
@@ -76,7 +75,7 @@ namespace NeoIsisJob.Proxy
 
         public UserModel GetUserByUsername(string username)
         {
-            var response = this.httpClient.GetAsync($"user?username={username}").Result;
+            var response = this.httpClient.GetAsync($"user/user?username={username}").Result;
             if (response.IsSuccessStatusCode)
             {
                 var content = response.Content.ReadAsStringAsync().Result;

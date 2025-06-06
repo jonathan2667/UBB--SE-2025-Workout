@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="DesktopProject.Pages.UserPage"
+    x:Class="NeoIsisJob.Views.Pages.UserPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:DesktopProject.Pages"
+    xmlns:local="using:NeoIsisJob.Views.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -21,7 +21,7 @@
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Center"
                     Spacing="20">
-            <TextBlock Text="Welcome to Meal Planner"
+            <TextBlock Text="Welcome to Neo"
                        FontSize="32"
                        FontWeight="Bold"
                        Foreground="#2C3E50"

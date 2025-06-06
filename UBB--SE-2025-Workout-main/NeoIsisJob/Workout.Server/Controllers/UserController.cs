@@ -1,6 +1,4 @@
 ﻿// Workout.Server/Controllers/UserController.cs
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Workout.Core.IServices;
 using Workout.Core.Models;
@@ -12,6 +10,7 @@ namespace Workout.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
+
         public UserController(IUserService userService)
             => this.userService = userService;
 
@@ -80,7 +79,18 @@ namespace Workout.Server.Controllers
                 return BadRequest($"Error deleting user: {ex.Message}");
             }
         }
+
+        [HttpGet("user")]
+        public ActionResult<UserModel> GetUserByUsername([FromQuery] string username)
+        {
+            try
+            {
+                return this.userService.GetUserByUsername(username);
+            }
+            catch (Exception e)
+            {
+                return this.BadRequest(e.Message);
+            }
+        }
     }
 }
-
-

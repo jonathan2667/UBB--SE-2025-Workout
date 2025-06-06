@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Workout.Core.IRepositories;
 using Workout.Core.IServices;
 using Workout.Core.Models;
-using Workout.Core.IRepositories;
-using ServerLibraryProject.Models;
-using System.Net.Http.Json;
-using System.Diagnostics;
 
 namespace Workout.Core.Services
 {
@@ -79,26 +71,16 @@ namespace Workout.Core.Services
                 throw new ArgumentException("Password cannot be empty", nameof(password));
 
             var user = await _userRepo.GetUserByUsernameAsync(username);
-            
+
             if (user == null)
                 return -2; // User not found
-            
+
             return user.Password == password ? user.ID : -1; // -1 for wrong password
         }
 
         public UserModel GetUserByUsername(string username)
         {
-            this._userRepo.GetUserByUsernameAsync(username)
-                .ContinueWith(task =>
-                {
-                    if (task.IsFaulted)
-                    {
-                        throw task.Exception ?? new Exception("An error occurred while fetching the user.");
-                    }
-
-                    return task.Result;
-                });
-            return null; // This should be replaced with actual user retrieval logic
+            return this._userRepo.GetUserByUsernameAsync(username).Result;
         }
 
         public void JoinGroup(int userId, long groupId)

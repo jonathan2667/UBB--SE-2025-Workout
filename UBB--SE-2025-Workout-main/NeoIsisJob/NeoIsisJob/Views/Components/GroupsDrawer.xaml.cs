@@ -1,12 +1,12 @@
-﻿using DesktopProject.Pages;
+﻿using System;
+using System.Linq;
+using DesktopProject.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using NeoIsisJob;
-using System;
-using System.Linq;
 using Workout.Core.IServices;
 
 namespace DesktopProject.Components
@@ -15,7 +15,6 @@ namespace DesktopProject.Components
     {
         private IGroupService groupService;
         private Frame navigationFrame;
-        private AppController controller;
         private IUserService userService;
         public Frame NavigationFrame
         {
@@ -27,7 +26,6 @@ namespace DesktopProject.Components
         {
             this.InitializeComponent();
             groupService = App.Services.GetService<IGroupService>();
-            controller = App.Services.GetService<AppController>();
             userService = App.Services.GetService<IUserService>();
             CreateGroupButton.Click += CreateGroup_Click;
             LoadGroups();
@@ -38,7 +36,7 @@ namespace DesktopProject.Components
             GroupsList.Children.Clear();
 
             var groups = groupService.GetAllGroups();
-            var userGroups = groupService.GetUserGroups(controller.CurrentUser.ID);
+            var userGroups = groupService.GetUserGroups(AppController.CurrentUser.ID);
             var userGroupIds = userGroups.Select(g => g.Id).ToHashSet(); // Fast lookup
 
             foreach (var group in groups)
@@ -110,7 +108,7 @@ namespace DesktopProject.Components
             long groupId = (long)button.Tag;
             try
             {
-                userService.JoinGroup(controller.CurrentUser.ID, groupId);
+                userService.JoinGroup(AppController.CurrentUser.ID, groupId);
             }
             catch (Exception ex)
             {
@@ -129,7 +127,7 @@ namespace DesktopProject.Components
             long groupId = (long)button.Tag;
             try
             {
-                userService.ExitGroup(controller.CurrentUser.ID, groupId);
+                userService.ExitGroup(AppController.CurrentUser.ID, groupId);
             }
             catch (Exception ex)
             {

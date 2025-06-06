@@ -2,7 +2,6 @@ namespace DesktopProject.Pages
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using DesktopProject.Proxies;
     using DesktopProject.ViewModels;
@@ -12,9 +11,7 @@ namespace DesktopProject.Pages
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Navigation;
     using NeoIsisJob;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
+    using Workout.Core.Enums;
     using Workout.Core.IServices;
     using Workout.Core.Models;
 
@@ -23,7 +20,6 @@ namespace DesktopProject.Pages
     /// </summary>
     public sealed partial class CreatePost : Page
     {
-        private AppController controller;
         private PostViewModel postViewModel;
         private IGroupService groupService;
         private List<Group> userGroups = new List<Group>();
@@ -51,7 +47,6 @@ namespace DesktopProject.Pages
 
         private void InitializeServices()
         {
-            this.controller = App.Services.GetService<AppController>();
             var postService = App.Services.GetService<IPostService>();
             this.postViewModel = new PostViewModel(postService);
             this.groupService = new GroupServiceProxy();
@@ -59,12 +54,12 @@ namespace DesktopProject.Pages
 
         private void LoadUserGroups()
         {
-            if (this.controller?.CurrentUser == null)
+            if (AppController.CurrentUser == null)
             {
                 throw new InvalidOperationException("CurrentUser is not set in the AppController.");
             }
 
-            this.userGroups = this.groupService.GetUserGroups(this.controller.CurrentUser.ID);
+            this.userGroups = this.groupService.GetUserGroups(AppController.CurrentUser.ID);
             this.GroupsListBox.ItemsSource = this.userGroups;
         }
 
@@ -141,7 +136,7 @@ namespace DesktopProject.Pages
                     post.UserId,
                     post.GroupId, // Fix: Convert nullable long to long
                     post.Visibility,
-                    post.Tag);               
+                    post.Tag);
 
                 this.Frame.Navigate(typeof(HomeScreen));
             }
@@ -173,7 +168,7 @@ namespace DesktopProject.Pages
 
         private Post CreateNewPost(PostVisibility visibility)
         {
-            if (this.controller?.CurrentUser == null)
+            if (AppController.CurrentUser == null)
             {
                 throw new InvalidOperationException("CurrentUser is not set in the AppController.");
             }
@@ -182,7 +177,7 @@ namespace DesktopProject.Pages
             {
                 Title = this.TitleInput.Text.Trim(),
                 Content = this.DescriptionInput.Text.Trim(),
-                UserId = this.controller.CurrentUser.ID,
+                UserId = AppController.CurrentUser.ID,
                 CreatedDate = DateTime.Now,
                 Visibility = visibility,
                 Tag = this.GetSelectedTag(),

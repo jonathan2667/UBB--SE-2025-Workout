@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using Microsoft.UI.Xaml;
-using Microsoft.Extensions.DependencyInjection;
-using NeoIsisJob.ViewModels.Workout;
-using NeoIsisJob.ViewModels.Rankings;
-using NeoIsisJob.ViewModels;
-using NeoIsisJob.Proxy;
-using NeoIsisJob.Configuration;
+using DesktopProject.Proxies;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+using NeoIsisJob.Configuration;
+using NeoIsisJob.Proxy;
+using NeoIsisJob.ViewModels;
+using NeoIsisJob.ViewModels.Rankings;
+using NeoIsisJob.ViewModels.Workout;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -51,10 +47,17 @@ namespace NeoIsisJob
             ServiceCollection serviceCollection = new ServiceCollection();
 
             // Configure API settings
-            var configuration = new ConfigurationBuilder()
+            /*var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     {"ApiSettings:BaseUrl", "http://172.30.241.79:5261"}
+                })
+                .Build();*/
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    {"ApiSettings:BaseUrl", "http://localhost:5261"}
                 })
                 .Build();
             serviceCollection.AddSingleton<IConfiguration>(configuration);
@@ -82,11 +85,20 @@ namespace NeoIsisJob
             serviceCollection.AddScoped<WishlistServiceProxy>();
             serviceCollection.AddScoped<OrderServiceProxy>();
             serviceCollection.AddScoped<CalendarServiceProxy>();
+            serviceCollection.AddScoped<PostServiceProxy>();
+            serviceCollection.AddScoped<CommentServiceProxy>();
+            serviceCollection.AddScoped<GroupServiceProxy>();
+            serviceCollection.AddScoped<ReactionServiceProxy>();
 
             // Configure ApiSettings options
-            serviceCollection.Configure<ApiSettings>(options => 
+            /*serviceCollection.Configure<ApiSettings>(options =>
             {
                 options.BaseUrl = "http://172.30.241.79:5261";
+            });*/
+
+            serviceCollection.Configure<ApiSettings>(options =>
+            {
+                options.BaseUrl = "http://localhost:5261";
             });
 
             // Register view models

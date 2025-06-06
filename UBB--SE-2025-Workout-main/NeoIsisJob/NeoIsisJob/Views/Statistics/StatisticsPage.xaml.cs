@@ -1,11 +1,11 @@
+using System;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using NeoIsisJob.ViewModels;
-using System;
-using Microsoft.Extensions.DependencyInjection;
 using NeoIsisJob.Proxy;
+using NeoIsisJob.ViewModels;
 using Workout.Core.Models;
-using System.Linq;
 
 namespace NeoIsisJob.Views.Statistics
 {
@@ -25,7 +25,7 @@ namespace NeoIsisJob.Views.Statistics
         public StatisticsPage()
         {
             this.InitializeComponent();
-            
+
             // Get the ViewModel from dependency injection
             this.ViewModel = App.Services.GetRequiredService<StatisticsViewModel>();
             this.DataContext = this.ViewModel;
@@ -142,15 +142,15 @@ namespace NeoIsisJob.Views.Statistics
 
                 // Add meal details panel
                 var detailsPanel = new StackPanel { Spacing = 5 };
-                var detailsLabel = new TextBlock 
-                { 
-                    Text = "Meal Details:", 
-                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold 
+                var detailsLabel = new TextBlock
+                {
+                    Text = "Meal Details:",
+                    FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
                 };
                 detailsPanel.Children.Add(detailsLabel);
 
-                var detailsTextBlock = new TextBlock 
-                { 
+                var detailsTextBlock = new TextBlock
+                {
                     Text = "Select a meal to see details",
                     FontSize = 12,
                     Foreground = this.Resources["SystemControlForegroundBaseMediumBrush"] as Microsoft.UI.Xaml.Media.Brush,
@@ -180,7 +180,7 @@ namespace NeoIsisJob.Views.Statistics
                 contentPanel.Children.Add(portionLabel);
 
                 var portionPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10 };
-                
+
                 var portionBox = new NumberBox
                 {
                     Value = 1.0,
@@ -191,9 +191,9 @@ namespace NeoIsisJob.Views.Statistics
                     Width = 100,
                     SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Compact
                 };
-                
+
                 var portionLabel2 = new TextBlock { Text = "x (1.0 = normal portion)", VerticalAlignment = VerticalAlignment.Center };
-                
+
                 portionPanel.Children.Add(portionBox);
                 portionPanel.Children.Add(portionLabel2);
                 contentPanel.Children.Add(portionPanel);
@@ -217,7 +217,7 @@ namespace NeoIsisJob.Views.Statistics
                 mealSelectionDialog.IsPrimaryButtonEnabled = false;
 
                 var result = await mealSelectionDialog.ShowAsync();
-                
+
                 if (result == ContentDialogResult.Primary && mealListView.SelectedItem is MealModel selectedMeal)
                 {
                     // Log the meal
@@ -244,10 +244,10 @@ namespace NeoIsisJob.Views.Statistics
                     Title = "Error",
                     Content = $"Failed to log meal: {ex.Message}",
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = (this as FrameworkElement)?.XamlRoot ?? throw new InvalidOperationException("XamlRoot is null"),
                 };
                 await errorDialog.ShowAsync();
             }
         }
     }
-} 
+}

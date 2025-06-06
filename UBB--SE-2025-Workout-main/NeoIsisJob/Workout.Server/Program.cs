@@ -1,12 +1,15 @@
-using Microsoft.EntityFrameworkCore;
-using Workout.Core.IRepositories;
-using Workout.Core.Repositories;
-using Workout.Core.IServices;
-using Workout.Core.Services;
-using Workout.Core.Data;
-using Workout.Core.Models;
-using Workout.Core.Utils.Converters;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using ServerLibraryProject.Interfaces;
+using ServerLibraryProject.Repositories;
+using ServerLibraryProject.Services;
+using Workout.Core.Data;
+using Workout.Core.IRepositories;
+using Workout.Core.IServices;
+using Workout.Core.Models;
+using Workout.Core.Repositories;
+using Workout.Core.Services;
+using Workout.Core.Utils.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +44,10 @@ builder.Services.AddScoped<UserFavoriteMealRepository>();
 builder.Services.AddScoped<IUserDailyNutritionRepository, UserDailyNutritionRepository>();
 builder.Services.AddScoped<IUserWaterIntakeRepository, UserWaterIntakeRepository>();
 builder.Services.AddScoped<IUserMealLogRepository, UserMealLogRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 
 // Add corresponding services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -57,6 +64,10 @@ builder.Services.AddScoped<ICompleteWorkoutService, CompleteWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IService<MealModel>, MealService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IReactionService, ReactionService>();
 
 // Add meal statistics and water tracking services  
 builder.Services.AddScoped<UserFavoriteMealService>();
@@ -78,6 +89,18 @@ builder.Services.AddScoped<IService<OrderModel>, OrderService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 // Remove circular reference
 /*builder.Services.AddControllers()
@@ -108,6 +131,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

@@ -1,5 +1,4 @@
-﻿using ServerLibraryProject.Enums;
-using ServerLibraryProject.Models;
+﻿using Workout.Core.Models;
 
 namespace ServerLibraryProject.Interfaces
 {

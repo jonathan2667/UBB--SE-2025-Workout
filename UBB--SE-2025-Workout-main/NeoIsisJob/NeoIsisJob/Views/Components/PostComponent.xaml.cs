@@ -2,17 +2,15 @@ namespace DesktopProject.Components
 {
     using System;
     using System.Linq;
-    using DesktopProject.Proxies;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Media;
     using NeoIsisJob;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
-    using ServerLibraryProject.Services;
+    using Workout.Core.Enums;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     public sealed partial class PostComponent : UserControl
     {
@@ -23,7 +21,6 @@ namespace DesktopProject.Components
         private DateTime createdDate;
         private long postId;
         private PostTag tag;
-        private AppController AppController;
 
         private IReactionService reactionService;
         private ICommentService commentService;
@@ -64,8 +61,6 @@ namespace DesktopProject.Components
         {
             this.InitializeComponent();
             this.DataContext = this;
-
-            this.AppController = App.Services.GetService<AppController>();
         }
 
         public PostComponent(string title, PostVisibility visibility, int userId, string content, DateTime createdDate, PostTag tag, long postId = 0)
@@ -81,7 +76,6 @@ namespace DesktopProject.Components
             this.PostCreationTime = createdDate;
             this.tag = tag;
 
-            this.AppController = App.Services.GetService<AppController>();
             this.reactionService = App.Services.GetService<IReactionService>();
             this.commentService = App.Services.GetService<ICommentService>();
 
@@ -148,7 +142,7 @@ namespace DesktopProject.Components
 
         private void OnLoveButtonClick(object sender, RoutedEventArgs e)
         {
-            if (this.AppController.CurrentUser != null)
+            if (AppController.CurrentUser != null)
             {
                 this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.ID, PostId = postId, Type = ReactionType.Love });
                 this.LoadReactionCounts();
@@ -157,7 +151,7 @@ namespace DesktopProject.Components
 
         private void OnLaughButtonClick(object sender, RoutedEventArgs e)
         {
-            if (this.AppController.CurrentUser != null)
+            if (AppController.CurrentUser != null)
             {
                 this.reactionService.AddReaction(new Reaction { UserId = AppController.CurrentUser.ID, PostId = postId, Type = ReactionType.Laugh });
                 this.LoadReactionCounts();

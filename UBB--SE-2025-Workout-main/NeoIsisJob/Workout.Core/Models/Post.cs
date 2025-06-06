@@ -1,9 +1,8 @@
-﻿namespace ServerLibraryProject.Models
+﻿namespace Workout.Core.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Text.Json.Serialization;
-    using ServerLibraryProject.Enums;
+    using Workout.Core.Enums;
 
     [Table("Posts")]
     public class Post

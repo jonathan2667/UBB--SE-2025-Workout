@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using NeoIsisJob;
-using ServerLibraryProject.Interfaces;
 using Workout.Core.IServices;
 using Workout.Core.Models;
 

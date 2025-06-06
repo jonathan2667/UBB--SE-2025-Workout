@@ -1,8 +1,6 @@
-﻿using ServerLibraryProject.Models;
-using ServerLibraryProject.Enums;
-using System.Collections.Generic;
+﻿using Workout.Core.Models;
 
-namespace ServerLibraryProject.Interfaces
+namespace Workout.Core.IServices
 {
     public interface IReactionService
     {

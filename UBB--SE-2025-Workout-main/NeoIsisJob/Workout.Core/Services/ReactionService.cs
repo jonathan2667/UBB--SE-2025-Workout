@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using ServerLibraryProject.Models;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
+    using Workout.Core.IRepositories;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     public class ReactionService : IReactionService
     {
@@ -30,10 +30,11 @@
                 }
 
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 this.reactionRepository.Add(reaction);
             }
-            
+
         }
 
 
@@ -41,7 +42,7 @@
         //public void DeleteReaction(long userId, long postId)
         //{
         //    Reaction reaction = reactionRepository.GetReaction(userId, postId);
-            
+
         //    reactionRepository.Delete(userId, postId);
         //}
 

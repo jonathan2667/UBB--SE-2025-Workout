@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ServerLibraryProject.Interfaces;
-using ServerLibraryProject.Enums;
-using ServerLibraryProject.Models;
-using System.Linq;
-using System;
-using Microsoft.AspNetCore.Http;
+using Workout.Core.Enums;
+using Workout.Core.IRepositories;
+using Workout.Core.Models;
 
 public class IndexModel : PageModel
 {

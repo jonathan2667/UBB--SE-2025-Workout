@@ -3,12 +3,12 @@ namespace ServerMVCProject.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
-    using ServerMVCProject.Models;
     using Workout.Core.IServices;
+    using Workout.Core.Models;
+    using Workout.Web.Filters;
+    using Workout.Web.Models;
 
+    [AuthorizeUser]
     [Route("posts")]
     public class CreatePostController : Controller
     {
@@ -47,7 +47,7 @@ namespace ServerMVCProject.Controllers
                 return View(model);
 
             string userIdStr = this.HttpContext.Session.GetString("UserId");
-          
+
 
             int userId = int.Parse(userIdStr);
 
@@ -65,7 +65,7 @@ namespace ServerMVCProject.Controllers
                 Visibility = model.Visibility,
                 Tag = model.Tag,
                 UserId = userId,
-                GroupId = model.GroupId != 0 ? model.GroupId:null,
+                GroupId = model.GroupId != 0 ? model.GroupId : null,
 
                 CreatedDate = DateTime.UtcNow
             };

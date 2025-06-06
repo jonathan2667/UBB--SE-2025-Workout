@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Workout.Web.Data;
+using ServerLibraryProject.Interfaces;
+using ServerLibraryProject.Repositories;
+using ServerLibraryProject.Services;
 using Workout.Core.Data;
 using Workout.Core.IRepositories;
-using Workout.Core.Repositories;
 using Workout.Core.IServices;
+using Workout.Core.Models;
+using Workout.Core.Repositories;
 using Workout.Core.Services;
-using Workout.Core.Models;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
-using Workout.Core.Models;
+using Workout.Web.Data;
 
 // Allow top-level statements to use await
 var builder = WebApplication.CreateBuilder(args);
@@ -77,6 +76,11 @@ builder.Services.AddScoped<IUserWorkoutRepository, UserWorkoutRepo>();
 builder.Services.AddScoped<IRepository<MealModel>, MealRepository>();
 builder.Services.AddScoped<UserFavoriteMealRepository>();
 builder.Services.AddScoped<UserFavoriteMealService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 // Add meal statistics and water tracking repositories
 builder.Services.AddScoped<IUserDailyNutritionRepository, UserDailyNutritionRepository>();
@@ -101,6 +105,9 @@ builder.Services.AddScoped<IUserWorkoutService, UserWorkoutService>();
 builder.Services.AddScoped<IRankingsService, RankingsService>();
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddScoped<IService<MealModel>, MealService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 // Add meal statistics and water tracking services
 builder.Services.AddScoped<IUserNutritionService, UserNutritionService>();
@@ -118,7 +125,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    
+
     // Initialize test data in development environment
     using (var scope = app.Services.CreateScope())
     {

@@ -3,18 +3,15 @@
 
 namespace DesktopProject.Components
 {
-    using DesktopProject.Pages;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using NeoIsisJob;
-    using ServerLibraryProject.Models;
+    using NeoIsisJob.Views.Pages;
     using Workout.Core.Models;
 
     public sealed partial class Member : UserControl
     {
         private readonly UserModel member;
-        private readonly AppController controller;
         private readonly Frame navigationFrame;
         private readonly long groupId;
         private readonly bool isAdmin;
@@ -23,14 +20,13 @@ namespace DesktopProject.Components
         {
             this.InitializeComponent();
             this.member = member;
-            this.controller = App.Services.GetService<AppController>();
             this.navigationFrame = frame;
             this.groupId = groupId;
             this.isAdmin = isAdmin;
 
             this.MemberName.Text = member.Username;
             this.SetImage();
-            if (isAdmin && member.ID != this.controller.CurrentUser.ID) // Don’t show Remove for self
+            if (isAdmin && member.ID != AppController.CurrentUser.ID) // Don’t show Remove for self
                 this.RemoveButton.Visibility = Visibility.Visible;
 
             this.PointerPressed += this.Member_Click;
@@ -44,7 +40,7 @@ namespace DesktopProject.Components
 
         private void Member_Click(object sender, RoutedEventArgs e)
         {
-            this.navigationFrame.Navigate(typeof(UserPage), new UserPageNavigationArgs(this.controller, this.member));
+            this.navigationFrame.Navigate(typeof(UserPage), new UserPageNavigationArgs(this.member));
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)

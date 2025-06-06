@@ -1,13 +1,16 @@
 ﻿//localhost/posts
 namespace ServerMVCProject.Controllers
 {
+    using System.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
-    using ServerLibraryProject.Repositories;
+    using Workout.Core.Enums;
+    using Workout.Core.IRepositories;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
+    using Workout.Web.Filters;
 
     [Route("posts")]
+    [AuthorizeUser]
     public class ViewPostsController : Controller
     {
         private readonly IPostService postService;
@@ -19,15 +22,23 @@ namespace ServerMVCProject.Controllers
             this.reactionRepository = reactionRepository;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult Index()
         {
-            string userIdStr = this.HttpContext.Session.GetString("UserId");
+            try
+            {
+                string userIdStr = this.HttpContext.Session.GetString("UserId");
 
-            int userId = int.Parse(userIdStr);
+                int userId = int.Parse(userIdStr);
 
-            List<Post> posts = this.postService.GetPostsHomeFeed(userId);
-            return this.View(posts);
+                List<Post> posts = this.postService.GetPostsHomeFeed(userId);
+                return this.View(posts);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error session");
+                return Forbid();
+            }
         }
 
 
@@ -37,6 +48,9 @@ namespace ServerMVCProject.Controllers
             try
             {
                 int userId = 1; // Hardcoded user ID for testing
+                if (HttpContext.Session.GetString("UserId") != null)
+                    userId = int.Parse(HttpContext.Session.GetString("UserId"));
+
                 if (!Enum.TryParse<ReactionType>(type, out var reactionType))
                     return Json(new { success = false, error = "Invalid reaction type" });
 

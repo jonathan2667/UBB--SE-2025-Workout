@@ -1,15 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using NeoIsisJob;
 using NeoIsisJob.Proxy;
-using ServerLibraryProject.Interfaces;
-using ServerLibraryProject.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Workout.Core.IServices;
 using Workout.Core.Models;
 
 namespace DesktopProject.Pages
@@ -18,7 +14,6 @@ namespace DesktopProject.Pages
     {
         //private readonly IUserService userService;
         private readonly UserServiceProxy userService;
-        private readonly AppController controller;
         private List<UserModel> allUsers = new();
         private HashSet<long> followingIds = new();
 
@@ -28,7 +23,6 @@ namespace DesktopProject.Pages
 
             //userService = App.Services.GetService<IUserService>();
             userService = new UserServiceProxy();
-            controller = App.Services.GetService<AppController>();
 
             LoadUsers();
         }
@@ -37,7 +31,7 @@ namespace DesktopProject.Pages
         {
             UserListPanel.Children.Clear();
 
-            var currentUserId = controller.CurrentUser.ID;
+            var currentUserId = AppController.CurrentUser.ID;
 
             // All other users except current
             allUsers = userService.GetAllUsersAsync().Result
@@ -102,7 +96,7 @@ namespace DesktopProject.Pages
         {
             var button = sender as Button;
             long targetId = (long)button.Tag;
-            long currentUserId = controller.CurrentUser.ID;
+            long currentUserId = AppController.CurrentUser.ID;
 
             if (followingIds.Contains(targetId))
             {

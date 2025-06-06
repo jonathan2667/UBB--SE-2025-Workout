@@ -1,7 +1,7 @@
-﻿namespace ServerLibraryProject.Interfaces
+﻿namespace Workout.Core.IServices
 {
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Models;
+    using Workout.Core.Enums;
+    using Workout.Core.Models;
 
     public interface IPostService
     {

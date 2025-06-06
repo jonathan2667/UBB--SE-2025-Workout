@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using ServerLibraryProject.DbRelationshipEntities;
+using Workout.Core.Data;
 using Workout.Core.IRepositories;
 using Workout.Core.Models;
-using Workout.Core.Data;
-using ServerLibraryProject.DbRelationshipEntities;
 
 namespace Workout.Core.Repositories
 {
@@ -24,7 +20,7 @@ namespace Workout.Core.Repositories
             return await context.Users
                 .FirstOrDefaultAsync(u => u.ID == userId);
         }
-        
+
         public async Task<UserModel?> GetUserByUsernameAsync(string username)
         {
             return await context.Users
@@ -47,7 +43,7 @@ namespace Workout.Core.Repositories
                 Email = email ?? "",
                 Password = password
             };
-            
+
             context.Users.Add(user);
             await context.SaveChangesAsync();
             return user.ID;
@@ -183,7 +179,7 @@ namespace Workout.Core.Repositories
             }
             catch
             {
-                throw new Exception("Error following user"); 
+                throw new Exception("Error following user");
             }
         }
     }

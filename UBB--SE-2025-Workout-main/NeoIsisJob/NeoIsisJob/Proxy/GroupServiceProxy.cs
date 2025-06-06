@@ -16,7 +16,7 @@ namespace DesktopProject.Proxies
         {
             this.httpClient = new HttpClient();
 
-            this.httpClient.BaseAddress = new Uri("https://localhost:7106/api/groups/");
+            this.httpClient.BaseAddress = new Uri("http://localhost:5261/api/groups/");
         }
 
         public Group GetGroupById(long id)
@@ -50,6 +50,7 @@ namespace DesktopProject.Proxies
             {
                 return response.Content.ReadFromJsonAsync<List<UserModel>>().Result;
             }
+
             throw new Exception($"Failed to get users from group: {response.StatusCode}");
         }
 

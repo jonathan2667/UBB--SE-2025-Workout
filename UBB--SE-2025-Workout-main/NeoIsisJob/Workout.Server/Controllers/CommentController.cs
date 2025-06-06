@@ -1,8 +1,8 @@
 ﻿namespace ServerAPIProject.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using ServerLibraryProject.Interfaces;
     using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
 
     [ApiController]
     [Route("api/comments")]

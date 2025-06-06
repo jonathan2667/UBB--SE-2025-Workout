@@ -1,8 +1,7 @@
-﻿
-using ServerLibraryProject.Enums;
-using ServerLibraryProject.Interfaces;
-using ServerLibraryProject.Models;
+﻿using ServerLibraryProject.Interfaces;
 using Workout.Core.Data;
+using Workout.Core.Enums;
+using Workout.Core.Models;
 
 namespace ServerLibraryProject.Repositories
 {

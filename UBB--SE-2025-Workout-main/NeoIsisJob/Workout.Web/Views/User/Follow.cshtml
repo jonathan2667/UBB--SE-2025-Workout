@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Workout.Core.Models.UserModel>
+@{
+    Layout = "_Layout";
+    var followingIds = (HashSet<int>)ViewData["Following"];
+    var searchQuery = (string)ViewData["Search"];
+}
+
+<h2>Discover Users</h2>
+
+<form asp-action="Follow" method="get">
+    <input type="text" name="search" placeholder="Search by username..." value="@searchQuery" />
+    <button type="submit">Search</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>
+                    <form asp-action="FollowToggle" asp-route-targetId="@user.ID" method="post">
+                        <input type="hidden" name="search" value="@searchQuery" />
+                        <button type="submit" class="btn btn-sm @(followingIds.Contains(user.ID) ? "btn-danger" : "btn-success")">
+                            @(followingIds.Contains(user.ID) ? "Unfollow" : "Follow")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

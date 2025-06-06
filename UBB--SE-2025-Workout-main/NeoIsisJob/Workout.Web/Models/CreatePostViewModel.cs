@@ -1,7 +1,7 @@
-﻿namespace ServerMVCProject.Models
+﻿namespace Workout.Web.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using ServerLibraryProject.Enums;
+    using Workout.Core.Enums;
 
     public class CreatePostViewModel
     {

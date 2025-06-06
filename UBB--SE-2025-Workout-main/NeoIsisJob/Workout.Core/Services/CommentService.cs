@@ -1,5 +1,7 @@
 ﻿using ServerLibraryProject.Interfaces;
 using ServerLibraryProject.Models;
+using Workout.Core.IRepositories;
+using Workout.Core.IServices;
 
 
 namespace ServerLibraryProject.Services
@@ -12,7 +14,7 @@ namespace ServerLibraryProject.Services
     {
         private readonly ICommentRepository commentRepository;
         private readonly IPostRepository postService;
-        private readonly IUserRepository userServiceProxy;
+        private readonly IUserRepo userServiceProxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentService"/> class.
@@ -20,7 +22,7 @@ namespace ServerLibraryProject.Services
         /// <param name="cr">The comment repository.</param>
         /// <param name="pr">The post repository.</param>
         /// <param name="userRepository">The user repository.</param>
-        public CommentService(ICommentRepository cr, IPostRepository ps, IUserRepository userRepository)
+        public CommentService(ICommentRepository cr, IPostRepository ps, IUserRepo userRepository)
         {
             this.commentRepository = cr;
             this.postService = ps;    // Added null checks
@@ -41,12 +43,12 @@ namespace ServerLibraryProject.Services
                 throw new ArgumentException("Comment content cannot be empty or null.", nameof(content));
             }
 
-            if (this.userServiceProxy.GetById(userId) == null)
+            if (this.userServiceProxy.GetUserByIdAsync(userId).Result == null)
             {
                 throw new InvalidOperationException($"User with ID {userId} does not exist.");
             }
 
-            if (postService.GetPostById(postId) == null)
+            if (this.postService.GetPostById(postId) == null)
             {
                 throw new InvalidOperationException($"Post with ID {postId} does not exist.");
             }

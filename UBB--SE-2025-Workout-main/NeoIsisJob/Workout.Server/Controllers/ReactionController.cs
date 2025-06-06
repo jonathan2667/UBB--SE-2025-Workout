@@ -1,8 +1,8 @@
 namespace ServerAPIProject.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     /// <summary>
     /// The controller that manages the reactions.

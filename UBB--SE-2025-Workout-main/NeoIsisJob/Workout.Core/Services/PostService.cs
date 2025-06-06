@@ -3,10 +3,11 @@
 
     using System;
     using System.Collections.Generic;
-    using ServerLibraryProject.Enums;
     using ServerLibraryProject.Interfaces;
-    using ServerLibraryProject.Models;
+    using Workout.Core.Enums;
     using Workout.Core.IRepositories;
+    using Workout.Core.IServices;
+    using Workout.Core.Models;
 
     /// <summary>
     /// Service for managing posts.
@@ -14,7 +15,7 @@
     public class PostService : IPostService
     {
         private IPostRepository postRepository;
-        private IUserRepository userService;
+        private IUserRepo userService;
         private IGroupRepository groupRepository;
 
         /// <summary>
@@ -23,7 +24,7 @@
         /// <param name="postRepository">The post repository.</param>
         /// <param name="userRepository">The user repository.</param>
         /// <param name="groupRepository">The group repository.</param>
-        public PostService(IPostRepository postRepository, IUserRepository userRepository, IGroupRepository groupRepository)
+        public PostService(IPostRepository postRepository, IUserRepo userRepository, IGroupRepository groupRepository)
         {
             this.postRepository = postRepository;
             this.userService = userRepository;
@@ -46,10 +47,12 @@
             {
                 throw new Exception("Post title cannot be empty");
             }
-            if (this.userService.GetById(userId) == null)
+
+            if (this.userService.GetUserByIdAsync(userId).Result == null)
             {
                 throw new Exception("User does not exist");
             }
+
             if (groupId != 0)
             {
                 if (groupId != null && this.groupRepository.GetGroupById((long)groupId) == null)
@@ -57,6 +60,7 @@
                     throw new Exception("Group does not exist");
                 }
             }
+
             Post post = new Post() { Title = title, Content = content, UserId = userId, GroupId = groupId, Visibility = postVisibility, Tag = postTag, CreatedDate = DateTime.Now };
             this.postRepository.SavePost(post);
         }

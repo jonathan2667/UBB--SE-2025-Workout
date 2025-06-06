@@ -1,10 +1,11 @@
-@model List<ServerLibraryProject.Models.Post>
-@using ServerLibraryProject.Models
-@using ServerLibraryProject.Enums
-@using ServerLibraryProject.Interfaces
+@model List<Post>
+@using Workout.Core.IRepositories
+@using Workout.Core.IServices
+@using Workout.Core.Models
+@using Workout.Core.Enums
 @inject IReactionRepository ReactionRepository
 @inject ICommentService CommentService
-@inject IUserRepository UserRepository
+@inject IUserRepo UserRepository
 @inject IHttpContextAccessor HttpContextAccessor
 
 @{
@@ -25,7 +26,7 @@
 <div style="display: flex; justify-content: space-between; align-items: center; background-color: #2f333a; padding: 15px 30px; color: white;">
     <a href="/posts" style="text-decoration: none; color: #00ADB5;">Home</a>
     <a href="/posts/create" class="btn btn-primary" style="background-color: #00ADB5;">+ Create Post</a>
-    <a href="/User/Follow" class="btn btn-primary" style="background-color: #00ADB5;">+ See Users</a>
+    <a href="/Follow" class="btn btn-primary" style="background-color: #00ADB5;">+ See Users</a>
     <a href="/groups" style="text-decoration: none; color: #00ADB5;">Groups</a>
     
 </div>
@@ -49,10 +50,10 @@
             var userReaction = ReactionRepository.GetReaction(userId, post.Id);
 
             var comments = CommentService.GetCommentsByPostId(post.Id);
-            var postAuthor = UserRepository.GetById(post.UserId);
+            var postAuthor = UserRepository.GetUserByIdAsync(post.UserId);
         <div style="background-color: @tagColor; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; color: black; position: relative;">
             <div style="display: flex; justify-content: space-between;">
-                <h4>@postAuthor.Username</h4>
+                <h4>@postAuthor.Result.Username</h4>
                 <span style="background-color: white; padding: 2px 10px; border-radius: 12px;">@post.Visibility</span>
             </div>
 
@@ -106,9 +107,9 @@
                         {
                             foreach (var comment in comments)
                             {
-                                var commentAuthor = UserRepository.GetById(comment.UserId);
+                                var commentAuthor = UserRepository.GetUserByIdAsync(comment.UserId);
                                 <div style="padding: 8px; border-bottom: 1px solid #eee;">
-                                    <strong>@commentAuthor.Username</strong><br />
+                                    <strong>@commentAuthor.Result.Username</strong><br />
                                     <span>@comment.Content</span><br />
                                     <small style="color: #777;">@comment.CreatedDate.ToString("MMM dd, yyyy hh:mm tt")</small>
                                 </div>

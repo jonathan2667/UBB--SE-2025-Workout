@@ -1,8 +1,8 @@
-﻿namespace ServerLibraryProject.Interfaces
+﻿namespace Workout.Core.IRepositories
 {
     using System.Collections.Generic;
-    using ServerLibraryProject.Enums;
-    using ServerLibraryProject.Models;
+    using Workout.Core.Enums;
+    using Workout.Core.Models;
 
     /// <summary>
     /// Interface for managing reactions in the repository.

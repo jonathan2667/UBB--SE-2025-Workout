@@ -1,7 +1,7 @@
-﻿namespace ServerLibraryProject.Models
+﻿namespace Workout.Core.Models
 {
     using System.ComponentModel.DataAnnotations.Schema;
-    using ServerLibraryProject.Enums;
+    using Workout.Core.Enums;
 
     [Table("Reactions")]
     public class Reaction
