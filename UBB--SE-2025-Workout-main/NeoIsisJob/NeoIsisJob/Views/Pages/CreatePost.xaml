@@ -100,7 +100,7 @@
                         <StackPanel x:Name="GroupSelectionPanel" 
                                 Spacing="8"
                                 Visibility="Collapsed">
-                            <TextBlock Text="Select Groups" Foreground="#00ADB5" FontSize="16"/>
+                            <TextBlock Text="Select Groups" Foreground="#2563eb" FontSize="20" FontWeight="Bold"/>
                             <ListBox x:Name="GroupsListBox"
                                   Background="Black"
                                   Foreground="Black"
@@ -117,23 +117,23 @@
 
                         <!-- Tags -->
                         <StackPanel Spacing="8">
-                            <TextBlock Text="Tags" Foreground="#00ADB5" FontSize="16"/>
+                            <TextBlock Text="Tags" Foreground="#2563eb" FontSize="20" FontWeight="Bold"/>
                             <StackPanel Orientation="Horizontal" Spacing="12">
                                 <RadioButton x:Name="MiscRadioButton" 
                                         Content="Misc"
-                                        Background="#D9D9D9" 
+                                        Background="#f3f4f6" 
                                         Foreground="Black"
                                         CornerRadius="5" 
                                         Padding="12 6"/>
                                 <RadioButton x:Name="FoodRadioButton" 
                                         Content="Food"
-                                        Background="#D9D9D9" 
+                                        Background="#f3f4f6" 
                                         Foreground="Black"
                                         CornerRadius="5" 
                                         Padding="12 6"/>
                                 <RadioButton x:Name="WorkoutRadioButton" 
                                         Content="Workout"
-                                        Background="#D9D9D9" 
+                                        Background="#f3f4f6" 
                                         Foreground="Black"
                                         CornerRadius="5" 
                                         Padding="12 6"/>
@@ -150,12 +150,12 @@
                                    HorizontalAlignment="Right"
                                    Spacing="12">
                                 <Button Content="Cancel"
-                                   Background="#D9D9D9"
+                                   Background="#e5e7eb"
                                    Foreground="Black"
                                    CornerRadius="5"
                                    Click="CancelButton_Click"/>
                                 <Button Content="Post"
-                                   Background="#00ADB5"
+                                   Background="#2563eb"
                                    Foreground="White"
                                    CornerRadius="5"
                                    Click="PostButton_Click"/>
