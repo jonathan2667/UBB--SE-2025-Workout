@@ -1,0 +1,46 @@
+@model IEnumerable<Workout.Core.Models.UserFavoriteMealModel>
+
+@{
+    ViewData["Title"] = "Favorite Meals";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (!Model.Any())
+{
+    <p>You have no favorite meals yet.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var favorite in Model)
+        {
+            var meal = favorite.Meal;
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(meal.ImageUrl))
+                    {
+                        <img src="@meal.ImageUrl" class="card-img-top" alt="@meal.Name" style="max-height:200px;object-fit:cover;" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@meal.Name</h5>
+                        <p class="card-text">@meal.Type</p>
+                        <form asp-action="RemoveFromFavorites" asp-controller="Meal" method="post">
+                            <input type="hidden" name="mealId" value="@meal.Id" />
+                            <button type="submit" class="btn btn-danger">Remove from Favorites</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+} 

@@ -1,0 +1,96 @@
+@model Workout.Web.Models.MuscleGroupRankingViewModel
+@using System.Drawing
+@using Workout.Core.Models
+
+@{
+    ViewData["Title"] = $"{Model.MuscleGroupName} Ranking";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>@Model.MuscleGroupName Ranking Details</h4>
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Back to Rankings
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="text-center mb-4">
+                                <img src="@Model.RankDefinition.ImagePath" alt="@Model.RankDefinition.Name" class="img-fluid" style="max-width: 150px;" />
+                                <h3 style="color: @ColorTranslator.ToHtml(Model.RankDefinition.Color);">
+                                    @Model.RankDefinition.Name Rank
+                                </h3>
+                                <p class="lead">Current Points: <strong>@Model.CurrentRank</strong></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="progress" style="height: 30px;">
+                                <div class="progress-bar" role="progressbar"
+                                     style="width: @GetRankPercentage(Model.CurrentRank, Model.RankDefinition)%; background-color: @ColorTranslator.ToHtml(Model.RankDefinition.Color);"
+                                     aria-valuenow="@Model.CurrentRank" 
+                                     aria-valuemin="@Model.RankDefinition.MinPoints" 
+                                     aria-valuemax="@Model.RankDefinition.MaxPoints">
+                                    @Model.CurrentRank / @Model.RankDefinition.MaxPoints
+                                </div>
+                            </div>
+                            
+                            @if (Model.PointsToNextRank > 0)
+                            {
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle"></i> You need <strong>@Model.PointsToNextRank</strong> more points to reach the next rank!
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-success mt-3">
+                                    <i class="bi bi-trophy"></i> Congratulations! You've reached the highest rank for this muscle group!
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <hr />
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h5>How to improve your rank:</h5>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Complete workouts targeting this muscle group
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Increase weight or reps in your exercises
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Maintain a consistent workout schedule
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Challenge yourself with new workout variations
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public int GetRankPercentage(int points, RankDefinition rankDef)
+    {
+        var range = rankDef.MaxPoints - rankDef.MinPoints;
+        var progress = points - rankDef.MinPoints;
+        
+        if (range <= 0)
+            return 100;
+            
+        return (int)Math.Min(100, Math.Max(0, (progress * 100.0 / range)));
+    }
+} 

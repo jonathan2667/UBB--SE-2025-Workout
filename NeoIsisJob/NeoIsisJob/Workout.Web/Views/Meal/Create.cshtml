@@ -1,0 +1,120 @@
+@using Workout.Web.ViewModels.Meal
+@{
+    ViewData["Title"] = "Add New Meal";
+}
+@model CreateMealViewModel
+
+<div class="container mt-4">
+    <h1 class="mb-4">Add New Meal</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Meal Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Type" class="form-label">Meal Type</label>
+                    <input asp-for="Type" class="form-control" />
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                    <input asp-for="ImageUrl" class="form-control" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="CookingLevel" class="form-label">Cooking Level</label>
+                            <select asp-for="CookingLevel" class="form-select">
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                            <span asp-validation-for="CookingLevel" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="CookingTimeMins" class="form-label">Cooking Time (minutes)</label>
+                            <input asp-for="CookingTimeMins" class="form-control" type="number" />
+                            <span asp-validation-for="CookingTimeMins" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Directions" class="form-label">Cooking Directions</label>
+                    <textarea asp-for="Directions" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Directions" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Calories" class="form-label">Calories</label>
+                            <input asp-for="Calories" class="form-control" type="number" />
+                            <span asp-validation-for="Calories" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Proteins" class="form-label">Proteins (g)</label>
+                            <input asp-for="Proteins" class="form-control" type="number" step="0.1" />
+                            <span asp-validation-for="Proteins" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Carbohydrates" class="form-label">Carbohydrates (g)</label>
+                            <input asp-for="Carbohydrates" class="form-control" type="number" step="0.1" />
+                            <span asp-validation-for="Carbohydrates" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Fats" class="form-label">Fats (g)</label>
+                            <input asp-for="Fats" class="form-control" type="number" step="0.1" />
+                            <span asp-validation-for="Fats" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">Create Meal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

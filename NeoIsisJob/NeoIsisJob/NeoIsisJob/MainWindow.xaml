@@ -1,0 +1,12 @@
+<Window
+    x:Class="NeoIsisJob.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="User Test">
+
+    <Grid RequestedTheme="Light">
+        <!-- This Frame should take the full height -->
+        <Frame x:Name="MainFrame"/>
+    </Grid>
+
+</Window>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="NeoIsisJob.Views.Workout.SelectedWorkoutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NeoIsisJob.Views.Workout"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Padding="20">
+        <StackPanel Spacing="10">
+
+            <!-- Header with Back Button and Title -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!--button will stay on left-->
+                    <ColumnDefinition Width="Auto"/>
+                    <!--the workout name will occupy the remaining space-->
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Content="Back" HorizontalAlignment="Left" Grid.Column="0" Click="BackButton_Click"/>
+
+                <TextBlock Text="{Binding SelectedWorkout.Name}" 
+                           FontSize="24" 
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Grid.Column="1"/>
+            </Grid>
+
+            <!-- Table Headers -->
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Exercise Name" FontWeight="Bold" Grid.Column="0"/>
+                <TextBlock Text="Sets" FontWeight="Bold" Grid.Column="1"/>
+                <TextBlock Text="Reps Per Set" FontWeight="Bold" Grid.Column="2"/>
+            </Grid>
+
+            <!-- Table Content -->
+            <ListView ItemsSource="{Binding CompleteWorkouts, Mode=OneWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding Exercise.Name}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Sets}" Grid.Column="1"/>
+                            <TextBlock Text="{Binding RepsPerSet}" Grid.Column="2"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackPanel>
+    </Grid>
+
+</Page>

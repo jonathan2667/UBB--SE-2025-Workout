@@ -1,0 +1,131 @@
+﻿@model CreatePostViewModel
+
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+@if (ViewBag.Message != null)
+{
+    <div style="background-color: #22c55e; padding: 10px; border-radius: 8px; margin-bottom: 15px; color: white; font-weight: bold;">
+        @ViewBag.Message
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div style="background-color: #ef4444; padding: 10px; border-radius: 8px; margin-bottom: 15px; color: white; font-weight: bold;">
+        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@modelError.ErrorMessage</div>
+        }
+    </div>
+}
+
+<!-- Top Navigation (keep as is, or update to match your main navbar) -->
+<div style="display: flex; justify-content: space-between; align-items: center; background: #fff; border-bottom: 1px solid #e5e7eb; padding: 15px 30px; color: #222; font-family: 'Segoe UI', sans-serif;">
+    <a href="/posts" style="text-decoration: none; color: #2563eb; font-size: 1.1em; font-weight: 500;">Home</a>
+    <a href="/groups" style="text-decoration: none; color: #2563eb; font-size: 1.1em; font-weight: 500;">Groups</a>
+</div>
+
+<!-- Main Form Card -->
+<div style="background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); max-width: 600px; margin: 40px auto; padding: 40px 32px; font-family: 'Segoe UI', sans-serif;">
+    <form asp-action="Create" method="post">
+        <div style="margin-bottom: 24px;">
+            <label style="color: #2563eb; font-size: 1.1em; font-weight: 600;">Post Title</label>
+            <input asp-for="Title" maxlength="50" placeholder="Enter your post title..." class="form-control"
+                   style="background: #f3f4f6; border-radius: 8px; border: none; padding: 12px; width: 100%; margin-top: 6px; font-size: 1em;" />
+            <small id="titleCharCount" style="float: right; color: #6b7280;">0/50</small>
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="color: #2563eb; font-size: 1.1em; font-weight: 600;">Description</label>
+            <textarea asp-for="Content" maxlength="250" rows="6" placeholder="Write your post description..." class="form-control"
+                      style="background: #f3f4f6; border-radius: 8px; border: none; padding: 12px; width: 100%; margin-top: 6px; font-size: 1em;"></textarea>
+            <small id="descCharCount" style="float: right; color: #6b7280;">0/250</small>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <label style="color: #2563eb; font-size: 1.1em; font-weight: 600;">Visibility</label>
+            <select asp-for="Visibility" id="visibilitySelect" class="form-control"
+                    style="background: #f3f4f6; border-radius: 8px; padding: 12px; margin-top: 6px;">
+                <option value="1">Private</option>
+                <option value="2">Friends</option>
+                <option value="3">Public</option>
+                <option value="4">Groups</option>
+            </select>
+            <span asp-validation-for="Visibility" class="text-danger"></span>
+        </div>
+
+        <!-- Group dropdown (only visible if "Groups" selected) -->
+        <div id="groupDropdownContainer" style="margin-bottom: 24px; display: none;">
+            <label style="color: #2563eb; font-size: 1.1em; font-weight: 600;">Select Group</label>
+            <select asp-for="GroupId" asp-items="@(ViewBag.UserGroups as List<SelectListItem>)"
+                    class="form-control"
+                    style="background: #f3f4f6; border-radius: 8px; padding: 12px; margin-top: 6px;">
+                <option value="0">-- Select a Group --</option>
+            </select>
+            <span asp-validation-for="GroupId" class="text-danger"></span>
+        </div>
+
+        <div style="margin-bottom: 32px;">
+            <label style="color: #2563eb; font-size: 1.1em; font-weight: 600;">Tags</label>
+            <div style="display: flex; gap: 12px; margin-top: 10px;">
+                <label style="background: #e0e7ff; color: #2563eb; border-radius: 999px; padding: 8px 18px; font-weight: 500; cursor: pointer;">
+                    <input type="radio" asp-for="Tag" value="3" style="margin-right: 6px;" /> Misc
+                </label>
+                <label style="background: #fef9c3; color: #b45309; border-radius: 999px; padding: 8px 18px; font-weight: 500; cursor: pointer;">
+                    <input type="radio" asp-for="Tag" value="1" style="margin-right: 6px;" /> Food
+                </label>
+                <label style="background: #bbf7d0; color: #15803d; border-radius: 999px; padding: 8px 18px; font-weight: 500; cursor: pointer;">
+                    <input type="radio" asp-for="Tag" value="2" style="margin-right: 6px;" /> Workout
+                </label>
+                <label style="background: #fee2e2; color: #b91c1c; border-radius: 999px; padding: 8px 18px; font-weight: 500; cursor: pointer;">
+                    <input type="radio" asp-for="Tag" value="4" style="margin-right: 6px;" /> Blessed
+                </label>
+            </div>
+            <span asp-validation-for="Tag" class="text-danger"></span>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+            <a href="/posts" class="btn btn-secondary" style="background: #f3f4f6; color: #222; border-radius: 8px; font-weight: 500; padding: 10px 24px; border: none;">Cancel</a>
+            <button type="submit" class="btn" style="background: #2563eb; color: white; border-radius: 8px; font-weight: 500; padding: 10px 24px; border: none;">Post</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const titleInput = document.querySelector('[name="Title"]');
+        const descInput = document.querySelector('[name="Content"]');
+        const titleCounter = document.getElementById('titleCharCount');
+        const descCounter = document.getElementById('descCharCount');
+        const visibilitySelect = document.getElementById('visibilitySelect');
+        const groupDropdown = document.getElementById('groupDropdownContainer');
+        const groupSelect = document.querySelector('[name="GroupId"]');
+
+        titleInput.addEventListener('input', () => {
+            titleCounter.textContent = `${titleInput.value.length}/50`;
+        });
+
+        descInput.addEventListener('input', () => {
+            descCounter.textContent = `${descInput.value.length}/250`;
+        });
+
+        function handleVisibilityChange() {
+            if (visibilitySelect.value === '4') {
+                groupDropdown.style.display = 'block';
+            } else {
+                groupDropdown.style.display = 'none';
+                groupSelect.value = '0'; // Ensure GroupId = 0
+            }
+        }
+
+        // Initial setup
+        handleVisibilityChange();
+
+        visibilitySelect.addEventListener('change', handleVisibilityChange);
+    </script>
+}

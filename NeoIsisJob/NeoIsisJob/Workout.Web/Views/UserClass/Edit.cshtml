@@ -1,0 +1,51 @@
+@model Workout.Core.Models.UserClassModel
+
+@{
+    ViewData["Title"] = "Edit User Class";
+}
+
+<h1>Edit User Class</h1>
+
+<h4>User Class Registration</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label for="UID" class="form-label">User</label>
+                <select asp-for="UID" class="form-select" disabled>
+                    @foreach (var user in ViewBag.Users)
+                    {
+                        <option value="@user.ID" selected="@(user.ID == Model.UID)">@user.ID</option>
+                    }
+                </select>
+                <input type="hidden" asp-for="UID" />
+            </div>
+            <div class="form-group mb-3">
+                <label for="CID" class="form-label">Class</label>
+                <select asp-for="CID" class="form-select" disabled>
+                    @foreach (var classItem in ViewBag.Classes)
+                    {
+                        <option value="@classItem.CID" selected="@(classItem.CID == Model.CID)">@classItem.Name</option>
+                    }
+                </select>
+                <input type="hidden" asp-for="CID" />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Date" class="form-label"></label>
+                <input asp-for="Date" class="form-control" type="datetime-local" disabled />
+                <input type="hidden" asp-for="Date" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

@@ -1,0 +1,24 @@
+<Page
+    x:Class="DesktopProject.HomeScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DesktopProject"
+    xmlns:components="using:DesktopProject.Components"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid" Background="#222831">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Bar -->
+        <components:TopBar Grid.Row="0" x:Name="TopBar"/>
+
+        <!-- Main Content -->
+        <components:PostsFeed Grid.Row="1" Margin="10"/>
+    </Grid>
+</Page>
+

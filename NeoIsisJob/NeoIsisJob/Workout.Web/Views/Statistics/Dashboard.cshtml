@@ -1,0 +1,911 @@
+@model Workout.Web.ViewModels.Statistics.StatisticsDashboardViewModel
+@{
+    ViewData["Title"] = "Nutrition & Water Statistics";
+}
+
+@Html.AntiForgeryToken()
+
+@if (ViewBag.Debug != null && ViewBag.Debug)
+{
+    <div class="alert alert-info">
+        <h5>🐛 Debug Information (User ID: @ViewBag.UserId)</h5>
+        <p><strong>Loading statistics for User ID:</strong> @ViewBag.UserId on @DateTime.Today.ToString("yyyy-MM-dd")</p>
+        @if (ViewBag.DebugInfo != null)
+        {
+            @foreach (string info in ViewBag.DebugInfo)
+            {
+                <div>@Html.Raw(info)</div>
+            }
+        }
+        <p><strong>Page URL:</strong> @Context.Request.Scheme://@Context.Request.Host@Context.Request.Path@Context.Request.QueryString</p>
+        <hr>
+        <div class="mt-3">
+            <button id="seedDataBtn" class="btn btn-warning btn-sm me-2">🌱 Seed Sample Data</button>
+            <button id="testDatabaseBtn" class="btn btn-info btn-sm">🔧 Test Database Connection</button>
+        </div>
+    </div>
+}
+
+<div class="container-fluid">
+    @if (ViewBag.DebugInfo != null)
+    {
+        <div class="alert alert-info mb-4">
+            <h6><i class="fas fa-bug me-2"></i>Debug Information (User ID: @Model.UserId)</h6>
+            <small>@Html.Raw(ViewBag.DebugInfo)</small>
+        </div>
+    }
+    
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h3 mb-4">
+                <i class="fas fa-chart-line me-2"></i>
+                Nutrition & Water Statistics
+            </h1>
+        </div>
+    </div>
+
+    <!-- Today's Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-fire text-danger me-2"></i>
+                        <h5 class="card-title mb-0">Calories Today</h5>
+                    </div>
+                    <h2 class="text-primary">@Model.TodayNutrition.TotalCalories</h2>
+                    <small class="text-muted">@Model.TodayNutrition.MealsConsumed meals logged</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-tint text-info me-2"></i>
+                        <h5 class="card-title mb-0">Water Today</h5>
+                    </div>
+                    <h2 class="text-info" id="topWaterDisplay">@Model.TodayWaterIntake ml</h2>
+                    <div class="progress mt-2" style="height: 8px;">
+                        <div class="progress-bar bg-info" role="progressbar" id="topWaterProgress"
+                             style="width: @Model.WaterProgress%" 
+                             aria-valuenow="@Model.WaterProgress" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted" id="topWaterProgressText">@Model.WaterProgress.ToString("F1")% of @Model.WaterGoal ml goal</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-dumbbell text-success me-2"></i>
+                        <h5 class="card-title mb-0">Protein</h5>
+                    </div>
+                    <h2 class="text-success">@Model.TodayNutrition.TotalProteins.ToString("F1")g</h2>
+                    <small class="text-muted">@Model.TodayProteinPercentage.ToString("F1")% of calories</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-check-circle @(Model.IsOnTrackNutrition && Model.IsOnTrackWater ? "text-success" : "text-warning") me-2"></i>
+                        <h5 class="card-title mb-0">Status</h5>
+                    </div>
+                    <h6 class="@(Model.IsOnTrackNutrition && Model.IsOnTrackWater ? "text-success" : "text-warning")">
+                        @(Model.IsOnTrackNutrition && Model.IsOnTrackWater ? "On Track" : "Needs Attention")
+                    </h6>
+                    <small class="text-muted">
+                        Nutrition: @(Model.IsOnTrackNutrition ? "✓" : "⚠")<br>
+                        Water: @(Model.IsOnTrackWater ? "✓" : "⚠")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Nutrition Details -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Today's Nutrition Breakdown
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="macroChart" width="300" height="300"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="nutrition-details">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span><i class="fas fa-circle text-primary me-2"></i>Proteins</span>
+                                    <span><strong>@Model.TodayNutrition.TotalProteins.ToString("F1")g</strong></span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span><i class="fas fa-circle text-success me-2"></i>Carbohydrates</span>
+                                    <span><strong>@Model.TodayNutrition.TotalCarbohydrates.ToString("F1")g</strong></span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span><i class="fas fa-circle text-warning me-2"></i>Fats</span>
+                                    <span><strong>@Model.TodayNutrition.TotalFats.ToString("F1")g</strong></span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span><strong>Total Calories</strong></span>
+                                    <span><strong>@Model.TodayNutrition.TotalCalories</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nutrition Trends Chart -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        7-Day Nutrition Trends
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="trendsChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Tracking & Quick Actions -->
+        <div class="col-lg-4">
+            <!-- Water Tracker -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tint me-2"></i>
+                        Water Tracker
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="water-progress-circle position-relative d-inline-block">
+                            <canvas id="waterProgressChart" width="120" height="120"></canvas>
+                            <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                <div class="h4 mb-0 text-info" id="waterPercentage">@Model.WaterProgress.ToString("F0")%</div>
+                                <small class="text-muted">of goal</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mb-3">
+                        <div class="h2 text-info mb-1">
+                            <span id="currentWaterIntake">@Model.TodayWaterIntake</span> ml
+                        </div>
+                        <small class="text-muted">of @Model.WaterGoal ml goal</small>
+                    </div>
+
+                    <!-- Quick Add Buttons -->
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-info btn-sm" onclick="addWater(250)">
+                            <i class="fas fa-plus me-1"></i> +250ml
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="addWater(500)">
+                            <i class="fas fa-plus me-1"></i> +500ml
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="addWater(1000)">
+                            <i class="fas fa-plus me-1"></i> +1000ml
+                        </button>
+                    </div>
+
+                    <!-- Custom Amount -->
+                    <div class="mt-3">
+                        <div class="input-group input-group-sm">
+                            <input type="number" class="form-control" id="customWaterAmount" placeholder="Custom amount" min="1" max="2000">
+                            <button class="btn btn-info" type="button" onclick="addCustomWater()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Meals -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-utensils me-2"></i>
+                        Today's Meals
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#logMealModal">
+                            <i class="fas fa-plus me-1"></i> Log Meal
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Meal Logs -->
+            @if (Model.TodayMealLogs.Any())
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-utensils me-2"></i>
+                            Today's Meals
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var mealLog in Model.TodayMealLogs.OrderByDescending(m => m.ConsumedAt))
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                                <div>
+                                    <strong>@mealLog.Meal?.Name</strong>
+                                    @if (mealLog.PortionMultiplier != 1.0)
+                                    {
+                                        <span class="text-muted">(@(mealLog.PortionMultiplier.ToString("F1"))x)</span>
+                                    }
+                                    <br />
+                                    <small class="text-muted">@mealLog.ConsumedAt.ToString("HH:mm")</small>
+                                    @if (!string.IsNullOrEmpty(mealLog.Notes))
+                                    {
+                                        <br /><small class="text-info">@mealLog.Notes</small>
+                                    }
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">
+                                        @((mealLog.Meal?.Calories * mealLog.PortionMultiplier ?? 0).ToString("F0")) cal
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Top Meal Types -->
+            @if (Model.TopMealTypes.Any())
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-star me-2"></i>
+                            Favorite Meal Types (30 days)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var mealType in Model.TopMealTypes.Take(5))
+                        {
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>@mealType.Key</span>
+                                <span class="badge bg-primary">@mealType.Value</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Log Meal Modal -->
+<div class="modal fade" id="logMealModal" tabindex="-1" aria-labelledby="logMealModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logMealModalLabel">
+                    <i class="fas fa-utensils me-2"></i>Log Meal
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="logMealForm">
+                    @Html.AntiForgeryToken()
+                    
+                    <!-- Meal Selection -->
+                    <div class="mb-3">
+                        <label for="mealSelect" class="form-label">Select a meal:</label>
+                        <select id="mealSelect" class="form-select" required>
+                            <option value="">Loading meals...</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a meal.
+                        </div>
+                    </div>
+
+                    <!-- Meal Details Display -->
+                    <div id="mealDetails" class="mb-3" style="display: none;">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title mb-2" id="selectedMealName"></h6>
+                                <div class="row text-sm">
+                                    <div class="col-3">
+                                        <strong>Calories:</strong><br>
+                                        <span id="selectedMealCalories"></span>
+                                    </div>
+                                    <div class="col-3">
+                                        <strong>Protein:</strong><br>
+                                        <span id="selectedMealProteins"></span>g
+                                    </div>
+                                    <div class="col-3">
+                                        <strong>Carbs:</strong><br>
+                                        <span id="selectedMealCarbs"></span>g
+                                    </div>
+                                    <div class="col-3">
+                                        <strong>Fats:</strong><br>
+                                        <span id="selectedMealFats"></span>g
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portion Size -->
+                    <div class="mb-3">
+                        <label for="portionSize" class="form-label">Portion size:</label>
+                        <div class="input-group">
+                            <input type="number" id="portionSize" class="form-control" value="1.0" step="0.1" min="0.1" max="10" required>
+                            <span class="input-group-text">x</span>
+                        </div>
+                        <div class="form-text">Multiplier for nutrition values (e.g., 1.5 for 1.5 portions)</div>
+                        <div class="invalid-feedback">
+                            Please enter a valid portion size between 0.1 and 10.
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-3">
+                        <label for="mealNotes" class="form-label">Notes (optional):</label>
+                        <textarea id="mealNotes" class="form-control" rows="2" placeholder="Add any notes about this meal..."></textarea>
+                    </div>
+
+                    <!-- Calculated Values -->
+                    <div id="calculatedValues" class="mb-3" style="display: none;">
+                        <div class="alert alert-info">
+                            <strong>Total nutrition for this portion:</strong><br>
+                            <span id="calculatedCalories"></span> calories, 
+                            <span id="calculatedProteins"></span>g protein, 
+                            <span id="calculatedCarbs"></span>g carbs, 
+                            <span id="calculatedFats"></span>g fats
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="logMealBtn" onclick="logSelectedMeal()">
+                    <i class="fas fa-plus me-1"></i>Log Meal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Macro Pie Chart
+        const macroCtx = document.getElementById('macroChart').getContext('2d');
+        const macroChart = new Chart(macroCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Proteins', 'Carbohydrates', 'Fats'],
+                datasets: [{
+                    data: [@Model.TodayNutrition.TotalProteins, @Model.TodayNutrition.TotalCarbohydrates, @Model.TodayNutrition.TotalFats],
+                    backgroundColor: ['#0d6efd', '#198754', '#ffc107'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Water Progress Chart
+        const waterCtx = document.getElementById('waterProgressChart').getContext('2d');
+        const waterChart = new Chart(waterCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [@Model.WaterProgress, 100 - @Model.WaterProgress],
+                    backgroundColor: ['#0dcaf0', '#e9ecef'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: false,
+                cutout: '80%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Nutrition Trends Chart
+        const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+        const trendsChart = new Chart(trendsCtx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.NutritionTrends.Select(n => $"'{n.Date:MM/dd}'")))],
+                datasets: [{
+                    label: 'Calories',
+                    data: [@Html.Raw(string.Join(",", Model.NutritionTrends.Select(n => n.TotalCalories)))],
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Water (ml)',
+                    data: [@Html.Raw(string.Join(",", Model.NutritionTrends.Select(n => n.WaterIntakeMl)))],
+                    borderColor: '#0dcaf0',
+                    backgroundColor: 'rgba(13, 202, 240, 0.1)',
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Calories'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Water (ml)'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                }
+            }
+        });
+
+        // Water tracking functions
+        function addWater(amount) {
+            console.log('Adding water:', amount, 'ml');
+            
+            fetch('@Url.Action("AddWater", "Statistics")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: `amount=${amount}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Water add response:', data);
+                if (data.success) {
+                    updateWaterDisplay(data.totalIntake, data.progress);
+                    showToast(data.message, 'success');
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding water:', error);
+                showToast('Error adding water intake', 'error');
+            });
+        }
+
+        function addCustomWater() {
+            const amount = document.getElementById('customWaterAmount').value;
+            if (amount && amount > 0) {
+                addWater(parseInt(amount));
+                document.getElementById('customWaterAmount').value = '';
+            }
+        }
+
+        function updateWaterDisplay(totalIntake, progress) {
+            console.log('Updating water display with:', totalIntake, 'ml,', progress, '%');
+            
+            // Update the main water tracker section (the big number)
+            const currentWaterIntake = document.getElementById('currentWaterIntake');
+            if (currentWaterIntake) {
+                currentWaterIntake.textContent = totalIntake;
+                console.log('Updated main water tracker to:', totalIntake);
+            }
+            
+            // Update the percentage in the water tracker circle
+            const waterPercentage = document.getElementById('waterPercentage');
+            if (waterPercentage) {
+                waterPercentage.textContent = Math.round(progress) + '%';
+                console.log('Updated water percentage to:', Math.round(progress) + '%');
+            }
+            
+            // Update the top summary card water amount
+            const topWaterDisplay = document.getElementById('topWaterDisplay');
+            if (topWaterDisplay) {
+                topWaterDisplay.textContent = totalIntake + ' ml';
+                console.log('Updated top water display to:', totalIntake + ' ml');
+            }
+            
+            // Update the top summary progress bar
+            const topWaterProgress = document.getElementById('topWaterProgress');
+            if (topWaterProgress) {
+                topWaterProgress.style.width = progress + '%';
+                topWaterProgress.setAttribute('aria-valuenow', progress);
+                console.log('Updated top progress bar to:', progress + '%');
+            }
+            
+            // Update the percentage text in top card
+            const topWaterProgressText = document.getElementById('topWaterProgressText');
+            if (topWaterProgressText) {
+                topWaterProgressText.textContent = progress.toFixed(1) + '% of 2000 ml goal';
+                console.log('Updated top progress text to:', progress.toFixed(1) + '%');
+            }
+            
+            // Update water chart
+            if (typeof waterChart !== 'undefined') {
+                waterChart.data.datasets[0].data = [progress, 100 - progress];
+                waterChart.update();
+                console.log('Updated water chart');
+            }
+        }
+
+        function updateNutritionDisplay(nutrition) {
+            // Update macro chart if it exists
+            if (typeof macroChart !== 'undefined') {
+                macroChart.data.datasets[0].data = [nutrition.totalProteins, nutrition.totalCarbohydrates, nutrition.totalFats];
+                macroChart.update();
+            }
+            
+            // Update nutrition values in the sidebar
+            const caloriesEl = document.querySelector('[data-nutrition="calories"]');
+            const proteinsEl = document.querySelector('[data-nutrition="proteins"]');
+            const carbsEl = document.querySelector('[data-nutrition="carbs"]');
+            const fatsEl = document.querySelector('[data-nutrition="fats"]');
+            
+            if (caloriesEl) caloriesEl.textContent = nutrition.totalCalories;
+            if (proteinsEl) proteinsEl.textContent = Math.round(nutrition.totalProteins) + 'g';
+            if (carbsEl) carbsEl.textContent = Math.round(nutrition.totalCarbohydrates) + 'g';
+            if (fatsEl) fatsEl.textContent = Math.round(nutrition.totalFats) + 'g';
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.custom-toast');
+            existingToasts.forEach(toast => toast.remove());
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `custom-toast alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show`;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                max-width: 500px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+            
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                    <span>${message}</span>
+                    <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 150);
+                }
+            }, 5000);
+        }
+
+        // Add CSRF token to all AJAX requests
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("RequestVerificationToken", $('input[name=__RequestVerificationToken]').val());
+                }
+            }
+        });
+
+        // Initialize water display on page load
+        $(document).ready(function() {
+            console.log('Page loaded, initializing water display');
+            
+            // Get current values from the model
+            const currentIntake = @Model.TodayWaterIntake;
+            const currentProgress = @Model.WaterProgress;
+            
+            console.log('Initial water values:', currentIntake, 'ml,', currentProgress, '%');
+            
+            // Force update all displays to ensure they're synchronized
+            // Wait a bit to ensure all elements are rendered
+            setTimeout(function() {
+                updateWaterDisplay(currentIntake, currentProgress);
+                console.log('Forced initial water display update');
+            }, 100);
+        });
+
+        // Meal logging functionality
+        let availableMeals = [];
+        
+        // Load meals when modal is opened
+        $('#logMealModal').on('show.bs.modal', function() {
+            loadAvailableMeals();
+        });
+        
+        async function loadAvailableMeals() {
+            try {
+                console.log('Loading available meals...');
+                const response = await fetch('@Url.Action("GetAllMeals", "Statistics")', {
+                    method: 'GET',
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load meals');
+                }
+                
+                const data = await response.json();
+                if (data.success && data.meals) {
+                    availableMeals = data.meals;
+                    populateMealSelect();
+                } else {
+                    throw new Error(data.message || 'Failed to load meals');
+                }
+            } catch (error) {
+                console.error('Error loading meals:', error);
+                showToast('Failed to load meals. Please try again.', 'error');
+                
+                // Show error in select
+                const mealSelect = document.getElementById('mealSelect');
+                mealSelect.innerHTML = '<option value="">Failed to load meals - Please try again</option>';
+            }
+        }
+        
+        function populateMealSelect() {
+            const mealSelect = document.getElementById('mealSelect');
+            mealSelect.innerHTML = '<option value="">Select a meal...</option>';
+            
+            availableMeals.forEach(meal => {
+                const option = document.createElement('option');
+                option.value = meal.id;
+                option.textContent = `${meal.name} (${meal.calories} cal)`;
+                option.dataset.meal = JSON.stringify(meal);
+                mealSelect.appendChild(option);
+            });
+            
+            console.log('Populated meal select with', availableMeals.length, 'meals');
+        }
+        
+        // Handle meal selection
+        document.getElementById('mealSelect').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value && selectedOption.dataset.meal) {
+                const meal = JSON.parse(selectedOption.dataset.meal);
+                showMealDetails(meal);
+                calculateNutritionValues();
+            } else {
+                hideMealDetails();
+            }
+        });
+        
+        // Handle portion size change
+        document.getElementById('portionSize').addEventListener('input', function() {
+            calculateNutritionValues();
+        });
+        
+        function showMealDetails(meal) {
+            document.getElementById('selectedMealName').textContent = meal.name;
+            document.getElementById('selectedMealCalories').textContent = meal.calories;
+            document.getElementById('selectedMealProteins').textContent = meal.proteins;
+            document.getElementById('selectedMealCarbs').textContent = meal.carbohydrates;
+            document.getElementById('selectedMealFats').textContent = meal.fats;
+            
+            document.getElementById('mealDetails').style.display = 'block';
+            calculateNutritionValues();
+        }
+        
+        function hideMealDetails() {
+            document.getElementById('mealDetails').style.display = 'none';
+            document.getElementById('calculatedValues').style.display = 'none';
+        }
+        
+        function calculateNutritionValues() {
+            const mealSelect = document.getElementById('mealSelect');
+            const portionInput = document.getElementById('portionSize');
+            
+            if (!mealSelect.value || !portionInput.value) {
+                document.getElementById('calculatedValues').style.display = 'none';
+                return;
+            }
+            
+            const selectedOption = mealSelect.options[mealSelect.selectedIndex];
+            const meal = JSON.parse(selectedOption.dataset.meal);
+            const portion = parseFloat(portionInput.value);
+            
+            if (portion > 0) {
+                const calculatedCalories = Math.round(meal.calories * portion);
+                const calculatedProteins = (meal.proteins * portion).toFixed(1);
+                const calculatedCarbs = (meal.carbohydrates * portion).toFixed(1);
+                const calculatedFats = (meal.fats * portion).toFixed(1);
+                
+                document.getElementById('calculatedCalories').textContent = calculatedCalories;
+                document.getElementById('calculatedProteins').textContent = calculatedProteins;
+                document.getElementById('calculatedCarbs').textContent = calculatedCarbs;
+                document.getElementById('calculatedFats').textContent = calculatedFats;
+                
+                document.getElementById('calculatedValues').style.display = 'block';
+            } else {
+                document.getElementById('calculatedValues').style.display = 'none';
+            }
+        }
+        
+        async function logSelectedMeal() {
+            const mealSelect = document.getElementById('mealSelect');
+            const portionInput = document.getElementById('portionSize');
+            const notesInput = document.getElementById('mealNotes');
+            
+            // Validate form
+            if (!mealSelect.value) {
+                mealSelect.classList.add('is-invalid');
+                showToast('Please select a meal.', 'error');
+                return;
+            }
+            
+            if (!portionInput.value || portionInput.value <= 0) {
+                portionInput.classList.add('is-invalid');
+                showToast('Please enter a valid portion size.', 'error');
+                return;
+            }
+            
+            // Clear validation states
+            mealSelect.classList.remove('is-invalid');
+            portionInput.classList.remove('is-invalid');
+            
+            const logBtn = document.getElementById('logMealBtn');
+            logBtn.disabled = true;
+            logBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Logging...';
+            
+            try {
+                console.log('Logging meal:', mealSelect.value, 'portion:', portionInput.value);
+                
+                const formData = new FormData();
+                formData.append('mealId', mealSelect.value);
+                formData.append('portionMultiplier', portionInput.value);
+                formData.append('notes', notesInput.value || '');
+                formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+                
+                const response = await fetch('@Url.Action("LogMeal", "Statistics")', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('logMealModal'));
+                    modal.hide();
+                    
+                    // Reset form
+                    resetMealForm();
+                    
+                    // Show success message
+                    showToast(data.message, 'success');
+                    
+                    // Update nutrition displays
+                    updateNutritionDisplay(data.todayNutrition);
+                    
+                    // Reload page to show updated meal logs
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showToast(data.message || 'Failed to log meal', 'error');
+                }
+            } catch (error) {
+                console.error('Error logging meal:', error);
+                showToast('Error logging meal. Please try again.', 'error');
+            } finally {
+                logBtn.disabled = false;
+                logBtn.innerHTML = '<i class="fas fa-plus me-1"></i>Log Meal';
+            }
+        }
+        
+        function resetMealForm() {
+            document.getElementById('mealSelect').value = '';
+            document.getElementById('portionSize').value = '1.0';
+            document.getElementById('mealNotes').value = '';
+            hideMealDetails();
+            
+            // Clear validation states
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        }
+
+        // Debug functionality
+        $('#seedDataBtn').click(function() {
+            $(this).prop('disabled', true).text('🌱 Seeding...');
+            
+            $.ajax({
+                url: '/Statistics/SeedSampleData',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('✅ Sample data seeded successfully!\n\n' + response.results.join('\n'));
+                        location.reload(); // Refresh the page to see the new data
+                    } else {
+                        alert('❌ Failed to seed data: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('❌ Error seeding data: ' + error);
+                },
+                complete: function() {
+                    $('#seedDataBtn').prop('disabled', false).text('🌱 Seed Sample Data');
+                }
+            });
+        });
+
+        $('#testDatabaseBtn').click(function() {
+            $(this).prop('disabled', true).text('🔧 Testing...');
+            
+            $.ajax({
+                url: '/Statistics/TestDatabase',
+                type: 'GET',
+                success: function(response) {
+                    let message = '🔧 Database Test Results:\n\n';
+                    if (response.success) {
+                        message += '✅ Database connection successful\n\n';
+                        message += 'Service Status:\n';
+                        for (let [service, status] of Object.entries(response.services)) {
+                            message += `${status.success ? '✅' : '❌'} ${service}: ${status.message}\n`;
+                        }
+                    } else {
+                        message += '❌ Database test failed: ' + response.message;
+                    }
+                    alert(message);
+                },
+                error: function(xhr, status, error) {
+                    alert('❌ Error testing database: ' + error);
+                },
+                complete: function() {
+                    $('#testDatabaseBtn').prop('disabled', false).text('🔧 Test Database Connection');
+                }
+            });
+        });
+    </script>
+} 

@@ -1,0 +1,93 @@
+@model IEnumerable<Workout.Core.Models.CartItemModel>
+
+@{
+    ViewData["Title"] = "Your Cart";
+    decimal totalPrice = 0;
+    if (Model != null)
+    {
+        totalPrice = Model.Sum(item => item.Product?.Price ?? 0);
+    }
+}
+
+<div class="container mt-4">
+    <h1>Your Shopping Cart</h1>
+    
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            Your cart is empty. Browse our <a asp-controller="Shop" asp-action="Index">products</a> to add items.
+        </div>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Cart Items</h5>
+                <span>Total: $@totalPrice.ToString("F2")</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center">
+                                            @if (item.Product?.PhotoURL != null)
+                                            {
+                                                <img src="@item.Product.PhotoURL" class="me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="@item.Product.Name">
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-light d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                                    <i class="bi bi-image text-muted"></i>
+                                                </div>
+                                            }
+                                            <div>
+                                                <h6 class="mb-0">@item.Product?.Name</h6>
+                                                <small class="text-muted">@item.Product?.Category?.Name</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">$@(item.Product?.Price.ToString("F2"))</td>
+                                    <td class="align-middle">
+                                        <form asp-action="Remove" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.ID" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Remove
+                                            </button>
+                                        </form>
+                                        @if (item.Product != null)
+                                        {
+                                            <a href="@Url.Action("Product", "Shop", new { id = item.Product.ID })" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-eye"></i> View Details
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <form asp-action="Clear" method="post">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Clear Cart
+                    </button>
+                </form>
+                <a asp-action="Payment" class="btn btn-success">
+                    <i class="bi bi-credit-card"></i> Checkout
+                </a>
+            </div>
+        </div>
+    }
+</div> 

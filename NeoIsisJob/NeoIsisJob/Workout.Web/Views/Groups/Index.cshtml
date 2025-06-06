@@ -1,0 +1,68 @@
+﻿@model List<Workout.Core.Models.Group>
+
+@{
+    ViewData["Title"] = "Groups";
+    string userIdStr = Context.Session.GetString("UserId");
+    int? userId = !string.IsNullOrEmpty(userIdStr) ? int.Parse(userIdStr) : (int?)null;
+    var groupService = (Workout.Core.IServices.IGroupService)Context.RequestServices.GetService(typeof(Workout.Core.IServices.IGroupService));
+    var userService = (Workout.Core.IServices.IUserService)Context.RequestServices.GetService(typeof(Workout.Core.IServices.IUserService));
+}
+
+<a href="/posts"
+   style="
+       display: inline-block;
+       margin-bottom: 24px;
+       background: #2563eb;
+       color: #fff;
+       border-radius: 8px;
+       padding: 10px 24px;
+       font-weight: 600;
+       text-decoration: none;
+       box-shadow: 0 1px 2px rgba(37,99,235,0.07);
+       transition: background 0.2s;
+   "
+   onmouseover="this.style.background='#1d4ed8'"
+   onmouseout="this.style.background='#2563eb'"
+>
+    ← Back to Posts
+</a>
+
+<h2>Groups</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Group</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+			bool isInGroup = userId.HasValue && groupService.GetUserGroups(userId.Value).Any(g => g.Id == group.Id);
+            <tr>
+                <td>@group.Name</td>
+                <td>@group.Description</td>
+                <td>
+                    @if (userId.HasValue)
+                    {
+                        <form asp-action="@(isInGroup ? "Exit" : "Join")" asp-route-id="@group.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-@(isInGroup ? "danger" : "success")">
+                                @(isInGroup ? "Exit Group" : "Join Group")
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Login required</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

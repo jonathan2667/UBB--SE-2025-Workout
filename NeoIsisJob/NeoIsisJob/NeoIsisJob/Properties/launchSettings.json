@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "NeoIsisJob (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "NeoIsisJob (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
